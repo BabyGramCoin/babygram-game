@@ -3,240 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BabyGram Mini App</title>
+    <title>BabyGram Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
         body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #0f172a, #1e293b, #090d16);
             color: #ffffff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
         .container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .score-board {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             margin-bottom: 5px;
-            color: #00d2ff;
+            background: linear-gradient(45deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .coin-container {
-            position: relative;
-            margin: 30px 0;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.1s ease;
-        }
-        .coin-container:active {
-            transform: scale(0.93);
-        }
-        .coin-img {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
-            border: 4px solid #fff;
+        .score-box {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 10px 0;
+            color: #38bdf8;
         }
         .nav-tabs {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
             border-radius: 12px;
-            padding: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            width: 100%;
+            justify-content: center;
         }
-        .tab-btn {
+        .nav-tab {
             background: none;
             border: none;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
+            color: #94a3b8;
             padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
             border-radius: 8px;
-            transition: background 0.3s;
+            transition: 0.3s;
         }
-        .tab-btn.active {
-            background: #00d2ff;
-            color: #000;
-            font-weight: bold;
+        .nav-tab.active {
+            background: #0ea5e9;
+            color: #fff;
         }
         .tab-content {
             display: none;
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            flex-direction: column;
+            align-items: center;
         }
         .tab-content.active {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
         }
-        .task-card, .wallet-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .clicker-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .coin-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            margin: 20px 0;
+            transition: transform 0.1s ease;
+        }
+        .coin-btn:active {
+            transform: scale(0.92);
+        }
+        .coin-img {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
+            border: 4px solid #38bdf8;
+        }
+        .section-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 15px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #38bdf8;
         }
         .btn {
-            background: #00d2ff;
-            color: #000;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
             border: none;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 10px 16px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            transition: background 0.2s;
+            width: 100%;
+            margin-top: 8px;
+            transition: 0.2s;
         }
-        .btn:hover {
-            background: #00a8cc;
+        .btn:active {
+            transform: scale(0.98);
         }
-        .popup-plus {
-            position: absolute;
-            font-weight: bold;
-            color: #00d2ff;
-            font-size: 20px;
-            pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
+        .btn-green {
+            background: linear-gradient(135deg, #10b981, #059669);
         }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-60px); }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 5px;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Score Header -->
-        <div class="header">
-            <div class="score-board" id="score">0</div>
-            <p>BabyGram Score</p>
-        </div>
+        <div class="header">BabyGram Game</div>
+        <div class="score-box" id="scoreDisplay">0</div>
+        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">BabyGram Score</div>
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('clicker')">Clicker</button>
-            <button class="tab-btn" onclick="switchTab('tasks')">Tasks & Invite</button>
-            <button class="tab-btn" onclick="switchTab('wallet')">Wallet & Trade</button>
+            <button class="nav-tab active" onclick="switchTab('clicker')">Clicker</button>
+            <button class="nav-tab" onclick="switchTab('tasks')">Tasks & Ref</button>
+            <button class="nav-tab" onclick="switchTab('wallet')">Wallet & Trade</button>
+            <button class="nav-tab" onclick="switchTab('hodl')">HODL</button>
         </div>
 
-        <!-- Tab 1: Clicker -->
-        <div id="clicker" class="tab-content active" style="align-items: center;">
-            <div class="coin-container" id="coinBtn">
-                <img src="IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img">
+        <!-- Tab 1: Clicker & Upgrades -->
+        <div id="clicker" class="tab-content active">
+            <div class="clicker-card">
+                <button class="coin-btn" onclick="tapCoin(event)">
+                    <img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">
+                </button>
+                <div class="info-text">Tap the coin to earn points & upgrade your power!</div>
             </div>
-            <p style="font-size: 13px; color: #aaa;">Tap the coin to earn points!</p>
+
+            <div class="section-box" style="margin-top: 15px;">
+                <div class="section-title">⚡ Upgrades & Boosters</div>
+                <div style="font-size: 13px; color: #94a3b8;">Current Power: +<span id="tapPower">1</span> per tap</div>
+                <button class="btn" onclick="buyUpgrade()">Upgrade Tap Power (Cost: 100 Score)</button>
+            </div>
         </div>
 
         <!-- Tab 2: Tasks & Referral -->
         <div id="tasks" class="tab-content">
-            <h3>Invite Friends (Referral)</h3>
-            <div class="task-card">
-                <p>Earn bonus points for every invited friend!</p>
+            <div class="section-box">
+                <div class="section-title">👥 Invite Friends (Referral)</div>
+                <div class="info-text">Get 1,000 points for each invited friend!</div>
+                <input type="text" id="refLinkInput" class="input-field" readonly>
                 <button class="btn" onclick="copyRefLink()">Copy Invite Link</button>
             </div>
 
-            <h3>Social Tasks</h3>
-            <div class="task-card">
-                <p>Join official Telegram channel</p>
-                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn">Join Channel (+500)</a>
-            </div>
-            <div class="task-card">
-                <p>Join community chat group</p>
-                <a href="https://t.me/BabyGramHub" target="_blank" class="btn">Join Group (+500)</a>
-            </div>
-            <div class="task-card">
-                <p>Follow us on X (Twitter)</p>
-                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn">Follow on X (+500)</a>
+            <div class="section-box">
+                <div class="section-title">🎯 Social Tasks</div>
+                <button class="btn btn-green" onclick="completeTask(5000, 't1')">Join Telegram Channel (+5,000)</button>
+                <button class="btn btn-green" onclick="completeTask(5000, 't2')">Follow Instagram (+5,000)</button>
             </div>
         </div>
 
-        <!-- Tab 3: Wallet & Trade -->
+        <!-- Tab 3: Wallet & Trade & Withdraw -->
         <div id="wallet" class="tab-content">
-            <h3>Connect Wallet</h3>
-            <div class="wallet-card">
-                <p>Connect your Tonkeeper wallet to receive tokens and future airdrops.</p>
+            <div class="section-box">
+                <div class="section-title">💎 Tonkeeper Wallet</div>
+                <div class="info-text" id="walletStatus">Not connected</div>
+                <input type="text" id="walletInput" class="input-field" placeholder="Enter your TON Wallet Address">
                 <button class="btn" onclick="connectWallet()">Connect Tonkeeper</button>
             </div>
 
-            <h3>Trade on DeDust</h3>
-            <div class="wallet-card">
-                <p>Buy, sell, and provide liquidity for BabyGram token:</p>
-                <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fcoins%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn" style="background: #28a745; color: #fff;">Open DeDust Market</a>
+            <div class="section-box">
+                <div class="section-title">🚀 Withdraw (Target: 100M)</div>
+                <div class="info-text">Required: 100,000,000 Score | Fee: 0.5 TON</div>
+                <button class="btn btn-green" onclick="requestWithdraw()">Withdraw Tokens</button>
+            </div>
+
+            <div class="section-box">
+                <div class="section-title">📈 Trade on DeDust</div>
+                <div class="info-text">Buy, sell, and provide liquidity for BabyGram token easily.</div>
+                <button class="btn" onclick="openDeDust()">Open DeDust Market</button>
+            </div>
+        </div>
+
+        <!-- Tab 4: HODL & Earn -->
+        <div id="hodl" class="tab-content">
+            <div class="section-box">
+                <div class="section-title">🏦 HODL & Earn Daily</div>
+                <div class="info-text">Hold every 10,000,000 score to get 1,000 BabyGram coins daily (30,000 monthly).</div>
+                <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Active Stake: 0 Score</div>
+                <button class="btn" onclick="claimHodl()">Claim Daily Reward</button>
             </div>
         </div>
     </div>
 
     <script>
-        let score = localStorage.getItem('babygram_score') ? parseInt(localStorage.getItem('babygram_score')) : 0;
-        const scoreEl = document.getElementById('score');
-        scoreEl.innerText = score;
+        let score = parseInt(localStorage.getItem('baby_score')) || 0;
+        let tapPower = parseInt(localStorage.getItem('baby_power')) || 1;
+        let wallet = localStorage.getItem('baby_wallet') || '';
+        let userId = '7098265955'; // Default user ID
+        
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            userId = tg.initDataUnsafe.user.id;
+        }
 
-        const coinBtn = document.getElementById('coinBtn');
-        coinBtn.addEventListener('click', function(e) {
-            score += 1;
-            scoreEl.innerText = score;
-            localStorage.setItem('babygram_score', score);
+        document.getElementById('scoreDisplay').innerText = score.toLocaleString();
+        document.getElementById('tapPower').innerText = tapPower;
+        
+        // Correct bot username referral link
+        let refLink = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
+        document.getElementById('refLinkInput').value = refLink;
 
-            let rect = coinBtn.getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            let y = e.clientY - rect.top;
-            let plusOne = document.createElement('div');
-            plusOne.className = 'popup-plus';
-            plusOne.innerText = '+1';
-            plusOne.style.left = x + 'px';
-            plusOne.style.top = y + 'px';
-            coinBtn.appendChild(plusOne);
-            setTimeout(() => plusOne.remove(), 800);
-        });
+        if (wallet) {
+            document.getElementById('walletInput').value = wallet;
+            document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function tapCoin(e) {
+            score += tapPower;
+            updateScore();
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
+            localStorage.setItem('baby_score', score);
+        }
+
+        function buyUpgrade() {
+            let cost = 100 * tapPower;
+            if (score >= cost) {
+                score -= cost;
+                tapPower++;
+                document.getElementById('tapPower').innerText = tapPower;
+                localStorage.setItem('baby_power', tapPower);
+                updateScore();
+                alert('Upgrade successful! Power increased.');
+            } else {
+                alert('Not enough score! Need ' + cost);
+            }
         }
 
         function copyRefLink() {
-            let userId = "12345";
-            if (window.Telegram && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+            navigator.clipboard.writeText(refLink);
+            alert('Invite link copied to clipboard!');
+        }
+
+        function completeTask(reward, taskId) {
+            let completed = localStorage.getItem('task_' + taskId);
+            if (!completed) {
+                score += reward;
+                localStorage.setItem('task_' + taskId, 'true');
+                updateScore();
+                alert('Task completed! +' + reward + ' points');
+            } else {
+                alert('You have already completed this task!');
             }
-            let refLink = `https://t.me/BabyGramHQ_bot?start=ref_${userId}`;
-            navigator.clipboard.writeText(refLink).then(() => {
-                alert("Invite link copied successfully!");
-            });
         }
 
         function connectWallet() {
-            alert("Tonkeeper wallet connected successfully!");
+            let val = document.getElementById('walletInput').value.trim();
+            if (val.length > 10) {
+                wallet = val;
+                localStorage.setItem('baby_wallet', wallet);
+                document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
+                alert('Tonkeeper wallet connected successfully!');
+            } else {
+                alert('Please enter a valid TON wallet address.');
+            }
+        }
+
+        function requestWithdraw() {
+            if (score < 100000000) {
+                alert('You need at least 100,000,000 score to withdraw!');
+                return;
+            }
+            if (!wallet) {
+                alert('Please connect your Tonkeeper wallet first!');
+                return;
+            }
+            alert('Withdrawal request submitted! 0.5 TON fee will be deducted. Tokens will be sent to your wallet soon.');
+        }
+
+        function openDeDust() {
+            window.open('https://dedust.io/', '_blank');
+        }
+
+        function claimHodl() {
+            if (score < 10000000) {
+                alert('You need at least 10,000,000 score to use HODL system!');
+                return;
+            }
+            let lastClaim = localStorage.getItem('last_hodl');
+            let today = new Date().toDateString();
+            if (lastClaim === today) {
+                alert('You have already claimed your daily HODL reward today!');
+                return;
+            }
+            let reward = Math.floor(score / 10000000) * 1000;
+            score += reward;
+            localStorage.setItem('last_hodl', today);
+            updateScore();
+            alert('Successfully claimed ' + reward + ' BabyGram coins from HODL!');
         }
     </script>
 </body>
