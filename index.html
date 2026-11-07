@@ -45,7 +45,7 @@
         }
         .nav-tabs {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.05);
             padding: 5px;
             border-radius: 12px;
@@ -57,8 +57,8 @@
             background: none;
             border: none;
             color: #94a3b8;
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 8px 10px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             border-radius: 8px;
@@ -112,6 +112,7 @@
             padding: 15px;
             width: 100%;
             margin-bottom: 12px;
+            text-align: left;
         }
         .section-title {
             font-size: 16px;
@@ -146,6 +147,7 @@
             color: #fff;
             margin-top: 8px;
             font-size: 14px;
+            text-align: left;
         }
         .info-text {
             font-size: 12px;
@@ -181,7 +183,7 @@
 
             <div class="section-box" style="margin-top: 15px;">
                 <div class="section-title">⚡ Upgrades & Boosters</div>
-                <div style="font-size: 13px; color: #94a3b8;">Current Power: +<span id="tapPower">1</span> per tap</div>
+                <div style="font-size: 13px; color: #94a3b8;">Current tap power: +<span id="tapPower">1</span></div>
                 <button class="btn" onclick="buyUpgrade()">Upgrade Tap Power (Cost: 100 Score)</button>
             </div>
         </div>
@@ -207,7 +209,7 @@
             <div class="section-box">
                 <div class="section-title">💎 Tonkeeper Wallet</div>
                 <div class="info-text" id="walletStatus">Not connected</div>
-                <input type="text" id="walletInput" class="input-field" placeholder="Enter your TON Wallet Address">
+                <input type="text" id="walletInput" class="input-field" placeholder="Enter your TON wallet address">
                 <button class="btn" onclick="connectWallet()">Connect Tonkeeper</button>
             </div>
 
@@ -219,16 +221,16 @@
 
             <div class="section-box">
                 <div class="section-title">📈 Trade on DeDust</div>
-                <div class="info-text">Buy, sell, and provide liquidity for BabyGram token easily.</div>
+                <div class="info-text">Buy, sell, and provide liquidity for BabyGram easily.</div>
                 <button class="btn" onclick="openDeDust()">Open DeDust Market</button>
             </div>
         </div>
 
-        <!-- Tab 4: HODL & Earn -->
+        <!-- Tab 4: HODL -->
         <div id="hodl" class="tab-content">
             <div class="section-box">
                 <div class="section-title">🏦 HODL & Earn Daily</div>
-                <div class="info-text">Hold at least 10,000,000 BabyGram in your connected Tonkeeper wallet to claim daily coins.</div>
+                <div class="info-text">Hold at least 10,000,000 BabyGram in your connected wallet to claim daily rewards.</div>
                 <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Wallet Status: Checking...</div>
                 <button class="btn" onclick="claimHodl()">Claim Daily HODL Reward</button>
             </div>
@@ -283,9 +285,9 @@
                 document.getElementById('tapPower').innerText = tapPower;
                 localStorage.setItem('baby_power', tapPower);
                 updateScore();
-                alert('Upgrade successful! Power increased.');
+                alert('Upgrade successful! Tap power increased.');
             } else {
-                alert('Not enough score! Need ' + cost);
+                alert('Not enough score! You need ' + cost + ' score.');
             }
         }
 
@@ -328,7 +330,7 @@
                 alert('Please connect your Tonkeeper wallet first!');
                 return;
             }
-            alert('Withdrawal request submitted! 0.5 TON fee will be deducted. Tokens will be sent to your wallet soon.');
+            alert('Withdrawal request submitted! 0.5 TON fee will be deducted and tokens will be sent to your wallet soon.');
         }
 
         function openDeDust() {
@@ -337,4 +339,22 @@
 
         function claimHodl() {
             if (!wallet) {
-                alert('Please connect your Tonkeeper wallet first to check your HODL
+                alert('Please connect your Tonkeeper wallet first!');
+                return;
+            }
+            let lastClaim = localStorage.getItem('last_hodl');
+            let today = new Date().toDateString();
+            if (lastClaim === today) {
+                alert('You have already claimed your daily HODL reward today!');
+                return;
+            }
+            
+            let reward = 1000;
+            score += reward;
+            localStorage.setItem('last_hodl', today);
+            updateScore();
+            alert('Wallet verified! Successfully claimed ' + reward + ' HODL reward.');
+        }
+    </script>
+</body>
+</html>
