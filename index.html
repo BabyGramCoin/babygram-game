@@ -169,16 +169,16 @@
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('clicker', this)">Clicker</button>
-            <button class="nav-tab" onclick="switchTab('tasks', this)">Tasks & Ref</button>
-            <button class="nav-tab" onclick="switchTab('wallet', this)">Wallet & Trade</button>
-            <button class="nav-tab" onclick="switchTab('hodl', this)">HODL</button>
+            <button class="nav-tab active" onclick="switchTab('clicker')">Clicker</button>
+            <button class="nav-tab" onclick="switchTab('tasks')">Tasks & Ref</button>
+            <button class="nav-tab" onclick="switchTab('wallet')">Wallet & Trade</button>
+            <button class="nav-tab" onclick="switchTab('hodl')">HODL</button>
         </div>
 
         <!-- Tab 1: Clicker & Upgrades -->
         <div id="clicker" class="tab-content active">
             <div class="clicker-card">
-                <button class="coin-btn" onclick="tapCoin()">
+                <button class="coin-btn" onclick="tapCoin(event)">
                     <img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">
                 </button>
                 <div class="info-text">Tap the coin to earn points & upgrade your power!</div>
@@ -202,8 +202,8 @@
 
             <div class="section-box">
                 <div class="section-title">🎯 Social Tasks</div>
-                <a href="https://t.me/BabyGramCoin" target="_blank" class="btn btn-green" onclick="completeTask(1000, 't1')">Join Telegram Channel (+1,000)</a>
-                <a href="https://x.com" target="_blank" class="btn btn-green" onclick="completeTask(1000, 't2')">Follow on X (+1,000)</a>
+                <button class="btn btn-green" onclick="doTask('https://t.me/BabyGramCoin', 1000, 't1')">Join Telegram Channel (+1,000)</button>
+                <button class="btn btn-green" onclick="doTask('https://x.com', 1000, 't2')">Follow on X (+1,000)</button>
             </div>
         </div>
 
@@ -212,8 +212,11 @@
             <div class="section-box">
                 <div class="section-title">💎 Tonkeeper Wallet</div>
                 <div class="info-text" id="walletStatus">Not connected</div>
-                <input type="text" id="walletInput" class="input-field" placeholder="Enter your TON wallet address">
-                <button class="btn" onclick="connectWallet()">Save Tonkeeper Address</button>
+                <!-- دکمه‌ای که کاربر با لمس آن مستقیم به تون‌کیپر هدایت می‌شود -->
+                <button class="btn btn-green" onclick="connectTonkeeper()">Connect Tonkeeper App</button>
+                <div class="info-text" style="margin-top: 8px;">Or enter address manually if needed:</div>
+                <input type="text" id="walletInput" class="input-field" placeholder="Paste TON address here">
+                <button class="btn" onclick="saveManualWallet()">Save Manual Address</button>
             </div>
 
             <div class="section-box">
@@ -225,7 +228,7 @@
             <div class="section-box">
                 <div class="section-title">📈 Trade on DeDust</div>
                 <div class="info-text">Buy, sell, and provide liquidity for BabyGram easily.</div>
-                <a href="https://dedust.io/" target="_blank" class="btn">Open DeDust Market</a>
+                <button class="btn" onclick="openDeDust()">Open DeDust Market</button>
             </div>
         </div>
 
@@ -234,7 +237,7 @@
             <div class="section-box">
                 <div class="section-title">🏦 HODL & Earn Daily</div>
                 <div class="info-text">Hold at least 10,000,000 BabyGram in your connected wallet to claim daily rewards.</div>
-                <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Wallet Status: Ready</div>
+                <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Wallet Status: Checking...</div>
                 <button class="btn" onclick="claimHodl()">Claim Daily HODL Reward</button>
             </div>
         </div>
@@ -246,14 +249,10 @@
         let wallet = localStorage.getItem('baby_wallet') || '';
         let userId = '7098265955';
         
-        try {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                userId = tg.initDataUnsafe.user.id;
-            }
-        } catch (e) {
-            console.log('Telegram WebApp not detected');
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            userId = tg.initDataUnsafe.user.id;
         }
 
         document.getElementById('scoreDisplay').innerText = score.toLocaleString();
@@ -267,14 +266,14 @@
             document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
         }
 
-        function switchTab(tabId, element) {
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
+            event.target.classList.add('active');
         }
 
-        function tapCoin() {
+        function tapCoin(e) {
             score += tapPower;
             updateScore();
         }
@@ -299,29 +298,38 @@
         }
 
         function copyRefLink() {
-            let inputField = document.getElementById('refLinkInput');
-            inputField.select();
-            inputField.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(inputField.value);
+            navigator.clipboard.writeText(refLink);
             alert('Invite link copied to clipboard!');
         }
 
-        function completeTask(reward, taskId) {
+        function doTask(url, reward, taskId) {
             let completed = localStorage.getItem('task_' + taskId);
             if (!completed) {
+                window.open(url, '_blank');
                 score += reward;
                 localStorage.setItem('task_' + taskId, 'true');
                 updateScore();
+                alert('Task completed! +' + reward + ' points added.');
+            } else {
+                alert('You have already completed this task!');
             }
         }
 
-        function connectWallet() {
+        // هدایت مستقیم کاربر به اپلیکیشن Tonkeeper
+        function connectTonkeeper() {
+            // لینک یونیورسال برای باز کردن تون‌کیپر
+            const appUrl = 'https://app.tonkeeper.com/transfer/';
+            window.open(appUrl, '_blank');
+            alert('Opening Tonkeeper app. After copying your address from your wallet, paste it below to save it.');
+        }
+
+        function saveManualWallet() {
             let val = document.getElementById('walletInput').value.trim();
             if (val.length > 10) {
                 wallet = val;
                 localStorage.setItem('baby_wallet', wallet);
                 document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
-                alert('Tonkeeper wallet address saved successfully!');
+                alert('Wallet address saved successfully!');
             } else {
                 alert('Please enter a valid TON wallet address.');
             }
@@ -333,15 +341,19 @@
                 return;
             }
             if (!wallet) {
-                alert('Please save your Tonkeeper wallet address first!');
+                alert('Please connect or save your Tonkeeper wallet first!');
                 return;
             }
-            alert('Withdrawal request submitted! 0.5 TON fee will be deducted.');
+            alert('Withdrawal request submitted! 0.5 TON fee will be deducted and tokens will be sent to your wallet soon.');
+        }
+
+        function openDeDust() {
+            window.open('https://dedust.io/', '_blank');
         }
 
         function claimHodl() {
             if (!wallet) {
-                alert('Please enter your Tonkeeper wallet address first!');
+                alert('Please connect your Tonkeeper wallet first!');
                 return;
             }
             let lastClaim = localStorage.getItem('last_hodl');
@@ -355,7 +367,7 @@
             score += reward;
             localStorage.setItem('last_hodl', today);
             updateScore();
-            alert('Successfully claimed ' + reward + ' HODL reward.');
+            alert('Wallet verified! Successfully claimed ' + reward + ' HODL reward.');
         }
     </script>
 </body>
