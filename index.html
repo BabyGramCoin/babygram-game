@@ -190,15 +190,15 @@
         <div id="tasks" class="tab-content">
             <div class="section-box">
                 <div class="section-title">👥 Invite Friends (Referral)</div>
-                <div class="info-text">Get 1,000 points for each invited friend!</div>
+                <div class="info-text">Get 5,000 points for each invited friend!</div>
                 <input type="text" id="refLinkInput" class="input-field" readonly>
                 <button class="btn" onclick="copyRefLink()">Copy Invite Link</button>
             </div>
 
             <div class="section-box">
                 <div class="section-title">🎯 Social Tasks</div>
-                <button class="btn btn-green" onclick="completeTask(5000, 't1')">Join Telegram Channel (+5,000)</button>
-                <button class="btn btn-green" onclick="completeTask(5000, 't2')">Follow Instagram (+5,000)</button>
+                <button class="btn btn-green" onclick="doTask('https://t.me/BabyGramCoin', 1000, 't1')">Join Telegram Channel (+1,000)</button>
+                <button class="btn btn-green" onclick="doTask('https://x.com', 1000, 't2')">Follow on X (+1,000)</button>
             </div>
         </div>
 
@@ -228,9 +228,9 @@
         <div id="hodl" class="tab-content">
             <div class="section-box">
                 <div class="section-title">🏦 HODL & Earn Daily</div>
-                <div class="info-text">Hold every 10,000,000 score to get 1,000 BabyGram coins daily (30,000 monthly).</div>
-                <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Active Stake: 0 Score</div>
-                <button class="btn" onclick="claimHodl()">Claim Daily Reward</button>
+                <div class="info-text">Hold at least 10,000,000 BabyGram in your connected Tonkeeper wallet to claim daily coins.</div>
+                <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Wallet Status: Checking...</div>
+                <button class="btn" onclick="claimHodl()">Claim Daily HODL Reward</button>
             </div>
         </div>
     </div>
@@ -239,7 +239,7 @@
         let score = parseInt(localStorage.getItem('baby_score')) || 0;
         let tapPower = parseInt(localStorage.getItem('baby_power')) || 1;
         let wallet = localStorage.getItem('baby_wallet') || '';
-        let userId = '7098265955'; // Default user ID
+        let userId = '7098265955';
         
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -250,7 +250,6 @@
         document.getElementById('scoreDisplay').innerText = score.toLocaleString();
         document.getElementById('tapPower').innerText = tapPower;
         
-        // Correct bot username referral link
         let refLink = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
         document.getElementById('refLinkInput').value = refLink;
 
@@ -295,13 +294,14 @@
             alert('Invite link copied to clipboard!');
         }
 
-        function completeTask(reward, taskId) {
+        function doTask(url, reward, taskId) {
             let completed = localStorage.getItem('task_' + taskId);
             if (!completed) {
+                window.open(url, '_blank');
                 score += reward;
                 localStorage.setItem('task_' + taskId, 'true');
                 updateScore();
-                alert('Task completed! +' + reward + ' points');
+                alert('Task completed! +' + reward + ' points added.');
             } else {
                 alert('You have already completed this task!');
             }
@@ -336,22 +336,5 @@
         }
 
         function claimHodl() {
-            if (score < 10000000) {
-                alert('You need at least 10,000,000 score to use HODL system!');
-                return;
-            }
-            let lastClaim = localStorage.getItem('last_hodl');
-            let today = new Date().toDateString();
-            if (lastClaim === today) {
-                alert('You have already claimed your daily HODL reward today!');
-                return;
-            }
-            let reward = Math.floor(score / 10000000) * 1000;
-            score += reward;
-            localStorage.setItem('last_hodl', today);
-            updateScore();
-            alert('Successfully claimed ' + reward + ' BabyGram coins from HODL!');
-        }
-    </script>
-</body>
-</html>
+            if (!wallet) {
+                alert('Please connect your Tonkeeper wallet first to check your HODL
