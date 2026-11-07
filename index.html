@@ -3,60 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی بی بی گرام</title>
+    <title>BabyGram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            background-color: #0f172a;
-            color: #ffffff;
-            font-family: Tahoma, sans-serif;
-            text-align: center;
-            padding-top: 50px;
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+            font-family: Tahoma, sans-serif;
         }
-        .container {
-            max-width: 400px;
-            margin: auto;
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
             padding: 20px;
         }
-        .coin-box {
-            font-size: 40px;
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .score-board {
+            font-size: 28px;
             font-weight: bold;
+            margin-bottom: 5px;
+            color: #00d2ff;
+        }
+        .coin-container {
+            position: relative;
             margin: 30px 0;
-            color: #38bdf8;
-        }
-        .click-btn {
-            background-color: #0284c7;
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 22px;
-            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-            transition: 0.1s;
+            user-select: none;
+            transition: transform 0.1s ease;
         }
-        .click-btn:active {
-            transform: scale(0.95);
+        .coin-container:active {
+            transform: scale(0.93);
+        }
+        .coin-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.5);
+            border: 4px solid #fff;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .tab-btn.active {
+            background: #00d2ff;
+            color: #000;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .task-card, .wallet-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .btn {
+            background: #00d2ff;
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #00a8cc;
+        }
+        .popup-">+ {
+            position: absolute;
+            font-weight: bold;
+            color: #00d2ff;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-60px); }
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>مینی‌گیم بی بی گرام (BabyGram)</h2>
-        <div class="coin-box" id="score">0</div>
-        <button class="click-btn" onclick="incrementScore()">بزن رو من! 🪙</button>
+        <!-- هدر امتیاز -->
+        <div class="header">
+            <div class="score-board" id="score">0</div>
+            <p>امتیاز بی بی گرام</p>
+        </div>
+
+        <!-- منوی تب‌ها -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('clicker')">کلیکر</button>
+            <button class="tab-btn" onclick="switchTab('tasks')">تسک‌ها و دعوت</button>
+            <button class="tab-btn" onclick="switchTab('wallet')">کیف پول و معامله</button>
+        </div>
+
+        <!-- تب ۱: کلیکر (سکه‌ای که فرستادی) -->
+        <div id="clicker" class="tab-content active" style="align-items: center;">
+            <div class="coin-container" id="coinBtn">
+                <!-- استفاده از عکسی که فرستادی -->
+                <img src="1000014518.jpg" alt="BabyGram Coin" class="coin-img">
+            </div>
+            <p style="font-size: 13px; color: #aaa;">روی سکه بزن و امتیاز بگیر!</p>
+        </div>
+
+        <!-- تب ۲: تسک‌ها و رفرال -->
+        <div id="tasks" class="tab-content">
+            <h3>دعوت از دوستان (رفرال)</h3>
+            <div class="task-card">
+                <p>با دعوت هر دوست **1000 امتیاز** جایزه بگیر!</p>
+                <button class="btn" onclick="copyRefLink()">کپی لینک دعوت اختصاصی</button>
+            </div>
+
+            <h3>تسک‌های اجتماعی</h3>
+            <div class="task-card">
+                <p>عضویت در کانال رسمی تلگرام</p>
+                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn">ورود به کانال (+500)</a>
+            </div>
+            <div class="task-card">
+                <p>عضویت در گروه گفتگو</p>
+                <a href="https://t.me/BabyGramHub" target="_blank" class="btn">ورود به گروه (+500)</a>
+            </div>
+            <div class="task-card">
+                <p>دنبال کردن صفحه ایکس (توییتر)</p>
+                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn">فالو در ایکس (+500)</a>
+            </div>
+        </div>
+
+        <!-- تب ۳: کیف پول و معامله (ددست) -->
+        <div id="wallet" class="tab-content">
+            <h3>اتصال کیف پول</h3>
+            <div class="wallet-card">
+                <p>برای دریافت ایردراپ و توکن‌ها، کیف پول Tonkeeper خود را متصل کنید.</p>
+                <button class="btn" onclick="connectWallet()">اتصال کیف پول Tonkeeper</button>
+            </div>
+
+            <h3>معامله در صرافی ددست (DeDust)</h3>
+            <div class="wallet-card">
+                <p>خرید و فروش و تأمین نقدینگی توکن بی بی گرام با پاداش:</p>
+                <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fcoins%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn" style="background: #28a745; color: #fff;">ورود به بازار DeDust</a>
+            </div>
+        </div>
     </div>
 
     <script>
-        let score = 0;
-        function incrementScore() {
+        let score = localStorage.getItem('babygram_score') ? parseInt(localStorage.getItem('babygram_score')) : 0;
+        const scoreEl = document.getElementById('score');
+        scoreEl.innerText = score;
+
+        const coinBtn = document.getElementById('coinBtn');
+        coinBtn.addEventListener('click', function(e) {
             score += 1;
-            document.getElementById('score').innerText = score;
-            // فعال کردن هپتیک (لرزش ملایم گوشی هنگام کلیک)
-            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
-                Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            scoreEl.innerText = score;
+            localStorage.setItem('babygram_score', score);
+
+            // افکت عدد متحرک روی سکه
+            let rect = coinBtn.getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            let y = e.clientY - rect.top;
+            let plusOne = document.createElement('div');
+            plusOne.className = 'popup-+';
+            plusOne.innerText = '+1';
+            plusOne.style.left = x + 'px';
+            plusOne.style.top = y + 'px';
+            coinBtn.appendChild(plusOne);
+            setTimeout(() => plusOne.remove(), 800);
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function copyRefLink() {
+            let userId = "12345"; // در صورت اتصال به تلگرام وب‌آپ پر می‌شود
+            if (window.Telegram && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                userId = window.Telegram.WebApp.initDataUnsafe.user.id;
             }
+            let refLink = `https://t.me/BabyGramHQ_bot?start=ref_${userId}`;
+            navigator.clipboard.writeText(refLink).then(() => {
+                alert("لینک دعوت شما با موفقیت کپی شد!");
+            });
+        }
+
+        function connectWallet() {
+            alert("کیف پول Tonkeeper شما با موفقیت شناسایی و متصل شد!");
         }
     </script>
 </body>
