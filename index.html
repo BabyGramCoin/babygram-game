@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Tahoma, sans-serif;
+            font-family: Arial, sans-serif;
         }
         body {
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -117,7 +117,7 @@
         .btn:hover {
             background: #00a8cc;
         }
-        .popup-">+ {
+        .popup-plus {
             position: absolute;
             font-weight: bold;
             color: #00d2ff;
@@ -134,63 +134,62 @@
 <body>
 
     <div class="container">
-        <!-- هدر امتیاز -->
+        <!-- Score Header -->
         <div class="header">
             <div class="score-board" id="score">0</div>
-            <p>امتیاز بی بی گرام</p>
+            <p>BabyGram Score</p>
         </div>
 
-        <!-- منوی تب‌ها -->
+        <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('clicker')">کلیکر</button>
-            <button class="tab-btn" onclick="switchTab('tasks')">تسک‌ها و دعوت</button>
-            <button class="tab-btn" onclick="switchTab('wallet')">کیف پول و معامله</button>
+            <button class="tab-btn active" onclick="switchTab('clicker')">Clicker</button>
+            <button class="tab-btn" onclick="switchTab('tasks')">Tasks & Invite</button>
+            <button class="tab-btn" onclick="switchTab('wallet')">Wallet & Trade</button>
         </div>
 
-        <!-- تب ۱: کلیکر (سکه‌ای که فرستادی) -->
+        <!-- Tab 1: Clicker -->
         <div id="clicker" class="tab-content active" style="align-items: center;">
             <div class="coin-container" id="coinBtn">
-                <!-- استفاده از عکسی که فرستادی -->
-                <img src="1000014518.jpg" alt="BabyGram Coin" class="coin-img">
+                <img src="IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img">
             </div>
-            <p style="font-size: 13px; color: #aaa;">روی سکه بزن و امتیاز بگیر!</p>
+            <p style="font-size: 13px; color: #aaa;">Tap the coin to earn points!</p>
         </div>
 
-        <!-- تب ۲: تسک‌ها و رفرال -->
+        <!-- Tab 2: Tasks & Referral -->
         <div id="tasks" class="tab-content">
-            <h3>دعوت از دوستان (رفرال)</h3>
+            <h3>Invite Friends (Referral)</h3>
             <div class="task-card">
-                <p>با دعوت هر دوست **1000 امتیاز** جایزه بگیر!</p>
-                <button class="btn" onclick="copyRefLink()">کپی لینک دعوت اختصاصی</button>
+                <p>Earn bonus points for every invited friend!</p>
+                <button class="btn" onclick="copyRefLink()">Copy Invite Link</button>
             </div>
 
-            <h3>تسک‌های اجتماعی</h3>
+            <h3>Social Tasks</h3>
             <div class="task-card">
-                <p>عضویت در کانال رسمی تلگرام</p>
-                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn">ورود به کانال (+500)</a>
+                <p>Join official Telegram channel</p>
+                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn">Join Channel (+500)</a>
             </div>
             <div class="task-card">
-                <p>عضویت در گروه گفتگو</p>
-                <a href="https://t.me/BabyGramHub" target="_blank" class="btn">ورود به گروه (+500)</a>
+                <p>Join community chat group</p>
+                <a href="https://t.me/BabyGramHub" target="_blank" class="btn">Join Group (+500)</a>
             </div>
             <div class="task-card">
-                <p>دنبال کردن صفحه ایکس (توییتر)</p>
-                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn">فالو در ایکس (+500)</a>
+                <p>Follow us on X (Twitter)</p>
+                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn">Follow on X (+500)</a>
             </div>
         </div>
 
-        <!-- تب ۳: کیف پول و معامله (ددست) -->
+        <!-- Tab 3: Wallet & Trade -->
         <div id="wallet" class="tab-content">
-            <h3>اتصال کیف پول</h3>
+            <h3>Connect Wallet</h3>
             <div class="wallet-card">
-                <p>برای دریافت ایردراپ و توکن‌ها، کیف پول Tonkeeper خود را متصل کنید.</p>
-                <button class="btn" onclick="connectWallet()">اتصال کیف پول Tonkeeper</button>
+                <p>Connect your Tonkeeper wallet to receive tokens and future airdrops.</p>
+                <button class="btn" onclick="connectWallet()">Connect Tonkeeper</button>
             </div>
 
-            <h3>معامله در صرافی ددست (DeDust)</h3>
+            <h3>Trade on DeDust</h3>
             <div class="wallet-card">
-                <p>خرید و فروش و تأمین نقدینگی توکن بی بی گرام با پاداش:</p>
-                <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fcoins%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn" style="background: #28a745; color: #fff;">ورود به بازار DeDust</a>
+                <p>Buy, sell, and provide liquidity for BabyGram token:</p>
+                <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fcoins%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn" style="background: #28a745; color: #fff;">Open DeDust Market</a>
             </div>
         </div>
     </div>
@@ -206,12 +205,11 @@
             scoreEl.innerText = score;
             localStorage.setItem('babygram_score', score);
 
-            // افکت عدد متحرک روی سکه
             let rect = coinBtn.getBoundingClientRect();
             let x = e.clientX - rect.left;
             let y = e.clientY - rect.top;
             let plusOne = document.createElement('div');
-            plusOne.className = 'popup-+';
+            plusOne.className = 'popup-plus';
             plusOne.innerText = '+1';
             plusOne.style.left = x + 'px';
             plusOne.style.top = y + 'px';
@@ -227,18 +225,18 @@
         }
 
         function copyRefLink() {
-            let userId = "12345"; // در صورت اتصال به تلگرام وب‌آپ پر می‌شود
+            let userId = "12345";
             if (window.Telegram && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                 userId = window.Telegram.WebApp.initDataUnsafe.user.id;
             }
             let refLink = `https://t.me/BabyGramHQ_bot?start=ref_${userId}`;
             navigator.clipboard.writeText(refLink).then(() => {
-                alert("لینک دعوت شما با موفقیت کپی شد!");
+                alert("Invite link copied successfully!");
             });
         }
 
         function connectWallet() {
-            alert("کیف پول Tonkeeper شما با موفقیت شناسایی و متصل شد!");
+            alert("Tonkeeper wallet connected successfully!");
         }
     </script>
 </body>
