@@ -202,8 +202,9 @@
 
             <div class="section-box">
                 <div class="section-title">🎯 Social Tasks</div>
-                <button class="btn btn-green" onclick="doTask('https://t.me/BabyGramCoin', 1000, 't1')">Join Telegram Channel (+1,000)</button>
-                <button class="btn btn-green" onclick="doTask('https://x.com', 1000, 't2')">Follow on X (+1,000)</button>
+                <button class="btn btn-green" onclick="doTask('https://t.me/BabyGramHQ', 1000, 't1')">Join Telegram Channel (+1,000)</button>
+                <button class="btn btn-green" onclick="doTask('https://t.me/babyGramhub', 1000, 't_group')">Join Telegram Group (+1,000)</button>
+                <button class="btn btn-green" onclick="doTask('https://x.com/BabyGramCoin', 1000, 't2')">Follow on X (+1,000)</button>
             </div>
         </div>
 
@@ -212,7 +213,6 @@
             <div class="section-box">
                 <div class="section-title">💎 Tonkeeper Wallet</div>
                 <div class="info-text" id="walletStatus">Not connected</div>
-                <!-- دکمه‌ای که کاربر با لمس آن مستقیم به تون‌کیپر هدایت می‌شود -->
                 <button class="btn btn-green" onclick="connectTonkeeper()">Connect Tonkeeper App</button>
                 <div class="info-text" style="margin-top: 8px;">Or enter address manually if needed:</div>
                 <input type="text" id="walletInput" class="input-field" placeholder="Paste TON address here">
@@ -315,9 +315,7 @@
             }
         }
 
-        // هدایت مستقیم کاربر به اپلیکیشن Tonkeeper
         function connectTonkeeper() {
-            // لینک یونیورسال برای باز کردن تون‌کیپر
             const appUrl = 'https://app.tonkeeper.com/transfer/';
             window.open(appUrl, '_blank');
             alert('Opening Tonkeeper app. After copying your address from your wallet, paste it below to save it.');
