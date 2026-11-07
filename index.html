@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی بی بی گرام</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: Tahoma, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+        }
+        .coin-box {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #38bdf8;
+        }
+        .click-btn {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+            transition: 0.1s;
+        }
+        .click-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>مینی‌گیم بی بی گرام (BabyGram)</h2>
+        <div class="coin-box" id="score">0</div>
+        <button class="click-btn" onclick="incrementScore()">بزن رو من! 🪙</button>
+    </div>
+
+    <script>
+        let score = 0;
+        function incrementScore() {
+            score += 1;
+            document.getElementById('score').innerText = score;
+            // فعال کردن هپتیک (لرزش ملایم گوشی هنگام کلیک)
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }
+        }
+    </script>
+</body>
+</html>
