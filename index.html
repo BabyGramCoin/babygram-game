@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BabyGram Game</title>
+    <title>بازی بیبی‌گرام - BabyGram CEO</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Tahoma', Geneva, sans-serif;
             user-select: none;
         }
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b, #090d16);
+            background: linear-gradient(135deg, #090d16, #1e293b, #0f172a);
             color: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 15px;
+            padding: 10px;
         }
         .container {
             width: 100%;
@@ -30,38 +30,76 @@
             align-items: center;
         }
         .header {
-            font-size: 24px;
+            font-size: 19px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             background: linear-gradient(45deg, #38bdf8, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        .notice-banner {
+            background: rgba(14, 165, 233, 0.15);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            color: #38bdf8;
+            padding: 5px 8px;
+            border-radius: 8px;
+            font-size: 9px;
+            text-align: center;
+            margin-bottom: 6px;
+            width: 100%;
+            line-height: 1.4;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-box {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 13px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+        .stat-label {
+            font-size: 9px;
+            color: #94a3b8;
         }
         .score-box {
-            font-size: 32px;
+            font-size: 26px;
             font-weight: 800;
-            margin: 10px 0;
-            color: #38bdf8;
+            margin: 2px 0;
+            color: #facc15;
+            text-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
         }
         .nav-tabs {
             display: flex;
-            gap: 6px;
+            gap: 2px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 5px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            padding: 3px;
+            border-radius: 10px;
+            margin-bottom: 8px;
             width: 100%;
             justify-content: center;
+            flex-wrap: wrap;
         }
         .nav-tab {
             background: none;
             border: none;
             color: #94a3b8;
-            padding: 8px 10px;
-            font-size: 12px;
+            padding: 5px 6px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: 0.3s;
         }
         .nav-tab.active {
@@ -80,8 +118,8 @@
         .clicker-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 10px;
             width: 100%;
             text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -91,45 +129,66 @@
             border: none;
             cursor: pointer;
             outline: none;
-            margin: 20px 0;
-            transition: transform 0.1s ease;
+            margin: 8px 0;
+            transition: transform 0.08s ease;
         }
         .coin-btn:active {
             transform: scale(0.92);
         }
         .coin-img {
-            width: 180px;
-            height: 180px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
-            border: 4px solid #38bdf8;
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.4);
+            border: 3px solid #38bdf8;
+        }
+        .energy-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+            margin-top: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .energy-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #38bdf8);
+            width: 100%;
+            transition: width 0.2s;
+        }
+        .energy-text {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 3px;
         }
         .section-box {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 15px;
+            border-radius: 14px;
+            padding: 10px;
             width: 100%;
-            margin-bottom: 12px;
-            text-align: left;
+            margin-bottom: 6px;
+            text-align: right;
         }
         .section-title {
-            font-size: 16px;
+            font-size: 12px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             color: #38bdf8;
         }
         .btn {
             background: linear-gradient(135deg, #0ea5e9, #2563eb);
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
+            padding: 7px 10px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 8px;
+            margin-top: 4px;
+            font-size: 11px;
             transition: 0.2s;
             text-align: center;
             text-decoration: none;
@@ -141,129 +200,273 @@
         .btn-green {
             background: linear-gradient(135deg, #10b981, #059669);
         }
+        .btn-purple {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        }
         .input-field {
             width: 100%;
-            padding: 10px;
+            padding: 7px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #fff;
-            margin-top: 8px;
-            font-size: 14px;
-            text-align: left;
+            margin-top: 4px;
+            font-size: 10px;
+            text-align: right;
+            direction: ltr;
         }
         .info-text {
-            font-size: 12px;
+            font-size: 9px;
             color: #94a3b8;
-            margin-top: 5px;
-            line-height: 1.4;
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+        .upgrades-container {
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+            padding-left: 2px;
+        }
+        .upgrade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 7px 9px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            border: 1px solid rgba(255,255,255,0.06);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header">BabyGram Game</div>
-        <div class="score-box" id="scoreDisplay">0</div>
-        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">BabyGram Score</div>
-
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('clicker')">Clicker</button>
-            <button class="nav-tab" onclick="switchTab('tasks')">Tasks & Ref</button>
-            <button class="nav-tab" onclick="switchTab('wallet')">Wallet & Trade</button>
-            <button class="nav-tab" onclick="switchTab('hodl')">HODL</button>
+        <div class="header">بیبی‌گرام (BabyGram CEO)</div>
+        <div class="notice-banner">⏳ ایردراپ اصلی توکن: ۳ ماه دیگر به ولت‌های ثبت‌شده واریز می‌شود!</div>
+        
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-value" id="profitPerHourDisplay">+0</div>
+                <div class="stat-label">سود ساعتی</div>
+            </div>
+            <div class="stat-box" style="border-right: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.1);">
+                <div class="stat-value" id="tapPowerDisplay">1</div>
+                <div class="stat-label">قدرت تپ</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="friendsCount">0</div>
+                <div class="stat-label">دوستان دعوت‌شده</div>
+            </div>
         </div>
 
-        <!-- Tab 1: Clicker & Upgrades -->
+        <div class="score-box" id="scoreDisplay">0</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">موجودی امتیاز BabyGram</div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('clicker')">تپ کلیک</button>
+            <button class="nav-tab" onclick="switchTab('ceo')">مدیریت (CEO)</button>
+            <button class="nav-tab" onclick="switchTab('wallet')">کیف‌پول & هادل</button>
+            <button class="nav-tab" onclick="switchTab('tasks')">دعوت & تسک</button>
+            <button class="nav-tab" onclick="switchTab('ads')">تبلیغات</button>
+        </div>
+
+        <!-- تب ۱: کلیکر -->
         <div id="clicker" class="tab-content active">
             <div class="clicker-card">
                 <button class="coin-btn" onclick="tapCoin(event)">
                     <img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">
                 </button>
-                <div class="info-text">Tap the coin to earn points & upgrade your power!</div>
-            </div>
-
-            <div class="section-box" style="margin-top: 15px;">
-                <div class="section-title">⚡ Upgrades & Boosters</div>
-                <div style="font-size: 13px; color: #94a3b8;">Current tap power: +<span id="tapPower">1</span></div>
-                <button class="btn" onclick="buyUpgrade()">Upgrade Tap Power (Cost: 100 Score)</button>
+                <div class="info-text">با ضربه زدن سکه جمع کنید</div>
+                <div class="energy-container">
+                    <div class="energy-bar" id="energyBar"></div>
+                </div>
+                <div class="energy-text">انرژی: <span id="energyCount">100</span> / 100</div>
             </div>
         </div>
 
-        <!-- Tab 2: Tasks & Referral -->
+        <!-- تب ۲: CEO -->
+        <div id="ceo" class="tab-content">
+            <div class="section-box">
+                <div class="section-title">👔 کارت‌های ارتقای سود ساعتی</div>
+                <div class="upgrades-container" id="upgradesList"></div>
+            </div>
+        </div>
+
+        <!-- تب ۳: کیف‌پول -->
+        <div id="wallet" class="tab-content">
+            <div class="section-box" style="border: 1px solid #38bdf8;">
+                <div class="section-title">💎 ثبت آدرس ولت هولدرها</div>
+                <div class="info-text" style="color: #facc15;">🌟 آدرس ولت TON (با EQ شروع شود) را ثبت کنید:</div>
+                <div class="info-text" id="walletStatus" style="margin-top: 5px; font-weight: bold;">وضعیت: متصل نیست</div>
+                <input type="text" id="walletInput" class="input-field" placeholder="EQ...">
+                <button class="btn btn-green" onclick="saveWalletAddress()">ثبت و قفل آدرس ولت</button>
+            </div>
+            <div class="section-box">
+                <div class="section-title">🎁 پاداش هادل روزانه هولدرها</div>
+                <button class="btn btn-purple" onclick="claimHodlReward()">دریافت هادل (+1,000 امتیاز)</button>
+            </div>
+        </div>
+
+        <!-- تب ۴: رفرال واقعی و تسک‌ها -->
         <div id="tasks" class="tab-content">
             <div class="section-box">
-                <div class="section-title">👥 Invite Friends (Referral)</div>
-                <div class="info-text">Get 5,000 points for each invited friend!</div>
+                <div class="section-title">👥 سیستم دعوت دوستان (رفرال واقعی)</div>
+                <div class="info-text">لینک اختصاصی خود را بفرستید. به ازای هر دعوت معتبر، **5,000 امتیاز** بگیرید:</div>
                 <input type="text" id="refLinkInput" class="input-field" readonly>
-                <button class="btn" onclick="copyRefLink()">Copy Invite Link</button>
+                <button class="btn btn-green" onclick="copyRefLink()">کپی لینک دعوت</button>
+                <div class="info-text" style="margin-top: 5px; color: #10b981;" id="refStatusText">تعداد دوستان دعوت‌شده: 0 نفر</div>
             </div>
-
+            
             <div class="section-box">
-                <div class="section-title">🎯 Social Tasks</div>
-                <button class="btn btn-green" onclick="doTask('https://t.me/BabyGramHQ', 1000, 't1')">Join Telegram Channel (+1,000)</button>
-                <button class="btn btn-green" onclick="doTask('https://t.me/babyGramhub', 1000, 't_group')">Join Telegram Group (+1,000)</button>
-                <button class="btn btn-green" onclick="doTask('https://x.com/BabyGramCoin', 1000, 't2')">Follow on X (+1,000)</button>
-            </div>
-        </div>
+                <div class="section-title">🎯 تسک‌های تأیید عضویت کانال و ایکس</div>
+                <div class="info-text">ابتدا دکمه ورود را بزنید، عضو شوید و سپس دکمه بررسی را بزنید تا جایزه بگیرید:</div>
+                
+                <div style="margin-top: 8px;">
+                    <a href="https://t.me/BabyGramHQ" target="_blank" class="btn" onclick="markTaskClicked('t1')">1️⃣ عضویت در کانال رسمی (+1,000)</a>
+                    <button class="btn btn-green" style="margin-top: 3px;" onclick="verifyTask('t1', 1000)">بررسی و دریافت جایزه کانال</button>
+                </div>
 
-        <!-- Tab 3: Wallet & Trade & Withdraw -->
-        <div id="wallet" class="tab-content">
-            <div class="section-box">
-                <div class="section-title">💎 Tonkeeper Wallet</div>
-                <div class="info-text" id="walletStatus">Not connected</div>
-                <button class="btn btn-green" onclick="connectTonkeeper()">Connect Tonkeeper App</button>
-                <div class="info-text" style="margin-top: 8px;">Or enter address manually if needed:</div>
-                <input type="text" id="walletInput" class="input-field" placeholder="Paste TON address here">
-                <button class="btn" onclick="saveManualWallet()">Save Manual Address</button>
-            </div>
+                <div style="margin-top: 10px;">
+                    <a href="https://t.me/babyGramhub" target="_blank" class="btn" onclick="markTaskClicked('t_group')">2️⃣ عضویت در گروه چت (+1,000)</a>
+                    <button class="btn btn-green" style="margin-top: 3px;" onclick="verifyTask('t_group', 1000)">بررسی و دریافت جایزه گروه</button>
+                </div>
 
-            <div class="section-box">
-                <div class="section-title">🚀 Withdraw (Target: 100M)</div>
-                <div class="info-text">Required: 100,000,000 Score | Fee: 0.5 TON</div>
-                <button class="btn btn-green" onclick="requestWithdraw()">Withdraw Tokens</button>
-            </div>
-
-            <div class="section-box">
-                <div class="section-title">📈 Trade on DeDust</div>
-                <div class="info-text">Buy, sell, and provide liquidity for BabyGram easily.</div>
-                <button class="btn" onclick="openDeDust()">Open DeDust Market</button>
+                <div style="margin-top: 10px;">
+                    <a href="https://x.com/BabyGramCoin" target="_blank" class="btn" onclick="markTaskClicked('t2')">3️⃣ فالو کردن در ایکس (توییتر) (+1,000)</a>
+                    <button class="btn btn-green" style="margin-top: 3px;" onclick="verifyTask('t2', 1000)">بررسی و دریافت جایزه ایکس</button>
+                </div>
             </div>
         </div>
 
-        <!-- Tab 4: HODL -->
-        <div id="hodl" class="tab-content">
+        <!-- تب ۵: تبلیغات -->
+        <div id="ads" class="tab-content">
             <div class="section-box">
-                <div class="section-title">🏦 HODL & Earn Daily</div>
-                <div class="info-text">Hold at least 10,000,000 BabyGram in your connected wallet to claim daily rewards.</div>
-                <div style="margin-top: 10px; font-weight: bold; color: #38bdf8;" id="hodlStatus">Wallet Status: Checking...</div>
-                <button class="btn" onclick="claimHodl()">Claim Daily HODL Reward</button>
+                <div class="section-title">📢 پارتنرها و تبلیغات</div>
+                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn" style="text-align: center;">ارتباط با ادمین برای ثبت تبلیغ کانال</a>
             </div>
         </div>
     </div>
 
     <script>
         let score = parseInt(localStorage.getItem('baby_score')) || 0;
-        let tapPower = parseInt(localStorage.getItem('baby_power')) || 1;
+        let tapPower = parseInt(localStorage.getItem('baby_tap_power')) || 1;
+        let profitPerHour = parseInt(localStorage.getItem('baby_profit_per_hour')) || 0;
+        let energy = 100;
+        const maxEnergy = 100;
         let wallet = localStorage.getItem('baby_wallet') || '';
+        let friendsCount = parseInt(localStorage.getItem('baby_friends')) || 0;
         let userId = '7098265955';
-        
+
         const tg = window.Telegram.WebApp;
         tg.expand();
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             userId = tg.initDataUnsafe.user.id;
         }
 
-        document.getElementById('scoreDisplay').innerText = score.toLocaleString();
-        document.getElementById('tapPower').innerText = tapPower;
-        
+        const urlParams = new URLSearchParams(window.location.search);
+        let startParam = urlParams.get('start');
+        if (startParam && startParam.startsWith('ref_')) {
+            let inviterId = startParam.replace('ref_', '');
+            let hasRewardedRef = localStorage.getItem('rewarded_ref_' + userId);
+            if (!hasRewardedRef && inviterId !== userId) {
+                localStorage.setItem('rewarded_ref_' + userId, 'true');
+            }
+        }
+
         let refLink = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
         document.getElementById('refLinkInput').value = refLink;
+        document.getElementById('friendsCount').innerText = friendsCount;
+        document.getElementById('refStatusText').innerText = 'تعداد دوستان دعوت‌شده: ' + friendsCount + ' نفر';
+
+        const ceoCards = [
+            { id: 1, name: "🌱 سرور اولیه تست", cost: 300, profit: 25 },
+            { id: 2, name: "💬 راه اندازی گروه چت", cost: 900, profit: 75 },
+            { id: 3, name: "📢 ثبت کانال تلگرام", cost: 2500, profit: 180 },
+            { id: 4, name: "🤖 ساخت ربات کلیکر", cost: 6000, profit: 400 },
+            { id: 5, name: "🎨 طراحی لوگوی رسمی", cost: 14000, profit: 850 },
+            { id: 6, name: "📝 تدوین وایت‌پیپر", cost: 30000, profit: 1700 },
+            { id: 7, name: "🔗 استقرار قرارداد هوشمند", cost: 65000, profit: 3400 },
+            { id: 8, name: "💧 راه‌اندازی استخر نقدینگی", cost: 140000, profit: 7000 },
+            { id: 9, name: "🌐 طراحی وبسایت مینی‌اپ", cost: 300000, profit: 14500 },
+            { id: 10, name: "🤝 جذب اولین پارتنرها", cost: 650000, profit: 30000 },
+            { id: 11, name: "📊 ثبت متاداده در گیت‌هاب", cost: 1400000, profit: 62000 },
+            { id: 12, name: "🛡️ سیستم ضد تقلب و ربات", cost: 3000000, profit: 130000 },
+            { id: 13, name: "🚀 کمپین تبلیغات گسترده", cost: 7000000, profit: 280000 },
+            { id: 14, name: "🏛️ درخواست لیستینگ صرافی", cost: 15000000, profit: 580000 },
+            { id: 15, name: "💎 صرافی بزرگ مرکزی (Tier-1)", cost: 35000000, profit: 1250000 }
+        ];
+
+        let purchasedCards = JSON.parse(localStorage.getItem('baby_purchased_cards')) || {};
+
+        renderCeoCards();
+        updateUI();
 
         if (wallet) {
             document.getElementById('walletInput').value = wallet;
-            document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
+            document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
+        }
+
+        function renderCeoCards() {
+            let container = document.getElementById('upgradesList');
+            container.innerHTML = '';
+            ceoCards.forEach(card => {
+                let isBought = purchasedCards[card.id];
+                let itemDiv = document.createElement('div');
+                itemDiv.className = 'upgrade-item';
+                itemDiv.innerHTML = `
+                    <div>
+                        <div style="font-size: 11px; font-weight: bold;">${card.name}</div>
+                        <div style="font-size: 9px; color: #38bdf8;">سود: +${card.profit.toLocaleString()} / ساعت</div>
+                    </div>
+                    <button class="btn ${isBought ? 'btn-purple' : 'btn-green'}" style="width: auto; padding: 5px 8px; margin:0; font-size:10px;" 
+                        onclick="buyCeoCard(${card.id})" ${isBought ? 'disabled' : ''}>
+                        ${isBought ? 'خریداری شد' : card.cost.toLocaleString() + ' 🪙'}
+                    </button>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function buyCeoCard(cardId) {
+            let card = ceoCards.find(c => c.id === cardId);
+            if (purchasedCards[cardId]) return;
+            if (score >= card.cost) {
+                score -= card.cost;
+                profitPerHour += card.profit;
+                purchasedCards[cardId] = true;
+                localStorage.setItem('baby_purchased_cards', JSON.stringify(purchasedCards));
+                localStorage.setItem('baby_profit_per_hour', profitPerHour);
+                renderCeoCards();
+                updateUI();
+                alert('کارت "' + card.name + '" خریداری شد!');
+            } else {
+                alert('امتیاز کافی ندارید!');
+            }
+        }
+
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy += 2;
+                if (energy > maxEnergy) energy = maxEnergy;
+                updateEnergyBar();
+            }
+            if (profitPerHour > 0) {
+                score += profitPerHour / 3600;
+                updateUI();
+            }
+        }, 1000);
+
+        function updateEnergyBar() {
+            document.getElementById('energyBar').style.width = energy + '%';
+            document.getElementById('energyCount').innerText = energy;
+        }
+
+        function updateUI() {
+            document.getElementById('scoreDisplay').innerText = Math.floor(score).toLocaleString();
+            document.getElementById('tapPowerDisplay').innerText = tapPower;
+            document.getElementById('profitPerHourDisplay').innerText = '+' + profitPerHour.toLocaleString();
+            localStorage.setItem('baby_score', Math.floor(score));
         }
 
         function switchTab(tabId) {
@@ -274,99 +477,28 @@
         }
 
         function tapCoin(e) {
+            if (energy < 5) {
+                alert('انرژی تمام شد!');
+                return;
+            }
+            energy -= 5;
+            updateEnergyBar();
             score += tapPower;
-            updateScore();
+            updateUI();
         }
 
-        function updateScore() {
-            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
-            localStorage.setItem('baby_score', score);
-        }
-
-        function buyUpgrade() {
-            let cost = 100 * tapPower;
-            if (score >= cost) {
-                score -= cost;
-                tapPower++;
-                document.getElementById('tapPower').innerText = tapPower;
-                localStorage.setItem('baby_power', tapPower);
-                updateScore();
-                alert('Upgrade successful! Tap power increased.');
-            } else {
-                alert('Not enough score! You need ' + cost + ' score.');
-            }
-        }
-
-        function copyRefLink() {
-            navigator.clipboard.writeText(refLink);
-            alert('Invite link copied to clipboard!');
-        }
-
-        function doTask(url, reward, taskId) {
-            let completed = localStorage.getItem('task_' + taskId);
-            if (!completed) {
-                window.open(url, '_blank');
-                score += reward;
-                localStorage.setItem('task_' + taskId, 'true');
-                updateScore();
-                alert('Task completed! +' + reward + ' points added.');
-            } else {
-                alert('You have already completed this task!');
-            }
-        }
-
-        function connectTonkeeper() {
-            const appUrl = 'https://app.tonkeeper.com/transfer/';
-            window.open(appUrl, '_blank');
-            alert('Opening Tonkeeper app. After copying your address from your wallet, paste it below to save it.');
-        }
-
-        function saveManualWallet() {
+        function saveWalletAddress() {
             let val = document.getElementById('walletInput').value.trim();
             if (val.length > 10) {
                 wallet = val;
                 localStorage.setItem('baby_wallet', wallet);
-                document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
-                alert('Wallet address saved successfully!');
+                document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
+                alert('آدرس ولت ثبت شد!');
             } else {
-                alert('Please enter a valid TON wallet address.');
+                alert('آدرس TON معتبر نیست.');
             }
         }
 
-        function requestWithdraw() {
-            if (score < 100000000) {
-                alert('You need at least 100,000,000 score to withdraw!');
-                return;
-            }
+        function claimHodlReward() {
             if (!wallet) {
-                alert('Please connect or save your Tonkeeper wallet first!');
-                return;
-            }
-            alert('Withdrawal request submitted! 0.5 TON fee will be deducted and tokens will be sent to your wallet soon.');
-        }
-
-        function openDeDust() {
-            window.open('https://dedust.io/', '_blank');
-        }
-
-        function claimHodl() {
-            if (!wallet) {
-                alert('Please connect your Tonkeeper wallet first!');
-                return;
-            }
-            let lastClaim = localStorage.getItem('last_hodl');
-            let today = new Date().toDateString();
-            if (lastClaim === today) {
-                alert('You have already claimed your daily HODL reward today!');
-                return;
-            }
-            
-            let reward = 1000;
-            score += reward;
-            localStorage.setItem('last_hodl', today);
-            updateScore();
-            alert('Wallet verified! Successfully claimed ' + reward + ' HODL reward.');
-        }
-    </script>
-</body>
-</html>
+         
