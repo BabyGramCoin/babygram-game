@@ -78,12 +78,20 @@
             </div>
         </div>
 
+        <!-- تب درباره پروژه و طرح هولد ۵۰ میلیونی -->
         <div id="about" class="tab-content">
             <div class="box">
-                <div class="box-title">🌱 درباره بیبی‌گرام (BabyGram)</div>
+                <div class="box-title">🌱 اهداف و چشم‌انداز بیبی‌گرام</div>
                 <div class="info" style="line-height: 1.6; color: #cbd5e1;">
-                    ما معتقدیم یک پروژه ارز دیجیتال موفق نباید بر پایه هیجان‌های زودگذر ساخته شود. جامعه ما کاملاً <b>ارگانیک</b> است و تمرکز اصلی‌مان روی <b>رشد بلندمدت، پایداری و وفاداری هولدرها</b> قرار دارد.<br><br>
-                    هدف ما ایجاد یک بستر واقعی و صمیمی در بستر بلاک‌چین TON است تا همراه با شما کاربران عزیز، آینده‌ای روشن و مستحکم برای توکن BabyGram رقم بزنیم. از همراهی شما سپاسگزاریم!
+                    پروژه <b>BabyGram</b> با هدف ایجاد یک اکوسیستم واقعی، صمیمی و پویا در بستر بلاک‌چین TON شکل گرفته است. ما معتقدیم موفقیت واقعی در گروی هیجان‌های زودگذر نیست، بلکه بر پایه یک **جامعه کاملاً ارگانیک، وفادار و متحد** بنا می‌شود.<br><br>
+                    تمرکز اصلی تیم توسعه، رشد بلندمدت، استمرار در برنامه‌ها و ارزش‌آفرینی مداوم برای تمامی اعضای خانواده بزرگ بیبی‌گرام است.
+                </div>
+            </div>
+            <div class="box" style="border: 1px solid #facc15;">
+                <div class="box-title" style="color: #facc15;">🎁 طرح ویژه: هولد ۵۰ میلیون سکه و دریافت پاداش</div>
+                <div class="info" style="line-height: 1.6; color: #cbd5e1;">
+                    قدردان همراهی هولدرهای وفادار خود هستیم! اگر بتوانید حداقل **۵۰,۰۰۰,۰۰۰ سکه** در حساب خود هولد کنید و نگه‌دارید، واجد شرایط دریافت پاداش‌های ویژه، ایردراپ‌های اختصاصی و امتیازهای تورنمنت خواهید شد.<br><br>
+                    با قدرت به استخراج و حمایت ادامه دهید تا آینده‌ای درخشان را با هم رقم بزنیم!
                 </div>
             </div>
         </div>
@@ -124,12 +132,12 @@
     </div>
 
     <script>
-        let score = parseFloat(localStorage.getItem('babygram_score_v5')) || 0;
-        let tapPower = parseInt(localStorage.getItem('babygram_tap_v5')) || 1;
+        let score = parseFloat(localStorage.getItem('babygram_score_v6')) || 0;
+        let tapPower = parseInt(localStorage.getItem('babygram_tap_v6')) || 1;
         let maxEnergy = 10000;
-        let energy = parseInt(localStorage.getItem('babygram_energy_v5')) || 10000;
-        let wallet = localStorage.getItem('babygram_wallet_v5') || '';
-        let friendsCount = parseInt(localStorage.getItem('babygram_friends_v5')) || 0;
+        let energy = parseInt(localStorage.getItem('babygram_energy_v6')) || 10000;
+        let wallet = localStorage.getItem('babygram_wallet_v6') || '';
+        let friendsCount = parseInt(localStorage.getItem('babygram_friends_v6')) || 0;
         let userId = '7098265955';
 
         let lastTapTime = 0;
@@ -150,7 +158,7 @@
             if (!localStorage.getItem('babygram_ref_done_' + userId) && inviter !== userId) {
                 localStorage.setItem('babygram_ref_done_' + userId, 'true');
                 friendsCount += 1;
-                localStorage.setItem('babygram_friends_v5', friendsCount);
+                localStorage.setItem('babygram_friends_v6', friendsCount);
             }
         }
 
@@ -177,7 +185,7 @@
             if (score >= cost) {
                 score -= cost;
                 tapPower += 1;
-                localStorage.setItem('babygram_tap_v5', tapPower);
+                localStorage.setItem('babygram_tap_v6', tapPower);
                 updateUI();
                 updateTapUpgradeUI();
                 alert('قدرت تپ با موفقیت ارتقا یافت!');
@@ -192,8 +200,8 @@
             document.getElementById('scoreDisplay').innerText = Math.floor(score).toLocaleString();
             document.getElementById('energyBar').style.width = ((energy / maxEnergy) * 100) + '%';
             document.getElementById('energyCount').innerText = Math.floor(energy);
-            localStorage.setItem('babygram_score_v5', score);
-            localStorage.setItem('babygram_energy_v5', Math.floor(energy));
+            localStorage.setItem('babygram_score_v6', score);
+            localStorage.setItem('babygram_energy_v6', Math.floor(energy));
         }
 
         setInterval(() => {
@@ -257,7 +265,7 @@
             let val = document.getElementById('walletInput').value.trim();
             if ((val.startsWith('EQ') || val.startsWith('UQ')) && val.length > 10) {
                 wallet = val;
-                localStorage.setItem('babygram_wallet_v5', wallet);
+                localStorage.setItem('babygram_wallet_v6', wallet);
                 document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...';
                 alert('آدرس ولت ذخیره شد!');
             } else {
