@@ -17,7 +17,7 @@
         .stat-lbl { font-size: 8px; color: #94a3b8; }
         .score-box { font-size: 26px; font-weight: 800; color: #facc15; margin: 4px 0; text-align: center; }
         .tabs { display: flex; gap: 2px; width: 100%; margin-bottom: 8px; background: rgba(255,255,255,0.05); padding: 3px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 7px 2px; background: none; border: none; color: #94a3b8; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: bold; text-align: center; }
+        .tab-btn { flex: 1; padding: 7px 2px; background: none; border: none; color: #94a3b8; border-radius: 6px; cursor: pointer; font-size: 9px; font-weight: bold; text-align: center; }
         .tab-btn.active { background: #0ea5e9; color: #fff; }
         .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
         .tab-content.active { display: flex; }
@@ -30,26 +30,25 @@
         .btn-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
         .input { width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #fff; margin-top: 4px; font-size: 10px; direction: ltr; text-align: right; }
         .info { font-size: 9px; color: #94a3b8; margin-top: 4px; line-height: 1.4; }
-        .upgrade-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 6px 8px; border-radius: 8px; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.06); }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">بیبی‌گرام (BabyGram CEO)</div>
+        <div class="header">بیبی‌گرام (BabyGram)</div>
         <div class="notice">🚀 توکن رسمی در صرافی Dedust لیست شده است. به هولدرها ایردراپ تعلق می‌گیرد!</div>
         
         <div class="stats">
             <div class="stat-box">
-                <div class="stat-val" id="profitDisplay">+0</div>
-                <div class="stat-lbl">سود ساعتی</div>
-            </div>
-            <div class="stat-box" style="border-right: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.1);">
                 <div class="stat-val" id="tapPowerDisplay">1</div>
                 <div class="stat-lbl">قدرت تپ</div>
             </div>
-            <div class="stat-box">
+            <div class="stat-box" style="border-right: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.1);">
                 <div class="stat-val" id="friendsDisplay">0</div>
                 <div class="stat-lbl">دعوت‌ها</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-val">100M</div>
+                <div class="stat-lbl">شرط برداشت</div>
             </div>
         </div>
 
@@ -58,39 +57,42 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('clicker', this)">تپ کلیک</button>
-            <button class="tab-btn" onclick="switchTab('ceo', this)">کارت CEO (۸)</button>
+            <button class="tab-btn" onclick="switchTab('about', this)">درباره پروژه</button>
             <button class="tab-btn" onclick="switchTab('wallet', this)">کیف‌پول & برداشت</button>
             <button class="tab-btn" onclick="switchTab('tasks', this)">تسک‌ها & دعوت</button>
         </div>
 
-        <!-- تب ۱: تپ کننده -->
+        <!-- تب ۱: تپ کننده کاملاً تمیز بدون خطای متنی -->
         <div id="clicker" class="tab-content active">
             <div class="box" style="text-align: center;">
                 <button class="coin-btn" id="tapBtn">
-                    <img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">[span_0](start_span)[span_0](end_span)
+                    <img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">[span_1](start_span)[span_1](end_span)
                 </button>
-                <div class="info">برای استخراج سکه ضربه بزنید</div>
+                <div class="info" style="margin-top: 6px;">برای استخراج سکه ضربه بزنید</div>
                 <div style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 6px; height: 8px; margin-top: 8px; overflow: hidden;">
                     <div id="energyBar" style="height: 100%; background: linear-gradient(90deg, #10b981, #38bdf8); width: 100%;"></div>
                 </div>
                 <div class="info">انرژی: <span id="energyCount">10000</span> / 10000</div>
             </div>
-        </div>
-
-        <!-- تب ۲: کارت‌ها و قدرت تپ -->
-        <div id="ceo" class="tab-content">
-            <div class="box" style="border: 1px solid #38bdf8;">
-                <div class="box-title">⚡ ارتقای قدرت تپ (تا ۱۰ واحد)</div>
-                <div class="info">قدرت فعلی هر تپ: <span id="currentPowerText" style="color: #facc15; font-weight: bold;">1</span></div>
-                <button class="btn btn-green" id="upgradeTapBtn" style="margin-top: 6px;">ارتقای قدرت تپ (هزینه: <span id="upgradeTapCost">1000</span> 🪙)</button>
-            </div>
             <div class="box">
-                <div class="box-title">👔 کارت‌های ارتقای سود (۸ مرحله‌ای)</div>
-                <div style="max-height: 200px; overflow-y: auto;" id="upgradesList"></div>
+                <div class="box-title">⚡ ارتقای قدرت تپ (تا ۱۰ واحد)</div>
+                <div class="info">قدرت فعلی: <span id="currentPowerText" style="color: #facc15; font-weight: bold;">1</span></div>
+                <button class="btn btn-green" id="upgradeTapBtn" style="margin-top: 6px;">ارتقا (هزینه: <span id="upgradeTapCost">1000</span> 🪙)</button>
             </div>
         </div>
 
-        <!-- تب ۳: کیف پول و برداشت -->
+        <!-- تب ۲: درباره پروژه و اهداف (ارگانیک و بلندمدت) -->
+        <div id="about" class="tab-content">
+            <div class="box">
+                <div class="box-title">🌱 درباره بیبی‌گرام (BabyGram)</div>
+                <div class="info" style="line-height: 1.6; color: #cbd5e1;">
+                    ما معتقدیم یک پروژه ارز دیجیتال موفق نباید بر پایه هیجان‌های زودگذر ساخته شود. جامعه ما کاملاً <b>ارگانیک</b> است و تمرکز اصلی‌مان روی <b>رشد بلندمدت، پایداری و وفاداری هولدرها</b> قرار دارد.<br><br>
+                    هدف ما ایجاد یک بستر واقعی و صمیمی در بستر بلاک‌چین TON است تا همراه با شما کاربران عزیز، آینده‌ای روشن و مستحکم برای توکن BabyGram رقم بزنیم. از همراهی شما سپاسگزاریم!
+                </div>
+            </div>
+        </div>
+
+        <!-- تب ۳: کیف‌پول و برداشت (صد میلیون سکه برای 0.5 تن) -->
         <div id="wallet" class="tab-content">
             <div class="box" style="border: 1px solid #38bdf8;">
                 <div class="box-title">💎 ثبت ولت TON & برداشت (0.5 TON)</div>
@@ -106,7 +108,7 @@
             </div>
         </div>
 
-        <!-- تب ۴: تسک‌ها و دعوت -->
+        <!-- تب ۴: تسک‌ها، شبکه‌های اجتماعی و دعوت -->
         <div id="tasks" class="tab-content">
             <div class="box">
                 <div class="box-title">🎯 تسک‌های پاداش‌دار</div>
@@ -115,25 +117,25 @@
                 
                 <a href="https://t.me/babyGramhub" target="_blank" class="btn" style="margin-top: 8px;" onclick="markTask('group')">عضویت در گروه چت (+2,000)</a>
                 <button class="btn btn-green" style="margin-top: 4px;" onclick="verifyTask('group', 2000)">بررسی و دریافت پاداش گروه</button>
+
+                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn btn-purple" style="margin-top: 8px;">فالو کردن در ایکس (BabyGramCoin)</a>
             </div>
             <div class="box">
                 <div class="box-title">👥 سیستم دعوت دوستان (۵,۰۰۰ سکه)</div>
                 <input type="text" id="refLinkInput" class="input" readonly>
-                <button class="btn btn-green" id="copyRefBtn">لینک دعوت</button>
+                <button class="btn btn-green" id="copyRefBtn">کپی لینک دعوت</button>
                 <div class="info" style="color: #10b981; margin-top: 4px;" id="refCountText">دوستان دعوت‌شده: 0 نفر</div>
             </div>
         </div>
     </div>
 
     <script>
-        let score = parseFloat(localStorage.getItem('babygram_score_v1')) || 0;
-        let profitPerHour = parseInt(localStorage.getItem('babygram_profit_v1')) || 0;
-        let tapPower = parseInt(localStorage.getItem('babygram_tap_v1')) || 1;
+        let score = parseFloat(localStorage.getItem('babygram_score_v2')) || 0;
+        let tapPower = parseInt(localStorage.getItem('babygram_tap_v2')) || 1;
         let maxEnergy = 10000;
-        let energy = parseInt(localStorage.getItem('babygram_energy_v1')) || 10000;
-        let wallet = localStorage.getItem('babygram_wallet_v1') || '';
-        let friendsCount = parseInt(localStorage.getItem('babygram_friends_v1')) || 0;
-        let lastSaveTime = parseInt(localStorage.getItem('babygram_time_v1')) || Date.now();
+        let energy = parseInt(localStorage.getItem('babygram_energy_v2')) || 10000;
+        let wallet = localStorage.getItem('babygram_wallet_v2') || '';
+        let friendsCount = parseInt(localStorage.getItem('babygram_friends_v2')) || 0;
         let userId = '7098265955';
 
         let lastTapTime = 0;
@@ -147,14 +149,6 @@
             }
         } catch (e) {}
 
-        // محاسبه سود آفلاین به محض ورود به بازی
-        let nowTime = Date.now();
-        let elapsedSeconds = Math.floor((nowTime - lastSaveTime) / 1000);
-        if (elapsedSeconds > 0 && profitPerHour > 0) {
-            let offlineEarnings = (profitPerHour / 3600) * elapsedSeconds;
-            score += offlineEarnings;
-        }
-
         const urlParams = new URLSearchParams(window.location.search);
         let startParam = urlParams.get('start');
         if (startParam && startParam.startsWith('ref_')) {
@@ -162,7 +156,7 @@
             if (!localStorage.getItem('babygram_ref_done_' + userId) && inviter !== userId) {
                 localStorage.setItem('babygram_ref_done_' + userId, 'true');
                 friendsCount += 1;
-                localStorage.setItem('babygram_friends_v1', friendsCount);
+                localStorage.setItem('babygram_friends_v2', friendsCount);
             }
         }
 
@@ -189,7 +183,7 @@
             if (score >= cost) {
                 score -= cost;
                 tapPower += 1;
-                localStorage.setItem('babygram_tap_v1', tapPower);
+                localStorage.setItem('babygram_tap_v2', tapPower);
                 updateUI();
                 updateTapUpgradeUI();
                 alert('قدرت تپ با موفقیت ارتقا یافت!');
@@ -198,81 +192,22 @@
             }
         });
 
-        const ceoCards = [
-            { id: 1, name: "🌱 سرور اولیه تست", cost: 500, profit: 30 },
-            { id: 2, name: "💬 راه‌اندازی گروه چت", cost: 1200, profit: 80 },
-            { id: 3, name: "📢 ثبت کانال رسمی", cost: 3000, profit: 200 },
-            { id: 4, name: "🤖 ساخت ربات مینی‌اپ", cost: 7500, profit: 450 },
-            { id: 5, name: "🎨 طراحی لوگو و برند", cost: 16000, profit: 950 },
-            { id: 6, name: "🔗 راه‌اندازی قرارداد هوشمند", cost: 35000, profit: 2100 },
-            { id: 7, name: "💧 ایجاد استخر نقدینگی", cost: 75000, profit: 4500 },
-            { id: 8, name: "🏛️ لیستینگ در صرافی Dedust", cost: 150000, profit: 9500 }
-        ];
-
-        let purchasedCards = JSON.parse(localStorage.getItem('babygram_cards_v1')) || {};
-
-        function renderCards() {
-            let container = document.getElementById('upgradesList');
-            container.innerHTML = '';
-            ceoCards.forEach(card => {
-                let bought = purchasedCards[card.id];
-                let div = document.createElement('div');
-                div.className = 'upgrade-item';
-                div.innerHTML = `
-                    <div>
-                        <div style="font-size: 10px; font-weight: bold;">${card.name}</div>
-                        <div style="font-size: 8px; color: #38bdf8;">سود: +${card.profit}/ساعت</div>
-                    </div>
-                    <button class="btn ${bought ? 'btn-purple' : 'btn-green'}" style="width: auto; padding: 5px 8px; margin:0; font-size:9px;" 
-                        onclick="buyCard(${card.id})" ${bought ? 'disabled' : ''}>
-                        ${bought ? 'خریداری شد' : card.cost.toLocaleString() + ' 🪙'}
-                    </button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        window.buyCard = function(id) {
-            let card = ceoCards.find(c => c.id === id);
-            if (purchasedCards[id]) return;
-            if (score >= card.cost) {
-                score -= card.cost;
-                profitPerHour += card.profit;
-                purchasedCards[id] = true;
-                localStorage.setItem('babygram_cards_v1', JSON.stringify(purchasedCards));
-                localStorage.setItem('babygram_profit_v1', profitPerHour);
-                renderCards();
-                updateUI();
-                alert('کارت با موفقیت خریداری شد و سود ساعتی اضافه شد!');
-            } else {
-                alert('موجودی سکه کافی نیست!');
-            }
-        };
-
-        renderCards();
         updateTapUpgradeUI();
 
         function updateUI() {
             document.getElementById('scoreDisplay').innerText = Math.floor(score).toLocaleString();
-            document.getElementById('profitDisplay').innerText = '+' + profitPerHour.toLocaleString();
             document.getElementById('energyBar').style.width = ((energy / maxEnergy) * 100) + '%';
             document.getElementById('energyCount').innerText = Math.floor(energy);
-            
-            localStorage.setItem('babygram_score_v1', score);
-            localStorage.setItem('babygram_energy_v1', Math.floor(energy));
-            localStorage.setItem('babygram_time_v1', Date.now());
+            localStorage.setItem('babygram_score_v2', score);
+            localStorage.setItem('babygram_energy_v2', Math.floor(energy));
         }
 
-        // لوپ اصلی افزایشی (هر ثانیه سود ساعتی و انرژی آپدیت می‌شود)
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy += 2;
                 if (energy > maxEnergy) energy = maxEnergy;
+                updateUI();
             }
-            if (profitPerHour > 0) {
-                score += profitPerHour / 3600;
-            }
-            updateUI();
         }, 1000);
 
         updateUI();
@@ -328,7 +263,7 @@
             let val = document.getElementById('walletInput').value.trim();
             if ((val.startsWith('EQ') || val.startsWith('UQ')) && val.length > 10) {
                 wallet = val;
-                localStorage.setItem('babygram_wallet_v1', wallet);
+                localStorage.setItem('babygram_wallet_v2', wallet);
                 document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...';
                 alert('آدرس ولت ذخیره شد!');
             } else {
