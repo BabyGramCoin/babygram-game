@@ -1,458 +1,179 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بیبی‌گرام - BabyGram CEO</title>
+    <title>BabyGram CEO</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Tahoma', Geneva, sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-        }
-        body {
-            background: linear-gradient(135deg, #090d16, #1e293b, #0f172a);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-        }
-        .container {
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            font-size: 19px;
-            font-weight: bold;
-            margin-bottom: 3px;
-            color: #38bdf8;
-            text-align: center;
-        }
-        .notice-banner {
-            background: rgba(14, 165, 233, 0.15);
-            border: 1px solid rgba(14, 165, 233, 0.4);
-            color: #38bdf8;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 9px;
-            text-align: center;
-            margin-bottom: 6px;
-            width: 100%;
-            line-height: 1.5;
-        }
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 10px;
-            border-radius: 10px;
-            margin-bottom: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .stat-box {
-            text-align: center;
-            flex: 1;
-        }
-        .stat-value {
-            font-size: 13px;
-            font-weight: bold;
-            color: #38bdf8;
-        }
-        .stat-label {
-            font-size: 9px;
-            color: #94a3b8;
-        }
-        .score-box {
-            font-size: 26px;
-            font-weight: 800;
-            margin: 2px 0;
-            color: #facc15;
-            text-align: center;
-        }
-        .nav-tabs {
-            display: flex;
-            gap: 2px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 3px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            width: 100%;
-            justify-content: center;
-        }
-        .nav-tab {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            padding: 8px 10px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 6px;
-            flex: 1;
-            text-align: center;
-        }
-        .nav-tab.active {
-            background: #0ea5e9;
-            color: #fff;
-        }
-        .tab-content {
-            display: none;
-            width: 100%;
-            flex-direction: column;
-            align-items: center;
-        }
-        .tab-content.active {
-            display: flex;
-        }
-        .clicker-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 15px;
-            width: 100%;
-            text-align: center;
-        }
-        .coin-btn {
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
-            border: 4px solid #facc15;
-            cursor: pointer;
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            margin: 15px auto;
-            box-shadow: 0 0 25px rgba(14, 165, 233, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            outline: none;
-        }
-        .coin-btn:active {
-            transform: scale(0.92);
-        }
-        .energy-container {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            height: 10px;
-            overflow: hidden;
-            margin-top: 6px;
-        }
-        .energy-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #38bdf8);
-            width: 100%;
-            transition: width 0.2s;
-        }
-        .section-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            padding: 10px;
-            width: 100%;
-            margin-bottom: 6px;
-            text-align: right;
-        }
-        .section-title {
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #38bdf8;
-        }
-        .btn {
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 6px;
-            font-size: 11px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-        }
-        .btn-green {
-            background: linear-gradient(135deg, #10b981, #059669);
-        }
-        .input-field {
-            width: 100%;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: #fff;
-            margin-top: 4px;
-            font-size: 10px;
-            direction: ltr;
-        }
-        .info-text {
-            font-size: 9px;
-            color: #94a3b8;
-            margin-top: 3px;
-        }
-        .upgrades-container {
-            max-height: 260px;
-            overflow-y: auto;
-            width: 100%;
-        }
-        .upgrade-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 7px 9px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; user-select: none; -webkit-user-select: none; }
+        body { background: #090d16; color: #fff; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; }
+        .header { font-size: 18px; font-weight: bold; color: #38bdf8; margin-bottom: 8px; text-align: center; }
+        .score { font-size: 30px; font-weight: bold; color: #facc15; margin: 10px 0; text-align: center; }
+        .btn { background: #0ea5e9; color: #fff; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 14px; text-align: center; }
+        .btn-green { background: #10b981; }
+        .tabs { display: flex; width: 100%; gap: 4px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 8px 4px; background: #1e293b; border: none; color: #94a3b8; border-radius: 6px; cursor: pointer; font-size: 11px; text-align: center; }
+        .tab-btn.active { background: #0ea5e9; color: #fff; }
+        .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .tab-content.active { display: flex; }
+        .box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; width: 100%; margin-bottom: 8px; text-align: left; }
+        .input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-top: 5px; font-size: 12px; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <div class="header">بیبی‌گرام (BabyGram CEO)</div>
-        <div class="notice-banner">
-            🚀 نسخه تستی بدون عکس (برای اطمینان از عملکرد دکمه‌ها و تب‌ها)
-        </div>
-        
-        <div class="stats-row">
-            <div class="stat-box">
-                <div class="stat-value" id="profitPerHourDisplay">+0</div>
-                <div class="stat-label">سود ساعتی</div>
-            </div>
-            <div class="stat-box" style="border-right: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.1);">
-                <div class="stat-value" id="tapPowerDisplay">1</div>
-                <div class="stat-label">قدرت تپ</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="friendsCount">0</div>
-                <div class="stat-label">دعوت‌ها</div>
-            </div>
+        <div class="header">BabyGram CEO</div>
+        <div class="score" id="scoreEl">0</div>
+        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">Total Balance</div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tab-click">Clicker</button>
+            <button class="tab-btn" data-tab="tab-ceo">CEO Cards</button>
+            <button class="tab-btn" data-tab="tab-wallet">Wallet</button>
+            <button class="tab-btn" data-tab="tab-ref">Invite</button>
         </div>
 
-        <div class="score-box" id="scoreDisplay">0</div>
-        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px; text-align: center;">موجودی سکه BabyGram</div>
-
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('clicker', this)">تپ کلیک</button>
-            <button class="nav-tab" onclick="switchTab('ceo', this)">کارت CEO</button>
-            <button class="nav-tab" onclick="switchTab('wallet', this)">کیف‌پول</button>
-            <button class="nav-tab" onclick="switchTab('tasks', this)">تسک‌ها</button>
+        <!-- Tab 1: Clicker -->
+        <div id="tab-click" class="tab-content active">
+            <div class="box" style="text-align: center;">
+                <button class="btn btn-green" id="tapBtn" style="width: 130px; height: 130px; border-radius: 50%; font-size: 18px; margin: 15px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);">TAP 🪙</button>
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 5px;">Energy: <span id="energyEl">100</span> / 100</div>
+            </div>
         </div>
 
-        <!-- تب ۱ -->
-        <div id="clicker" class="tab-content active">
-            <div class="clicker-card">
-                <button class="coin-btn" id="tapButton">💎 تپ کن!</button>
-                <div class="info-text">برای استخراج ضربه بزنید</div>
-                <div class="energy-container">
-                    <div class="energy-bar" id="energyBar"></div>
+        <!-- Tab 2: CEO -->
+        <div id="tab-ceo" class="tab-content">
+            <div class="box">
+                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 8px;">Profit Upgrades</div>
+                <div style="background: #000; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 12px; font-weight: bold;">Server Setup</div>
+                        <div style="font-size: 10px; color: #38bdf8;">Profit: +20/h</div>
+                    </div>
+                    <button class="btn btn-green" style="width: auto; padding: 6px 10px; font-size: 11px; margin: 0;">300 Coins</button>
                 </div>
-                <div class="info-text" style="margin-top: 4px;">انرژی: <span id="energyCount">100</span> / 100</div>
             </div>
         </div>
 
-        <!-- تب ۲ -->
-        <div id="ceo" class="tab-content">
-            <div class="section-box">
-                <div class="section-title">👔 کارت‌های ارتقای سود ساعتی</div>
-                <div class="upgrades-container" id="upgradesList"></div>
+        <!-- Tab 3: Wallet -->
+        <div id="tab-wallet" class="tab-content">
+            <div class="box">
+                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 5px;">TON Wallet Address</div>
+                <div style="font-size: 11px; color: #10b981; margin-bottom: 5px;" id="walletStatus">Status: Not Connected</div>
+                <input type="text" id="walletInput" class="input" placeholder="EQ...">
+                <button class="btn btn-green" id="saveWalletBtn" style="margin-top: 8px;">Save Wallet</button>
             </div>
         </div>
 
-        <!-- تب ۳ -->
-        <div id="wallet" class="tab-content">
-            <div class="section-box" style="border: 1px solid #38bdf8;">
-                <div class="section-title">💎 ثبت ولت TON</div>
-                <div class="info-text" id="walletStatus" style="font-weight: bold;">وضعیت: ثبت نشده</div>
-                <input type="text" id="walletInput" class="input-field" placeholder="EQ...">
-                <button class="btn btn-green" id="saveWalletBtn">ثبت آدرس ولت</button>
-            </div>
-            <div class="section-box">
-                <div class="section-title">📊 صرافی Dedust</div>
-                <a href="https://dedust.io" target="_blank" class="btn">ورود به صرافی دیداست</a>
-            </div>
-        </div>
-
-        <!-- تب ۴ -->
-        <div id="tasks" class="tab-content">
-            <div class="section-box">
-                <div class="section-title">👥 سیستم دعوت دوستان</div>
-                <input type="text" id="refLinkInput" class="input-field" readonly>
-                <button class="btn btn-green" id="copyRefBtn">کپی لینک دعوت</button>
-            </div>
-            <div class="section-box">
-                <div class="section-title">🎯 تسک‌های رسمی</div>
-                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn" onclick="markTask('t1')">عضویت در کانال (+1,000)</a>
-                <button class="btn btn-green" style="margin-top: 4px;" onclick="verifyTask('t1', 1000)">بررسی تسک کانال</button>
+        <!-- Tab 4: Invite -->
+        <div id="tab-ref" class="tab-content">
+            <div class="box">
+                <div style="font-weight: bold; color: #38bdf8; margin-bottom: 5px;">Invite Friends</div>
+                <input type="text" id="refInput" class="input" readonly>
+                <button class="btn" id="copyBtn" style="margin-top: 8px;">Copy Invite Link</button>
             </div>
         </div>
     </div>
 
     <script>
-        let score = parseInt(localStorage.getItem('baby_score')) || 0;
-        let tapPower = parseInt(localStorage.getItem('baby_tap_power')) || 1;
-        let profitPerHour = parseInt(localStorage.getItem('baby_profit_per_hour')) || 0;
-        let energy = 100;
-        let wallet = localStorage.getItem('baby_wallet') || '';
-        let friendsCount = parseInt(localStorage.getItem('baby_friends')) || 0;
-        let userId = '7098265955';
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.expand();
+                }
+            } catch (e) {}
 
-        try {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                userId = tg.initDataUnsafe.user.id;
+            let score = parseInt(localStorage.getItem('bg_score')) || 0;
+            let energy = 100;
+            let wallet = localStorage.getItem('bg_wallet') || '';
+
+            const scoreEl = document.getElementById('scoreEl');
+            const tapBtn = document.getElementById('tapBtn');
+            const energyEl = document.getElementById('energyEl');
+            const walletInput = document.getElementById('walletInput');
+            const saveWalletBtn = document.getElementById('saveWalletBtn');
+            const walletStatus = document.getElementById('walletStatus');
+            const refInput = document.getElementById('refInput');
+            const copyBtn = document.getElementById('copyBtn');
+
+            function updateUI() {
+                scoreEl.innerText = score.toLocaleString();
+                energyEl.innerText = energy;
+                localStorage.setItem('bg_score', score);
             }
-        } catch (e) {}
 
-        document.getElementById('refLinkInput').value = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
-        document.getElementById('friendsCount').innerText = friendsCount;
-
-        const ceoCards = [
-            { id: 1, name: "🌱 سرور اولیه تست", cost: 300, profit: 20 },
-            { id: 2, name: "💬 راه‌اندازی گروه چت", cost: 850, profit: 60 },
-            { id: 3, name: "📢 ثبت کانال تلگرام", cost: 2200, profit: 150 },
-            { id: 4, name: "🤖 ساخت ربات کلیکر", cost: 5500, profit: 350 },
-            { id: 5, name: "🎨 طراحی لوگوی رسمی", cost: 12000, profit: 750 }
-        ];
-
-        let purchasedCards = JSON.parse(localStorage.getItem('baby_purchased_cards')) || {};
-
-        function renderCeoCards() {
-            let container = document.getElementById('upgradesList');
-            container.innerHTML = '';
-            ceoCards.forEach(card => {
-                let isBought = purchasedCards[card.id];
-                let itemDiv = document.createElement('div');
-                itemDiv.className = 'upgrade-item';
-                itemDiv.innerHTML = `
-                    <div>
-                        <div style="font-size: 11px; font-weight: bold;">${card.name}</div>
-                        <div style="font-size: 9px; color: #38bdf8;">سود: +${card.profit}</div>
-                    </div>
-                    <button class="btn ${isBought ? '' : 'btn-green'}" style="width: auto; padding: 6px 10px; margin:0; font-size:10px;" 
-                        onclick="buyCeoCard(${card.id})" ${isBought ? 'disabled' : ''}>
-                        ${isBought ? 'خریداری شد' : card.cost + ' 🪙'}
-                    </button>
-                `;
-                container.appendChild(itemDiv);
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const targetTab = document.getElementById(this.getAttribute('data-tab'));
+                    if (targetTab) targetTab.classList.add('active');
+                });
             });
-        }
 
-        window.buyCeoCard = function(cardId) {
-            let card = ceoCards.find(c => c.id === cardId);
-            if (purchasedCards[cardId]) return;
-            if (score >= card.cost) {
-                score -= card.cost;
-                profitPerHour += card.profit;
-                purchasedCards[cardId] = true;
-                localStorage.setItem('baby_purchased_cards', JSON.stringify(purchasedCards));
-                localStorage.setItem('baby_profit_per_hour', profitPerHour);
-                renderCeoCards();
-                updateUI();
-                alert('کارت فعال شد!');
-            } else {
-                alert('امتیاز کافی ندارید!');
+            if (tapBtn) {
+                const handleTap = (e) => {
+                    if (e) e.preventDefault();
+                    if (energy >= 2) {
+                        energy -= 2;
+                        score += 1;
+                        updateUI();
+                    }
+                };
+                tapBtn.addEventListener('click', handleTap);
+                tapBtn.addEventListener('touchstart', handleTap, { passive: false });
             }
-        };
 
-        renderCeoCards();
-        updateUI();
+            setInterval(() => {
+                if (energy < 100) {
+                    energy += 1;
+                    if (energyEl) energyEl.innerText = energy;
+                }
+            }, 1000);
 
-        if (wallet) {
-            document.getElementById('walletInput').value = wallet;
-            document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...';
-        }
-
-        setInterval(() => {
-            if (energy < 100) {
-                energy += 2;
-                if (energy > 100) energy = 100;
-                document.getElementById('energyBar').style.width = energy + '%';
-                document.getElementById('energyCount').innerText = energy;
+            if (wallet && walletInput) {
+                walletInput.value = wallet;
+                if (walletStatus) walletStatus.innerText = 'Connected: ' + wallet.substring(0, 6) + '...';
             }
-            if (profitPerHour > 0) {
-                score += profitPerHour / 3600;
-                updateUI();
+
+            if (saveWalletBtn) {
+                saveWalletBtn.addEventListener('click', function () {
+                    let val = walletInput.value.trim();
+                    if (val.startsWith('EQ') && val.length > 10) {
+                        localStorage.setItem('bg_wallet', val);
+                        if (walletStatus) walletStatus.innerText = 'Successfully saved!';
+                        alert('Wallet address saved successfully.');
+                    } else {
+                        alert('Invalid address. Must start with EQ.');
+                    }
+                });
             }
-        }, 1000);
 
-        function updateUI() {
-            document.getElementById('scoreDisplay').innerText = Math.floor(score).toLocaleString();
-            document.getElementById('tapPowerDisplay').innerText = tapPower;
-            document.getElementById('profitPerHourDisplay').innerText = '+' + profitPerHour.toLocaleString();
-            localStorage.setItem('baby_score', Math.floor(score));
-        }
+            let userId = '7098265955';
+            try {
+                if (window.Telegram && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                    userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+                }
+            } catch (e) {}
 
-        window.switchTab = function(tabId, btnElement) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            if(btnElement) btnElement.classList.add('active');
-        };
+            if (refInput) {
+                refInput.value = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
+            }
 
-        const tapBtn = document.getElementById('tapButton');
-        function handleTap(e) {
-            if(e) e.preventDefault();
-            if (energy < 4) return;
-            energy -= 4;
-            document.getElementById('energyBar').style.width = energy + '%';
-            document.getElementById('energyCount').innerText = energy;
-            score += tapPower;
+            if (copyBtn) {
+                copyBtn.addEventListener('click', function () {
+                    if (refInput) {
+                        navigator.clipboard.writeText(refInput.value);
+                        alert('Invite link copied!');
+                    }
+                });
+            }
+
             updateUI();
-        }
-
-        tapBtn.addEventListener('click', handleTap);
-        tapBtn.addEventListener('touchstart', handleTap, {passive: false});
-
-        document.getElementById('saveWalletBtn').addEventListener('click', function() {
-            let val = document.getElementById('walletInput').value.trim();
-            if (val.length > 10 && val.startsWith('EQ')) {
-                wallet = val;
-                localStorage.setItem('baby_wallet', wallet);
-                document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...';
-                alert('آدرس ولت ذخیره شد!');
-            } else {
-                alert('آدرس نامعتبر است. باید با EQ شروع شود.');
-            }
         });
-
-        document.getElementById('copyRefBtn').addEventListener('click', function() {
-            navigator.clipboard.writeText(document.getElementById('refLinkInput').value);
-            alert('لینک دعوت کپی شد!');
-        });
-
-        window.markTask = function(taskId) {
-            localStorage.setItem('clicked_' + taskId, 'true');
-        };
-
-        window.verifyTask = function(taskId, reward) {
-            if (localStorage.getItem('task_done_' + taskId)) {
-                alert('قبلاً پاداش گرفته‌اید!');
-                return;
-            }
-            score += reward;
-            localStorage.setItem('task_done_' + taskId, 'true');
-            updateUI();
-            alert('پاداش +' + reward + ' سکه واریز شد!');
-        };
     </script>
 </body>
 </html>
