@@ -3,84 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بیبی‌گرام - BabyGram</title>
+    <title>بیبی‌گرام - BabyGram CEO</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Tahoma, sans-serif; user-select: none; }
-        body { background: #0f172a; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; }
-        .container { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
-        .header { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #38bdf8; text-align: center; }
-        .score-box { font-size: 32px; font-weight: 800; margin: 10px 0; color: #facc15; }
-        .nav-tabs { display: flex; gap: 5px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 10px; margin-bottom: 15px; width: 100%; justify-content: center; }
-        .nav-tab { background: none; border: none; color: #94a3b8; padding: 6px 10px; font-size: 11px; cursor: pointer; border-radius: 6px; font-weight: bold; }
-        .nav-tab.active { background: #0ea5e9; color: #fff; }
-        .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .tab-content.active { display: flex; }
-        .clicker-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; width: 100%; text-align: center; }
-        .coin-btn { background: none; border: none; cursor: pointer; margin: 15px 0; }
-        .coin-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #38bdf8; box-shadow: 0 0 20px rgba(14,165,233,0.4); }
-        .energy-container { width: 100%; background: rgba(255,255,255,0.1); border-radius: 8px; height: 12px; overflow: hidden; margin-top: 15px; }
-        .energy-bar { height: 100%; background: #10b981; width: 100%; transition: width 0.2s; }
-        .section-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; width: 100%; margin-bottom: 10px; text-align: right; }
-        .btn { background: #0ea5e9; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; font-size: 12px; text-align: center; }
-        .input-field { width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #fff; margin-top: 5px; font-size: 11px; text-align: right; direction: ltr; }
-        .info-text { font-size: 10px; color: #94a3b8; margin-top: 4px; line-height: 1.4; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tahoma', Geneva, sans-serif;
+            user-select: none;
+        }
+        body {
+            background: linear-gradient(135deg, #090d16, #1e293b, #0f172a);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 3px;
+            background: linear-gradient(45deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        .notice-banner {
+            background: rgba(14, 165, 233, 0.15);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            color: #38bdf8;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 9px;
+            text-align: center;
+            margin-bottom: 6px;
+            width: 100%;
+            line-height: 1.5;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 10px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-box {
+            text-align: center;
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 13px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+        .stat-label {
+            font-size: 9px;
+            color: #94a3b8;
+        }
+        .score-box {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 2px 0;
+            color: #facc15;
+            text-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .nav-tab {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 5px 6px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+        .nav-tab.active {
+            background: #0ea5e9;
+            color: #fff;
+        }
+        .tab-content {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tab-content.active {
+            display: flex;
+        }
+        .clicker-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .coin-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            margin: 8px 0;
+            transition: transform 0.08s ease;
+        }
+        .coin-btn:active {
+            transform: scale(0.92);
+        }
+        .coin-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.4);
+            border: 3px solid #38bdf8;
+        }
+        .energy-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+            margin-top: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .energy-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #38bdf8);
+            width: 100%;
+            transition: width 0.2s;
+        }
+        .energy-text {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 3px;
+        }
+        .section-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 6px;
+            text-align: right;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #38bdf8;
+        }
+        .btn {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 4px;
+            font-size: 11px;
+            transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-green {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        .btn-purple {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        }
+        .input-field {
+            width: 100%;
+            padding: 7px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            margin-top: 4px;
+            font-size: 10px;
+            text-align: right;
+            direction: ltr;
+        }
+        .info-text {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+        .upgrades-container {
+            max-height: 280px;
+            overflow-y: auto;
+            width: 100%;
+            padding-left: 2px;
+        }
+        .upgrade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 7px 9px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header">بیبی‌گرام (BabyGram)</div>
+        <div class="header">بیبی‌گرام (BabyGram CEO)</div>
+        <div class="notice-banner">
+            🚀 <b>اطلاعیه رسمی ایردراپ:</b> ایردراپ هفتگی به هولدرها واریز می‌شود و ایردراپ اصلی توکن <b>۳ ماه دیگر</b> به ولت‌های ثبت‌شده تعلق می‌گیرد. همچنین توکن ما در صرافی <b>Dedust</b> لیست شده است؛ می‌توانید خرید کرده و برای آینده هولد کنید!
+        </div>
         
-        <div class="score-box" id="scoreDisplay">0</div>
-        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">موجودی امتیاز شما</div>
-
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchTab('clicker', event)">تپ کلیک</button>
-            <button class="nav-tab" onclick="switchTab('wallet', event)">کیف‌پول</button>
-            <button class="nav-tab" onclick="switchTab('tasks', event)">دعوت دوستان</button>
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-value" id="profitPerHourDisplay">+0</div>
+                <div class="stat-label">سود ساعتی (ماین)</div>
+            </div>
+            <div class="stat-box" style="border-right: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.1);">
+                <div class="stat-value" id="tapPowerDisplay">1</div>
+                <div class="stat-label">قدرت تپ</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="friendsCount">0</div>
+                <div class="stat-label">دعوت‌ها</div>
+            </div>
         </div>
 
-        <!-- تب کلیکر -->
+        <div class="score-box" id="scoreDisplay">0</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">موجودی سکه BabyGram</div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('clicker')">معدن تپ</button>
+            <button class="nav-tab" onclick="switchTab('ceo')">مدیریت CEO (۱۵ کارت)</button>
+            <button class="nav-tab" onclick="switchTab('wallet')">کیف‌پول & Dedust</button>
+            <button class="nav-tab" onclick="switchTab('tasks')">دعوت & تسک‌ها</button>
+        </div>
+
+        <!-- تب ۱: کلیکر و استخراج -->
         <div id="clicker" class="tab-content active">
             <div class="clicker-card">
-                <button class="coin-btn" onclick="tapCoin()">
+                <button class="coin-btn" onclick="tapCoin(event)">
                     <img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">
                 </button>
-                <div class="info-text">برای کسب امتیاز روی سکه ضربه بزنید</div>
+                <div class="info-text">با ضربه زدن سکه استخراج کنید (کنترل شده)</div>
                 <div class="energy-container">
                     <div class="energy-bar" id="energyBar"></div>
                 </div>
-                <div class="info-text" style="margin-top: 6px;">انرژی: <span id="energyCount">100</span> / 100</div>
+                <div class="energy-text">انرژی استخراج: <span id="energyCount">100</span> / 100</div>
             </div>
         </div>
 
-        <!-- تب کیف پول -->
-        <div id="wallet" class="tab-content">
+        <!-- تب ۲: ۱۵ کارت مدیریت CEO -->
+        <div id="ceo" class="tab-content">
             <div class="section-box">
-                <div style="font-size: 13px; font-weight: bold; color: #38bdf8; margin-bottom: 5px;">💎 ثبت آدرس ولت TON</div>
-                <div class="info-text" id="walletStatus">آدرس ولت ثبت نشده است</div>
-                <input type="text" id="walletInput" class="input-field" placeholder="EQ...">
-                <button class="btn" style="background: #10b981;" onclick="saveWallet()">ثبت آدرس ولت</button>
+                <div class="section-title">👔 کارت‌های ارتقای سود ساعتی (۱۵ مرحله‌ای)</div>
+                <div class="info-text" style="margin-bottom: 5px;">با خرید این کارت‌ها، سیستم به صورت خودکار حتی در حالت آفلاین برایتان سکه استخراج می‌کند.</div>
+                <div class="upgrades-container" id="upgradesList"></div>
             </div>
         </div>
 
-        <!-- تب دعوت و رفرال -->
+        <!-- تب ۳: کیف‌پول، هولد و دیداست -->
+        <div id="wallet" class="tab-content">
+            <div class="section-box" style="border: 1px solid #38bdf8;">
+                <div class="section-title">💎 ثبت ولت برای ایردراپ (هولدرها)</div>
+                <div class="info-text" style="color: #facc15;">آدرس ولت TON خود (شروع با EQ) را ثبت کنید تا در ایردراپ هفتگی و اصلی شرکت داده شوید:</div>
+                <div class="info-text" id="walletStatus" style="margin-top: 4px; font-weight: bold;">وضعیت: ثبت نشده</div>
+                <input type="text" id="walletInput" class="input-field" placeholder="EQ...">
+                <button class="btn btn-green" onclick="saveWalletAddress()">ثبت و قفل آدرس ولت</button>
+            </div>
+            <div class="section-box">
+                <div class="section-title">📊 خرید و بررسی در صرافی Dedust</div>
+                <div class="info-text">توکن ما در صرافی غیرمتمرکز دیداست (Dedust) لیست شده است. می‌توانید برای سرمایه‌گذاری بیشتر خرید کنید و هولد نمایید.</div>
+                <a href="https://dedust.io" target="_blank" class="btn btn-purple" style="text-align: center;">ورود به صرافی Dedust (خرید و هولد)</a>
+            </div>
+        </div>
+
+        <!-- تب ۴: رفرال و تسک‌ها -->
         <div id="tasks" class="tab-content">
             <div class="section-box">
-                <div style="font-size: 13px; font-weight: bold; color: #38bdf8; margin-bottom: 5px;">👥 دعوت از دوستان</div>
-                <div class="info-text">لینک زیر را برای دوستانتان بفرستید:</div>
+                <div class="section-title">👥 سیستم دعوت دوستان (رفرال پاداش‌دار)</div>
+                <div class="info-text">لینک اختصاصی خود را ارسال کنید. به ازای هر دعوت معتبر، **۵,۰۰۰ سکه** جایزه بگیرید:</div>
                 <input type="text" id="refLinkInput" class="input-field" readonly>
-                <button class="btn" onclick="copyRef()">کپی لینک دعوت</button>
+                <button class="btn btn-green" onclick="copyRefLink()">کپی لینک دعوت</button>
+                <div class="info-text" style="margin-top: 5px; color: #10b981;" id="refStatusText">دوستان دعوت‌شده: 0 نفر</div>
+            </div>
+            
+            <div class="section-box">
+                <div class="section-title">🎯 تسک‌های رسمی و دریافت جایزه</div>
+                <div class="info-text">ابتدا روی دکمه ورود بزنید، عضو شوید و سپس دکمه بررسی را بزنید تا امتیاز بگیرید:</div>
+                
+                <div style="margin-top: 6px;">
+                    <a href="https://t.me/BabyGramHQ" target="_blank" class="btn" onclick="markTaskClicked('t1')">1️⃣ عضویت در کانال رسمی (+1,000)</a>
+                    <button class="btn btn-green" style="margin-top: 2px;" onclick="verifyTask('t1', 1000)">بررسی و دریافت جایزه کانال</button>
+                </div>
+
+                <div style="margin-top: 8px;">
+                    <a href="https://t.me/babyGramhub" target="_blank" class="btn" onclick="markTaskClicked('t_group')">2️⃣ عضویت در گروه چت (+1,000)</a>
+                    <button class="btn btn-green" style="margin-top: 2px;" onclick="verifyTask('t_group', 1000)">بررسی و دریافت جایزه گروه</button>
+                </div>
+
+                <div style="margin-top: 8px;">
+                    <a href="https://x.com/BabyGramCoin" target="_blank" class="btn" onclick="markTaskClicked('t2')">3️⃣ فالو کردن در ایکس (توییتر) (+1,000)</a>
+                    <button class="btn btn-green" style="margin-top: 2px;" onclick="verifyTask('t2', 1000)">بررسی و دریافت جایزه ایکس</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // بازیابی امتیازهای قبلی کاربر (بررسی هر دو مدل کلید برای از دست نرفتن امتیاز)
-        let score = parseInt(localStorage.getItem('baby_score')) || parseInt(localStorage.getItem('score')) || 0;
+        let score = parseInt(localStorage.getItem('baby_score')) || 0;
+        let tapPower = parseInt(localStorage.getItem('baby_tap_power')) || 1;
+        let profitPerHour = parseInt(localStorage.getItem('baby_profit_per_hour')) || 0;
         let energy = 100;
+        const maxEnergy = 100;
         let wallet = localStorage.getItem('baby_wallet') || '';
+        let friendsCount = parseInt(localStorage.getItem('baby_friends')) || 0;
         let userId = '7098265955';
 
         const tg = window.Telegram.WebApp;
@@ -89,62 +359,132 @@
             userId = tg.initDataUnsafe.user.id;
         }
 
-        document.getElementById('scoreDisplay').innerText = score.toLocaleString();
+        const urlParams = new URLSearchParams(window.location.search);
+        let startParam = urlParams.get('start');
+        if (startParam && startParam.startsWith('ref_')) {
+            let inviterId = startParam.replace('ref_', '');
+            let hasRewardedRef = localStorage.getItem('rewarded_ref_' + userId);
+            if (!hasRewardedRef && inviterId !== userId) {
+                localStorage.setItem('rewarded_ref_' + userId, 'true');
+                friendsCount += 1;
+                localStorage.setItem('baby_friends', friendsCount);
+            }
+        }
+
         let refLink = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
         document.getElementById('refLinkInput').value = refLink;
+        document.getElementById('friendsCount').innerText = friendsCount;
+        document.getElementById('refStatusText').innerText = 'دوستان دعوت‌شده: ' + friendsCount + ' نفر';
+
+        // ۱۵ کارت ارتقای CEO با قیمت و سود منطقی و متوازن
+        const ceoCards = [
+            { id: 1, name: "🌱 سرور اولیه تست", cost: 300, profit: 20 },
+            { id: 2, name: "💬 راه‌اندازی گروه چت", cost: 850, profit: 60 },
+            { id: 3, name: "📢 ثبت کانال تلگرام", cost: 2200, profit: 150 },
+            { id: 4, name: "🤖 ساخت ربات کلیکر", cost: 5500, profit: 350 },
+            { id: 5, name: "🎨 طراحی لوگوی رسمی", cost: 12000, profit: 750 },
+            { id: 6, name: "📝 تدوین وایت‌پیپر", cost: 28000, profit: 1500 },
+            { id: 7, name: "🔗 استقرار قرارداد هوشمند", cost: 60000, profit: 3100 },
+            { id: 8, name: "💧 راه‌اندازی استخر نقدینگی", cost: 130000, profit: 6500 },
+            { id: 9, name: "🌐 طراحی وبسایت مینی‌اپ", cost: 280000, profit: 13500 },
+            { id: 10, name: "🤝 جذب اولین پارتنرها", cost: 600000, profit: 28000 },
+            { id: 11, name: "📊 ثبت متاداده در گیت‌هاب", cost: 1300000, profit: 58000 },
+            { id: 12, name: "🛡️ سیستم ضد تقلب و ربات", cost: 2800000, profit: 120000 },
+            { id: 13, name: "🚀 کمپین تبلیغات گسترده", cost: 6500000, profit: 260000 },
+            { id: 14, name: "🏛️ درخواست لیستینگ صرافی", cost: 14000000, profit: 540000 },
+            { id: 15, name: "💎 صرافی بزرگ مرکزی (Tier-1)", cost: 32000000, profit: 1150000 }
+        ];
+
+        let purchasedCards = JSON.parse(localStorage.getItem('baby_purchased_cards')) || {};
+
+        renderCeoCards();
+        updateUI();
 
         if (wallet) {
             document.getElementById('walletInput').value = wallet;
             document.getElementById('walletStatus').innerText = 'متصل: ' + wallet.substring(0, 6) + '...' + wallet.substring(wallet.length - 4);
         }
 
-        // پر شدن خودکار انرژی
+        function renderCeoCards() {
+            let container = document.getElementById('upgradesList');
+            container.innerHTML = '';
+            ceoCards.forEach(card => {
+                let isBought = purchasedCards[card.id];
+                let itemDiv = document.createElement('div');
+                itemDiv.className = 'upgrade-item';
+                itemDiv.innerHTML = `
+                    <div>
+                        <div style="font-size: 11px; font-weight: bold;">${card.name}</div>
+                        <div style="font-size: 9px; color: #38bdf8;">سود ساعتی: +${card.profit.toLocaleString()}</div>
+                    </div>
+                    <button class="btn ${isBought ? 'btn-purple' : 'btn-green'}" style="width: auto; padding: 5px 8px; margin:0; font-size:10px;" 
+                        onclick="buyCeoCard(${card.id})" ${isBought ? 'disabled' : ''}>
+                        ${isBought ? 'خریداری شد' : card.cost.toLocaleString() + ' 🪙'}
+                    </button>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function buyCeoCard(cardId) {
+            let card = ceoCards.find(c => c.id === cardId);
+            if (purchasedCards[cardId]) return;
+            if (score >= card.cost) {
+                score -= card.cost;
+                profitPerHour += card.profit;
+                purchasedCards[cardId] = true;
+                localStorage.setItem('baby_purchased_cards', JSON.stringify(purchasedCards));
+                localStorage.setItem('baby_profit_per_hour', profitPerHour);
+                renderCeoCards();
+                updateUI();
+                alert('کارت "' + card.name + '" با موفقیت فعال شد!');
+            } else {
+                alert('امتیاز کافی برای خرید این کارت را ندارید!');
+            }
+        }
+
+        // سیستم استخراج خودکار (سود ساعتی) و ریکاوری انرژی
         setInterval(() => {
-            if (energy < 100) {
-                energy += 5;
-                if (energy > 100) energy = 100;
-                document.getElementById('energyBar').style.width = energy + '%';
-                document.getElementById('energyCount').innerText = energy;
+            if (energy < maxEnergy) {
+                energy += 2;
+                if (energy > maxEnergy) energy = maxEnergy;
+                updateEnergyBar();
+            }
+            if (profitPerHour > 0) {
+                score += profitPerHour / 3600; // محاسبه ثانیه‌ای سود ساعتی
+                updateUI();
             }
         }, 1000);
 
-        function switchTab(tabId, event) {
+        function updateEnergyBar() {
+            document.getElementById('energyBar').style.width = energy + '%';
+            document.getElementById('energyCount').innerText = energy;
+        }
+
+        function updateUI() {
+            document.getElementById('scoreDisplay').innerText = Math.floor(score).toLocaleString();
+            document.getElementById('tapPowerDisplay').innerText = tapPower;
+            document.getElementById('profitPerHourDisplay').innerText = '+' + profitPerHour.toLocaleString();
+            localStorage.setItem('baby_score', Math.floor(score));
+        }
+
+        function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
         }
 
-        function tapCoin() {
-            if (energy < 10) {
-                alert('انرژی شما تمام شده است! کمی صبر کنید.');
+        function tapCoin(e) {
+            if (energy < 4) {
+                alert('انرژی استخراج تمام شد! کمی صبر کنید تا شارژ شود.');
                 return;
             }
-            energy -= 10;
-            document.getElementById('energyBar').style.width = energy + '%';
-            document.getElementById('energyCount').innerText = energy;
-
-            score += 1;
-            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
-            localStorage.setItem('baby_score', score);
+            energy -= 4;
+            updateEnergyBar();
+            score += tapPower;
+            updateUI();
         }
 
-        function saveWallet() {
-            let val = document.getElementById('walletInput').value.trim();
-            if (val.length > 10) {
-                wallet = val;
-                localStorage.setItem('baby_wallet', wallet);
-                document.getElementById('walletStatus').innerText = 'ثبت شد: ' + wallet.substring(0, 6) + '...';
-                alert('آدرس ولت با موفقیت ذخیره شد!');
-            } else {
-                alert('لطفاً یک آدرس معتبر TON وارد کنید.');
-            }
-        }
-
-        function copyRef() {
-            navigator.clipboard.writeText(refLink);
-            alert('لینک دعوت کپی شد!');
-        }
-    </script>
-</body>
-</html>
+        function saveWalletAddress() {
+            let
