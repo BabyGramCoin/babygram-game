@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" id="htmlRoot">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>بیبی‌گرام - BabyGram</title>
+    <title>BabyGram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
         body { background: linear-gradient(135deg, #090d16, #1e293b, #0f172a); color: #fff; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .container { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; }
-        .top-bar { display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 6px; }
-        .header { font-size: 18px; font-weight: bold; background: linear-gradient(45deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; flex: 1; }
-        .lang-btn { background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
+        .header { font-size: 18px; font-weight: bold; background: linear-gradient(45deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; text-align: center; }
         .notice { background: rgba(14, 165, 233, 0.15); border: 1px solid rgba(14, 165, 233, 0.4); color: #38bdf8; padding: 6px; border-radius: 8px; font-size: 9px; text-align: center; margin-bottom: 6px; width: 100%; line-height: 1.4; }
         .stats { display: flex; justify-content: space-between; width: 100%; background: rgba(255, 255, 255, 0.05); padding: 6px; border-radius: 10px; margin-bottom: 6px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .stat-box { text-align: center; flex: 1; }
@@ -23,7 +21,7 @@
         .tab-btn.active { background: #0ea5e9; color: #fff; }
         .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
         .tab-content.active { display: flex; }
-        .box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; width: 100%; margin-bottom: 6px; text-align: inherit; }
+        .box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; width: 100%; margin-bottom: 6px; text-align: left; }
         .box-title { font-size: 11px; font-weight: bold; color: #38bdf8; margin-bottom: 6px; }
         .coin-btn { background: none; border: none; cursor: pointer; outline: none; margin: 10px auto; padding: 0; display: block; -webkit-tap-highlight-color: transparent; }
         .coin-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(14, 165, 233, 0.4); border: 3px solid #38bdf8; pointer-events: none; }
@@ -36,102 +34,99 @@
 </head>
 <body>
     <div class="container">
-        <div class="top-bar">
-            <div class="header" id="t-header">بیبی‌گرام (BabyGram)</div>
-            <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">EN / فارسی</button>
-        </div>
-        <div class="notice" id="t-notice">🚀 توکن رسمی در صرافی Dedust لیست شده است. به هولدرها ایردراپ تعلق می‌گیرد!</div>
+        <div class="header">BabyGram Mini App</div>
+        <div class="notice">🚀 Official token is listed on Dedust. Airdrops for holders!</div>
         
         <div class="stats">
             <div class="stat-box">
                 <div class="stat-val" id="tapPowerDisplay">1</div>
-                <div class="stat-lbl" id="t-lbl-tap">قدرت تپ</div>
+                <div class="stat-lbl">Tap Power</div>
             </div>
             <div class="stat-box" style="border-right: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.1);">
                 <div class="stat-val" id="friendsDisplay">0</div>
-                <div class="stat-lbl" id="t-lbl-ref">دعوت‌ها</div>
+                <div class="stat-lbl">Invites</div>
             </div>
             <div class="stat-box">
                 <div class="stat-val">100M</div>
-                <div class="stat-lbl" id="t-lbl-cond">شرط برداشت</div>
+                <div class="stat-lbl">Min Withdraw</div>
             </div>
         </div>
 
         <div class="score-box" id="scoreDisplay">0</div>
-        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;" id="t-coin-lbl">موجودی سکه BabyGram</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 6px;">BabyGram Balance</div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('clicker', this)" id="t-tab-click">تپ کلیک</button>
-            <button class="tab-btn" onclick="switchTab('about', this)" id="t-tab-about">درباره پروژه</button>
-            <button class="tab-btn" onclick="switchTab('wallet', this)" id="t-tab-wallet">کیف‌پول & برداشت</button>
-            <button class="tab-btn" onclick="switchTab('tasks', this)" id="t-tab-tasks">تسک‌ها & دعوت</button>
+            <button class="tab-btn active" onclick="switchTab('clicker', this)">Tap</button>
+            <button class="tab-btn" onclick="switchTab('about', this)">About</button>
+            <button class="tab-btn" onclick="switchTab('wallet', this)">Wallet & Withdraw</button>
+            <button class="tab-btn" onclick="switchTab('tasks', this)">Tasks & Ref</button>
         </div>
 
         <div id="clicker" class="tab-content active">
             <div class="box" style="text-align: center;">
                 <button class="coin-btn" id="tapBtn"><img src="IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img"></button>
-                <div class="info" style="margin-top: 6px;" id="t-tap-desc">برای استخراج سکه ضربه بزنید</div>
+                <div class="info" style="margin-top: 6px;">Tap to mine coins</div>
                 <div style="width: 100%; background: rgba(255,255,255,0.1); border-radius: 6px; height: 8px; margin-top: 8px; overflow: hidden;">
                     <div id="energyBar" style="height: 100%; background: linear-gradient(90deg, #10b981, #38bdf8); width: 100%;"></div>
                 </div>
-                <div class="info"><span id="t-energy-txt">انرژی</span>: <span id="energyCount">10000</span> / 10000</div>
+                <div class="info">Energy: <span id="energyCount">10000</span> / 10000</div>
             </div>
             <div class="box">
-                <div class="box-title" id="t-upgrade-title">⚡ ارتقای قدرت تپ (تا ۱۰ واحد)</div>
-                <div class="info"><span id="t-current-pow">قدرت فعلی</span>: <span id="currentPowerText" style="color: #facc15; font-weight: bold;">1</span></div>
-                <button class="btn btn-green" id="upgradeTapBtn" style="margin-top: 6px;">ارتقا (هزینه: <span id="upgradeTapCost">1000</span> 🪙)</button>
+                <div class="box-title">⚡ Tap Power Upgrade (Max 10)</div>
+                <div class="info">Current Power: <span id="currentPowerText" style="color: #facc15; font-weight: bold;">1</span></div>
+                <button class="btn btn-green" id="upgradeTapBtn" style="margin-top: 6px;">Upgrade (Cost: <span id="upgradeTapCost">1000</span> 🪙)</button>
             </div>
         </div>
 
         <!-- تب درباره پروژه -->
         <div id="about" class="tab-content">
             <div class="box">
-                <div class="box-title" id="t-about-t1">🌱 اهداف و چشم‌انداز بیبی‌گرام</div>
-                <div class="info" id="t-about-d1" style="line-height: 1.6; color: #cbd5e1;">
-                    پروژه <b>BabyGram</b> با هدف ایجاد یک اکوسیستم واقعی، صمیمی و پویا در بستر بلاک‌چین TON شکل گرفته است. ما معتقدیم موفقیت واقعی در گروی هیجان‌های زودگذر نیست، بلکه بر پایه یک <b>جامعه کاملاً ارگانیک، وفادار و متحد</b> بنا می‌شود.<br><br>
-                    تمرکز اصلی تیم توسعه، رشد بلندمدت، استمرار در برنامه‌ها و ارزش‌آفرینی مداوم برای تمامی اعضای خانواده بزرگ بیبی‌گرام است.
+                <div class="box-title">🌱 Vision & Goals</div>
+                <div class="info" style="line-height: 1.6; color: #cbd5e1;">
+                    <b>BabyGram</b> is built on the TON blockchain to create a real, friendly, and dynamic ecosystem. We believe true success comes from a <b>100% organic, loyal, and united community</b> rather than temporary hype.<br><br>
+                    Our core focus is long-term growth, consistency, and continuous value for all members of the BabyGram family.
                 </div>
             </div>
             <div class="box" style="border: 1px solid #facc15;">
-                <div class="box-title" style="color: #facc15;" id="t-about-t2">🎁 طرح ویژه: هولد ۵۰ میلیون سکه و دریافت پاداش</div>
-                <div class="info" id="t-about-d2" style="line-height: 1.6; color: #cbd5e1;">
-                    قدردان همراهی هولدرهای وفادار خود هستیم! اگر بتوانید حداقل <b>۵۰,۰۰۰,۰۰۰ سکه</b> در حساب خود هولد کنید و نگه‌دارید، واجد شرایط دریافت پاداش‌های ویژه، ایردراپ‌های اختصاصی و امتیازهای تورنمنت خواهید شد.<br><br>
-                    با قدرت به استخراج و حمایت ادامه دهید تا آینده‌ای درخشان را با هم رقم بزنیم!
+                <div class="box-title" style="color: #facc15;">🎁 Special: Hold 50M Coins & Earn Rewards</div>
+                <div class="info" style="line-height: 1.6; color: #cbd5e1;">
+                    We appreciate our loyal holders! Hold at least <b>50,000,000 coins</b> in your balance to qualify for special rewards, exclusive airdrops, and tournament bonuses.<br><br>
+                    Keep mining and supporting for a bright future together!
                 </div>
             </div>
         </div>
 
         <div id="wallet" class="tab-content">
             <div class="box" style="border: 1px solid #38bdf8;">
-                <div class="box-title" id="t-wal-title">💎 ثبت ولت TON & برداشت (0.5 TON)</div>
-                <div class="info" style="color: #facc15;" id="t-wal-cond">حداقل موجودی برای برداشت: ۱۰۰,۰۰۰,۰۰۰ سکه</div>
-                <div class="info" id="walletStatus" style="font-weight: bold; margin: 4px 0;">وضعیت ولت: ثبت نشده</div>
-                <input type="text" id="walletInput" class="input" placeholder="آدرس TON (شروع با EQ یا UQ)">
-                <button class="btn btn-green" id="saveWalletBtn">ثبت آدرس ولت</button>
-                <button class="btn btn-purple" id="withdrawBtn" style="margin-top: 6px;">درخواست برداشت 0.5 TON</button>
+                <div class="box-title">💎 TON Wallet & Withdraw (0.5 TON)</div>
+                <div class="info" style="color: #facc15;">Minimum for withdrawal: 100,000,000 coins</div>
+                <div class="info" id="walletStatus" style="font-weight: bold; margin: 4px 0;">Wallet Status: Not Set</div>
+                <input type="text" id="walletInput" class="input" placeholder="TON Address (Starts with EQ or UQ)">
+                <button class="btn btn-green" id="saveWalletBtn">Save Wallet Address</button>
+                <button class="btn btn-purple" id="withdrawBtn" style="margin-top: 6px;">Request 0.5 TON Withdraw</button>
             </div>
             <div class="box">
-                <div class="box-title">📊 صرافی Dedust</div>
-                <a href="https://dedust.io" target="_blank" class="btn" style="background: #2563eb;" id="t-dedust-btn">ورود به صرافی دیداست</a>
+                <div class="box-title">📊 Dedust Exchange</div>
+                <a href="https://dedust.io" target="_blank" class="btn" style="background: #2563eb;">Open Dedust Exchange</a>
             </div>
         </div>
 
         <div id="tasks" class="tab-content">
             <div class="box">
-                <div class="box-title" id="t-task-title">🎯 تسک‌های پاداش‌دار</div>
-                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn" onclick="markTask('channel')" id="t-task-ch">عضویت در کانال تلگرام (+2,000)</a>
-                <button class="btn btn-green" style="margin-top: 4px;" onclick="verifyTask('channel', 2000)" id="t-verify-ch">بررسی و دریافت پاداش کانال</button>
+                <div class="box-title">🎯 Reward Tasks</div>
+                <a href="https://t.me/BabyGramHQ" target="_blank" class="btn" onclick="markTask('channel')">Join Telegram Channel (+2,000)</a>
+                <button class="btn btn-green" style="margin-top: 4px;" onclick="verifyTask('channel', 2000)">Verify Channel Reward</button>
                 
-                <a href="https://t.me/babyGramhub" target="_blank" class="btn" style="margin-top: 8px;" onclick="markTask('group')" id="t-task-gp">عضویت در گروه چت (+2,000)</a>
-                <button class="btn btn-green" style="margin-top: 4px;" onclick="verifyTask('group', 2000)" id="t-verify-gp">بررسی و دریافت پاداش گروه</button>
+                <a href="https://t.me/babyGramhub" target="_blank" class="btn" style="margin-top: 8px;" onclick="markTask('group')">Join Chat Group (+2,000)</a>
+                <button class="btn btn-green" style="margin-top: 4px;" onclick="verifyTask('group', 2000)">Verify Group Reward</button>
 
-                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn btn-purple" style="margin-top: 8px;" id="t-task-x">فالو کردن در ایکس (BabyGramCoin)</a>
+                <a href="https://x.com/BabyGramCoin" target="_blank" class="btn btn-purple" style="margin-top: 8px;">Follow on X (BabyGramCoin)</a>
             </div>
             <div class="box">
-                <div class="box-title" id="t-ref-title">👥 سیستم دعوت دوستان (۵,۰۰۰ سکه)</div>
+                <div class="box-title">👥 Referral System (5,000 Coins)</div>
                 <input type="text" id="refLinkInput" class="input" readonly>
-                <button class="btn btn-green" id="copyRefBtn">کپی لینک دعوت</button>
-                <div class="info" style="color: #10b981; margin-top: 4px;" id="refCountText">دوستان دعوت‌شده: 0 نفر</div>
+                <button class="btn btn-green" id="copyRefBtn">Copy Invite Link</button>
+                <div class="info" style="color: #10b981; margin-top: 4px;" id="refCountText">Invited Friends: 0</div>
             </div>
         </div>
     </div>
@@ -144,124 +139,156 @@
         let wallet = localStorage.getItem('babygram_wallet_v6') || '';
         let friendsCount = parseInt(localStorage.getItem('babygram_friends_v6')) || 0;
         let userId = '7098265955';
-        let currentLang = localStorage.getItem('babygram_lang') || 'fa';
 
-        const dict = {
-            fa: {
-                header: "بیبی‌گرام (BabyGram)",
-                notice: "🚀 توکن رسمی در صرافی Dedust لیست شده است. به هولدرها ایردراپ تعلق می‌گیرد!",
-                lblTap: "قدرت تپ", lblRef: "دعوت‌ها", lblCond: "شرط برداشت",
-                coinLbl: "موجودی سکه BabyGram",
-                tabClick: "تپ کلیک", tabAbout: "درباره پروژه", tabWallet: "کیف‌پول & برداشت", tabTasks: "تسک‌ها & دعوت",
-                tapDesc: "برای استخراج سکه ضربه بزنید", energyTxt: "انرژی",
-                upTitle: "⚡ ارتقای قدرت تپ (تا ۱۰ واحد)", curPow: "قدرت فعلی",
-                upBtn: (cost) => `ارتقا (هزینه: ${cost.toLocaleString()} 🪙)`,
-                maxUp: "به حداکثر رسید (سطح ۱۰)",
-                aboutT1: "🌱 اهداف و چشم‌انداز بیبی‌گرام",
-                aboutD1: "پروژه <b>BabyGram</b> با هدف ایجاد یک اکوسیستم واقعی، صمیمی و پویا در بستر بلاک‌چین TON شکل گرفته است. ما معتقدیم موفقیت واقعی در گروی هیجان‌های زودگذر نیست، بلکه بر پایه یک <b>جامعه کاملاً ارگانیک، وفادار و متحد</b> بنا می‌شود.<br><br>تمرکز اصلی تیم توسعه، رشد بلندمدت، استمرار در برنامه‌ها و ارزش‌آفرینی مداوم برای تمامی اعضای خانواده بزرگ بیبی‌گرام است.",
-                aboutT2: "🎁 طرح ویژه: هولد ۵۰ میلیون سکه و دریافت پاداش",
-                aboutD2: "قدردان همراهی هولدرهای وفادار خود هستیم! اگر بتوانید حداقل <b>۵۰,۰۰۰,۰۰۰ سکه</b> در حساب خود هولد کنید و نگه‌دارید، واجد شرایط دریافت پاداش‌های ویژه، ایردراپ‌های اختصاصی و امتیازهای تورنمنت خواهید شد.<br><br>با قدرت به استخراج و حمایت ادامه دهید تا آینده‌ای درخشان را با هم رقم بزنیم!",
-                walTitle: "💎 ثبت ولت TON & برداشت (0.5 TON)",
-                walCond: "حداقل موجودی برای برداشت: ۱۰۰,۰۰۰,۰۰۰ سکه",
-                walInputPh: "آدرس TON (شروع با EQ یا UQ)",
-                saveWalBtn: "ثبت آدرس ولت",
-                withdrawBtn: "درخواست برداشت 0.5 TON",
-                dedustBtn: "ورود به صرافی دیداست",
-                taskTitle: "🎯 تسک‌های پاداش‌دار",
-                taskCh: "عضویت در کانال تلگرام (+2,000)", verifyCh: "بررسی و دریافت پاداش کانال",
-                taskGp: "عضویت در گروه چت (+2,000)", verifyGp: "بررسی و دریافت پاداش گروه",
-                taskX: "فالو کردن در ایکس (BabyGramCoin)",
-                refTitle: "👥 سیستم دعوت دوستان (۵,۰۰۰ سکه)",
-                copyRef: "کپی لینک دعوت",
-                refCount: (c) => `دوستان دعوت‌شده: ${c} نفر`,
-                walNotSet: "وضعیت ولت: ثبت نشده",
-                walConnected: (w) => `متصل: ${w.substring(0, 6)}...`,
-                alertSaved: "آدرس ولت ذخیره شد!",
-                alertInvalid: "آدرس نامعتبر است. باید با EQ یا UQ شروع شود.",
-                alertNoWal: "لطفاً ابتدا آدرس ولت TON خود را ثبت کنید.",
-                alertLowScore: "موجودی شما هنوز به ۱۰۰,۰۰۰,۰۰۰ سکه نرسیده است!",
-                alertWithdraw: "درخواست برداشت ۰.۵ TON ثبت شد و پس از بررسی واریز خواهد شد.",
-                alertCopy: "لینک دعوت کپی شد!",
-                alertUpgraded: "قدرت تپ با موفقیت ارتقا یافت!",
-                alertNoCoins: "موجودی سکه کافی نیست!",
-                alertAlreadyDone: "شما قبلاً پاداش این تسک را دریافت کرده‌اید!",
-                alertReward: (r) => `تبریک! پاداش +${r.toLocaleString()} سکه واریز شد.`
-            },
-            en: {
-                header: "BabyGram Mini App",
-                notice: "🚀 Official token is listed on Dedust. Airdrops for holders!",
-                lblTap: "Tap Power", lblRef: "Invites", lblCond: "Min Withdraw",
-                coinLbl: "BabyGram Balance",
-                tabClick: "Tap", tabAbout: "About", tabWallet: "Wallet & Withdraw", tabTasks: "Tasks & Ref",
-                tapDesc: "Tap to mine coins", energyTxt: "Energy",
-                upTitle: "⚡ Tap Power Upgrade (Max 10)", curPow: "Current Power",
-                upBtn: (cost) => `Upgrade (Cost: ${cost.toLocaleString()} 🪙)`,
-                maxUp: "Max Level Reached (Level 10)",
-                aboutT1: "🌱 Vision & Goals",
-                aboutD1: "<b>BabyGram</b> is built on the TON blockchain to create a real, friendly, and dynamic ecosystem. We believe true success comes from a <b>100% organic, loyal, and united community</b> rather than temporary hype.<br><br>Our core focus is long-term growth and continuous value for all members.",
-                aboutT2: "🎁 Special: Hold 50M Coins & Earn Rewards",
-                aboutD2: "We appreciate our loyal holders! Hold at least <b>50,000,000 coins</b> in your balance to qualify for special rewards, exclusive airdrops, and tournament bonuses.<br><br>Keep mining and supporting for a bright future!",
-                walTitle: "💎 TON Wallet & Withdraw (0.5 TON)",
-                walCond: "Minimum for withdrawal: 100,000,000 coins",
-                walInputPh: "TON Address (Starts with EQ or UQ)",
-                saveWalBtn: "Save Wallet Address",
-                withdrawBtn: "Request 0.5 TON Withdraw",
-                dedustBtn: "Open Dedust Exchange",
-                taskTitle: "🎯 Reward Tasks",
-                taskCh: "Join Telegram Channel (+2,000)", verifyCh: "Verify Channel Reward",
-                taskGp: "Join Chat Group (+2,000)", verifyGp: "Verify Group Reward",
-                taskX: "Follow on X (BabyGramCoin)",
-                refTitle: "👥 Referral System (5,000 Coins)",
-                copyRef: "Copy Invite Link",
-                refCount: (c) => `Invited Friends: ${c}`,
-                walNotSet: "Wallet Status: Not Set",
-                walConnected: (w) => `Connected: ${w.substring(0, 6)}...`,
-                alertSaved: "Wallet address saved!",
-                alertInvalid: "Invalid address. Must start with EQ or UQ.",
-                alertNoWal: "Please save your TON wallet address first.",
-                alertLowScore: "Your balance has not reached 100,000,000 coins yet!",
-                alertWithdraw: "Withdrawal request of 0.5 TON submitted.",
-                alertCopy: "Invite link copied!",
-                alertUpgraded: "Tap power upgraded successfully!",
-                alertNoCoins: "Not enough coins!",
-                alertAlreadyDone: "You have already claimed this task reward!",
-                alertReward: (r) => `Congratulations! +${r.toLocaleString()} coins added.`
+        let lastTapTime = 0;
+        let rapidClicks = 0;
+
+        try {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                userId = tg.initDataUnsafe.user.id;
             }
+        } catch (e) {}
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let startParam = urlParams.get('start');
+        if (startParam && startParam.startsWith('ref_')) {
+            let inviter = startParam.replace('ref_', '');
+            if (!localStorage.getItem('babygram_ref_done_' + userId) && inviter !== userId) {
+                localStorage.setItem('babygram_ref_done_' + userId, 'true');
+                friendsCount += 1;
+                localStorage.setItem('babygram_friends_v6', friendsCount);
+            }
+        }
+
+        let refLink = 'https://t.me/BabyGramClicker_bot?start=ref_' + userId;
+        document.getElementById('refLinkInput').value = refLink;
+        document.getElementById('friendsDisplay').innerText = friendsCount;
+        document.getElementById('refCountText').innerText = 'Invited Friends: ' + friendsCount;
+
+        function updateTapUpgradeUI() {
+            document.getElementById('tapPowerDisplay').innerText = tapPower;
+            document.getElementById('currentPowerText').innerText = tapPower;
+            let cost = tapPower * 1000;
+            if (tapPower >= 10) {
+                document.getElementById('upgradeTapBtn').innerText = 'Max Level Reached (Level 10)';
+                document.getElementById('upgradeTapBtn').disabled = true;
+            } else {
+                document.getElementById('upgradeTapCost').innerText = cost.toLocaleString();
+            }
+        }
+
+        document.getElementById('upgradeTapBtn').addEventListener('click', function() {
+            let cost = tapPower * 1000;
+            if (tapPower >= 10) return;
+            if (score >= cost) {
+                score -= cost;
+                tapPower += 1;
+                localStorage.setItem('babygram_tap_v6', tapPower);
+                updateUI();
+                updateTapUpgradeUI();
+                alert('Tap power upgraded successfully!');
+            } else {
+                alert('Not enough coins!');
+            }
+        });
+
+        updateTapUpgradeUI();
+
+        function updateUI() {
+            document.getElementById('scoreDisplay').innerText = Math.floor(score).toLocaleString();
+            document.getElementById('energyBar').style.width = ((energy / maxEnergy) * 100) + '%';
+            document.getElementById('energyCount').innerText = Math.floor(energy);
+            localStorage.setItem('babygram_score_v6', score);
+            localStorage.setItem('babygram_energy_v6', Math.floor(energy));
+        }
+
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy += 2;
+                if (energy > maxEnergy) energy = maxEnergy;
+                updateUI();
+            }
+        }, 1000);
+
+        updateUI();
+
+        window.switchTab = function(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (btn) btn.classList.add('active');
         };
 
-        function applyLanguage() {
-            let t = dict[currentLang];
-            let root = document.getElementById('htmlRoot');
-            root.lang = currentLang;
-            root.dir = currentLang === 'fa' ? 'rtl' : 'ltr';
+        const tapBtn = document.getElementById('tapBtn');
+        function handleTap(e) {
+            if (e) e.preventDefault();
+            let now = Date.now();
+            if (now - lastTapTime < 60) {
+                rapidClicks++;
+                if (rapidClicks > 10) return;
+            } else {
+                rapidClicks = 0;
+            }
+            lastTapTime = now;
 
-            document.getElementById('t-header').innerText = t.header;
-            document.getElementById('t-notice').innerText = t.notice;
-            document.getElementById('t-lbl-tap').innerText = t.lblTap;
-            document.getElementById('t-lbl-ref').innerText = t.lblRef;
-            document.getElementById('t-lbl-cond').innerText = t.lblCond;
-            document.getElementById('t-coin-lbl').innerText = t.coinLbl;
-            document.getElementById('t-tab-click').innerText = t.tabClick;
-            document.getElementById('t-tab-about').innerText = t.tabAbout;
-            document.getElementById('t-tab-wallet').innerText = t.tabWallet;
-            document.getElementById('t-tab-tasks').innerText = t.tabTasks;
-            document.getElementById('t-tap-desc').innerText = t.tapDesc;
-            document.getElementById('t-energy-txt').innerText = t.energyTxt;
-            document.getElementById('t-upgrade-title').innerText = t.upTitle;
-            document.getElementById('t-current-pow').innerText = t.curPow;
-            
-            document.getElementById('t-about-t1').innerText = t.aboutT1;
-            document.getElementById('t-about-d1').innerHTML = t.aboutD1;
-            document.getElementById('t-about-t2').innerText = t.aboutT2;
-            document.getElementById('t-about-d2').innerHTML = t.aboutD2;
+            if (energy < tapPower) return;
+            energy -= tapPower;
+            score += tapPower;
+            updateUI();
+        }
+        tapBtn.addEventListener('click', handleTap);
+        tapBtn.addEventListener('touchstart', handleTap, { passive: false });
 
-            document.getElementById('t-wal-title').innerText = t.walTitle;
-            document.getElementById('t-wal-cond').innerText = t.walCond;
-            document.getElementById('walletInput').placeholder = t.walInputPh;
-            document.getElementById('saveWalletBtn').innerText = t.saveWalBtn;
-            document.getElementById('withdrawBtn').innerText = t.withdrawBtn;
-            document.getElementById('t-dedust-btn').innerText = t.dedustBtn;
+        window.markTask = function(taskId) {
+            localStorage.setItem('babygram_visited_' + taskId, 'true');
+        };
 
-            document.getElementById('t-task-title').innerText = t.taskTitle;
-            document.getElementById('t-task-ch').innerText = t.taskCh;
-            document.getElementById('t-verify-ch').innerText = t.verif
+        window.verifyTask = function(taskId, reward) {
+            if (localStorage.getItem('babygram_task_done_' + taskId)) {
+                alert('You have already claimed this task reward!');
+                return;
+            }
+            score += reward;
+            localStorage.setItem('babygram_task_done_' + taskId, 'true');
+            updateUI();
+            alert('Congratulations! +' + reward.toLocaleString() + ' coins added.');
+        };
+
+        if (wallet) {
+            document.getElementById('walletInput').value = wallet;
+            document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...';
+        }
+
+        document.getElementById('saveWalletBtn').addEventListener('click', function() {
+            let val = document.getElementById('walletInput').value.trim();
+            if ((val.startsWith('EQ') || val.startsWith('UQ')) && val.length > 10) {
+                wallet = val;
+                localStorage.setItem('babygram_wallet_v6', wallet);
+                document.getElementById('walletStatus').innerText = 'Connected: ' + wallet.substring(0, 6) + '...';
+                alert('Wallet address saved!');
+            } else {
+                alert('Invalid address. Must start with EQ or UQ.');
+            }
+        });
+
+        document.getElementById('withdrawBtn').addEventListener('click', function() {
+            if (!wallet) {
+                alert('Please save your TON wallet address first.');
+                return;
+            }
+            if (score < 100000000) {
+                alert('Your balance has not reached 100,000,000 coins yet!');
+                return;
+            }
+            alert('Withdrawal request of 0.5 TON submitted and will be processed.');
+        });
+
+        document.getElementById('copyRefBtn').addEventListener('click', function() {
+            navigator.clipboard.writeText(refLink);
+            alert('Invite link copied!');
+        });
+    </script>
+</body>
+</html>
