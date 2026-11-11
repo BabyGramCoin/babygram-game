@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BabyGram Miner</title>
-    <!-- کتابخانه رسمی و جدید TON Connect UI برای اتصال کیف پول واقعی -->
+    <!-- کتابخانه رسمی و جدید TON Connect UI -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -225,10 +225,10 @@
             <button class="task-btn" id="channelBtn" onclick="joinChannel()">بررسی عضویت</button>
         </div>
 
-        <!-- بخش دعوت از دوستان (رفرال شفاف) -->
+        <!-- بخش دعوت از دوستان -->
         <div class="task-box">
             <span id="refTitle" style="font-weight: bold; color: #fbbf24;">👥 دعوت از دوستان (۵۰۰ توکن به ازای هر نفر)</span><br>
-            <span id="refDesc" style="font-size: 11px; color: #9ca3af;">شرط: دوست شما باید کیف پول وصل کند تا پاداش آزاد شود.</span>
+            <span id="refDesc" style="font-size: 11px; color: #9ca3af;">با ارسال لینک زیر به دوستان خود پاداش بگیرید.</span>
             <button class="btn-main" style="margin-top: 8px; font-size: 13px; padding: 8px;" onclick="getRefLink()">دریافت لینک دعوت اختصاصی</button>
             
             <div style="margin-top: 10px; font-weight: bold; font-size: 11px; color: #4cc9f0;">لیست دوستان دعوت‌شده (<span id="friendCount">0</span> نفر):</div>
@@ -252,13 +252,13 @@
         let channelJoined = false;
         let invitedFriends = [];
 
-        // راه‌اندازی رسمی TON Connect UI
+        // راه‌اندازی رسمی TON Connect UI و اتصال به مانیفست روی سرور
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://babygram-game.onrender.com/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
-        // گوش دادن به وضعیت اتصال کیف پول واقعی
+        // رصد اتصال کیف پول واقعی
         tonConnectUI.onStatusChange(walletInfo => {
             if (walletInfo) {
                 walletConnected = true;
@@ -287,7 +287,7 @@
                 checkBtn: "بررسی عضویت",
                 checkedBtn: "انجام شد ✅",
                 refTitle: "👥 دعوت از دوستان (۵۰۰ توکن به ازای هر نفر)",
-                refDesc: "شرط: دوست شما باید کیف پول وصل کند تا پاداش آزاد شود.",
+                refDesc: "با ارسال لینک زیر به دوستان خود پاداش بگیرید.",
                 opt4: "۴ ساعته",
                 opt8: "۸ ساعته",
                 opt12: "۱۲ ساعته",
@@ -310,7 +310,7 @@
                 checkBtn: "Verify",
                 checkedBtn: "Done ✅",
                 refTitle: "👥 Invite Friends (500 Tokens each)",
-                refDesc: "Condition: Friend must connect wallet to release reward.",
+                refDesc: "Share your link to earn rewards.",
                 opt4: "4 Hours",
                 opt8: "8 Hours",
                 opt12: "12 Hours",
@@ -397,7 +397,7 @@
 
         function joinChannel() {
             if (channelJoined) return;
-            window.open("https://t.me/babyGramhub", "_blank"); // گروه و کانال شما
+            window.open("https://t.me/babyGramhub", "_blank");
             
             setTimeout(() => {
                 channelJoined = true;
@@ -410,22 +410,16 @@
             }, 2000);
         }
 
+        // ساخت لینک دعوت اختصاصی واقعی متصل به ربات شما @BabyGramClicker_bot
         function getRefLink() {
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            const userId = tgUser ? tgUser.id : "12345";
-            const botUsername = "BabyGramClicker_bot"; // آیدی درست ربات شما
+            const userId = tgUser ? tgUser.id : "12345"; // دریافت آی‌دی واقعی کاربر تلگرام
+            const botUsername = "BabyGramClicker_bot"; 
             let refLink = `https://t.me/${botUsername}?start=ref_${userId}`;
             
-            prompt(currentLang === 'fa' ? "لینک دعوت اختصاصی شما (کپی کنید و به دوستانتان بدهید):" : "Your unique referral link:", refLink);
-            
-            if(invitedFriends.length === 0) {
-                setTimeout(() => {
-                    invitedFriends.push({ name: "کاربر تستی (" + (invitedFriends.length + 1) + ")", status: "کیف پول تایید شد ✅", reward: "+۵۰۰ توکن" });
-                    userBalance += 500;
-                    updateUI();
-                    alert(currentLang === 'fa' ? "یک دوست از لینک شما وارد شد و ۵۰۰ توکن پاداش گرفتید!" : "A friend joined via your link, +500 tokens added!");
-                }, 4000);
-            }
+            // باز کردن پنل اشتراک‌گذاری تلگرام برای ارسال مستقیم به دوستان
+            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیار توکن بی بی گرام بگیریم! 💎🚀")}`;
+            window.open(shareUrl, '_blank');
         }
 
         function renderFriends() {
