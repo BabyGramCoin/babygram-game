@@ -252,9 +252,9 @@
         let channelJoined = false;
         let invitedFriends = [];
 
-        // راه‌اندازی رسمی TON Connect UI و اتصال به مانیفست روی سرور
+        // راه‌اندازی بدون وابستگی سخت به مانیفست سرور (جلوگیری از خطای تن‌کیپر)
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://babygram-game.onrender.com/tonconnect-manifest.json',
+            manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
@@ -413,11 +413,10 @@
         // ساخت لینک دعوت اختصاصی واقعی متصل به ربات شما @BabyGramClicker_bot
         function getRefLink() {
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            const userId = tgUser ? tgUser.id : "12345"; // دریافت آی‌دی واقعی کاربر تلگرام
+            const userId = tgUser ? tgUser.id : "12345"; 
             const botUsername = "BabyGramClicker_bot"; 
             let refLink = `https://t.me/${botUsername}?start=ref_${userId}`;
             
-            // باز کردن پنل اشتراک‌گذاری تلگرام برای ارسال مستقیم به دوستان
             const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیار توکن بی بی گرام بگیریم! 💎🚀")}`;
             window.open(shareUrl, '_blank');
         }
