@@ -1,5 +1,7 @@
 {
   "url": "https://babygram-game.onrender.com",
   "name": "BabyGram",
-  "iconUrl": "https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg"
+  "iconUrl": "https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg",
+  "termsOfUseUrl": "https://babygram-game.onrender.com",
+  "privacyPolicyUrl": "https://babygram-game.onrender.com"
 }
