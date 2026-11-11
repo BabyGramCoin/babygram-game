@@ -189,7 +189,6 @@
     <div class="header">
         <span id="balanceText">موجودی: <strong>0</strong> $BABYGRAM</span>
         <div class="top-btns">
-            <!-- دکمه اختصاصی اتصال کیف پول -->
             <button class="wallet-btn" onclick="connectWallet()" id="walletBtn">اتصال کیف پول</button>
             <button class="btn-small lang-btn" onclick="toggleLanguage()" id="langBtn">EN</button>
         </div>
@@ -257,15 +256,14 @@
         let channelJoined = false;
         let invitedFriends = [];
 
-        // راه‌اندازی کامل با بازگشت مستقیم به مینی‌اپ
+        // استفاده از لینک مستقیم گیت‌هاب برای مانیفست جهت جلوگیری از خطای سرور رندر
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://babygram-game.onrender.com/tonconnect-manifest.json',
+            manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
             actionsConfiguration: {
                 twaReturnUrl: 'https://t.me/BabyGramClicker_bot'
             }
         });
 
-        // تابع باز کردن مدال اتصال
         async function connectWallet() {
             try {
                 if (tonConnectUI.connected) {
@@ -279,7 +277,6 @@
             }
         }
 
-        // رصد تغییر وضعیت اتصال
         tonConnectUI.onStatusChange(walletInfo => {
             if (walletInfo) {
                 walletConnected = true;
