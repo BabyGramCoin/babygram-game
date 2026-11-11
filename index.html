@@ -252,9 +252,9 @@
         let channelJoined = false;
         let invitedFriends = [];
 
-        // راه‌اندازی بدون وابستگی سخت به مانیفست سرور (جلوگیری از خطای تن‌کیپر)
+        // تنظیم مانیفست مستقیماً روی دامنه اصلی رندر برای رفع خطای تن‌کیپر
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
+            manifestUrl: 'https://babygram-game.onrender.com/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-button'
         });
 
@@ -369,87 +369,4 @@
                 btn.innerText = t.mining;
                 btn.style.background = "#e63946";
                 
-                timerInterval = setInterval(() => {
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        let h = Math.floor(timeLeft / 3600);
-                        let m = Math.floor((timeLeft % 3600) / 60);
-                        let s = timeLeft % 60;
-                        document.getElementById('countdown').innerText = 
-                            `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                    } else {
-                        clearInterval(timerInterval);
-                        isMining = false;
-                        btn.innerText = t.claim;
-                        btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
-                        status.innerText = t.done;
-                    }
-                }, 1000);
-            } else {
-                userBalance += finalReward;
-                updateUI();
-                alert(currentLang === 'fa' ? `تبریک! ${finalReward} توکن دریافت کردید.` : `Congrats! Received ${finalReward} tokens.`);
-                isMining = false;
-                document.getElementById('countdown').innerText = "00:00:00";
-                btn.innerText = t.start;
-            }
-        }
-
-        function joinChannel() {
-            if (channelJoined) return;
-            window.open("https://t.me/babyGramhub", "_blank");
-            
-            setTimeout(() => {
-                channelJoined = true;
-                userBalance += 500;
-                let btn = document.getElementById('channelBtn');
-                btn.innerText = translations[currentLang].checkedBtn;
-                btn.classList.add('done');
-                updateUI();
-                alert(currentLang === 'fa' ? "تبریک! ۵۰۰ توکن پاداش عضویت دریافت کردید." : "Congrats! Received 500 tokens.");
-            }, 2000);
-        }
-
-        // ساخت لینک دعوت اختصاصی واقعی متصل به ربات شما @BabyGramClicker_bot
-        function getRefLink() {
-            const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            const userId = tgUser ? tgUser.id : "12345"; 
-            const botUsername = "BabyGramClicker_bot"; 
-            let refLink = `https://t.me/${botUsername}?start=ref_${userId}`;
-            
-            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیار توکن بی بی گرام بگیریم! 💎🚀")}`;
-            window.open(shareUrl, '_blank');
-        }
-
-        function renderFriends() {
-            const container = document.getElementById('friendListContainer');
-            document.getElementById('friendCount').innerText = invitedFriends.length;
-            
-            if(invitedFriends.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #6b7280; padding: 5px;">${currentLang === 'fa' ? 'هنوز دوستی دعوت نکرده‌اید' : 'No friends invited yet'}</div>`;
-                return;
-            }
-
-            let html = '';
-            invitedFriends.forEach(f => {
-                html += `<div class="friend-item"><span>👤 ${f.name}</span><span style="color: #34d399;">${f.status} (${f.reward})</span></div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function withdrawTokens() {
-            if (!walletConnected) {
-                alert(currentLang === 'fa' ? "لطفاً ابتدا کیف پول خود را از بالای صفحه متصل کنید!" : "Please connect your wallet first!");
-                return;
-            }
-            if (userBalance < 10000) {
-                alert(currentLang === 'fa' ? "موجودی شما کمتر از حداقل برداشت (۱۰,۰۰۰ توکن) است!" : "Your balance is below minimum withdrawal!");
-                return;
-            }
-            alert(currentLang === 'fa' ? "درخواست برداشت ثبت شد و به زودی به کیف پول شما واریز می‌شود!" : "Withdrawal request submitted successfully!");
-            userBalance = 0;
-            updateUI();
-        }
-    </script>
-</body>
-</html>
+                
