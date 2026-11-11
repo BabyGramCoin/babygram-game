@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BabyGram Miner</title>
+    <!-- کتابخانه رسمی TON Connect UI -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -43,6 +44,16 @@
         .lang-btn {
             background: #48cae4;
             color: #0b132b;
+        }
+        .wallet-btn {
+            background: linear-gradient(135deg, #3a86ff, #4ea8de);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
         }
         .card {
             background: #1c2541;
@@ -171,10 +182,6 @@
             padding: 3px 0;
             border-bottom: 1px solid #374151;
         }
-        /* استایل اجباری برای نمایش مطمئن دکمه تن‌کاور */
-        #ton-connect-button > div {
-            min-height: 35px !important;
-        }
     </style>
 </head>
 <body>
@@ -182,8 +189,8 @@
     <div class="header">
         <span id="balanceText">موجودی: <strong>0</strong> $BABYGRAM</span>
         <div class="top-btns">
-            <!-- جایگاه دکمه اتصال کیف پول -->
-            <div id="ton-connect-button"></div>
+            <!-- دکمه اختصاصی اتصال کیف پول -->
+            <button class="wallet-btn" onclick="connectWallet()" id="walletBtn">اتصال کیف پول</button>
             <button class="btn-small lang-btn" onclick="toggleLanguage()" id="langBtn">EN</button>
         </div>
     </div>
@@ -250,19 +257,41 @@
         let channelJoined = false;
         let invitedFriends = [];
 
-        // مقداردهی اولیه TON Connect UI
+        // راه‌اندازی کامل با بازگشت مستقیم به مینی‌اپ
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://babygram-game.onrender.com/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect-button'
+            actionsConfiguration: {
+                twaReturnUrl: 'https://t.me/BabyGramClicker_bot'
+            }
         });
 
+        // تابع باز کردن مدال اتصال
+        async function connectWallet() {
+            try {
+                if (tonConnectUI.connected) {
+                    await tonConnectUI.disconnect();
+                    return;
+                }
+                await tonConnectUI.openModal();
+            } catch (error) {
+                console.error("Connection error:", error);
+                alert(currentLang === 'fa' ? "خطا در اتصال به کیف پول." : "Connection error.");
+            }
+        }
+
+        // رصد تغییر وضعیت اتصال
         tonConnectUI.onStatusChange(walletInfo => {
             if (walletInfo) {
                 walletConnected = true;
                 userHoldingTier = 2;
+                document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
                 document.getElementById('holdingStatus').innerText = currentLang === 'fa' ? "💎 سطح هولد: تایید شده (ضریب 2x)" : "💎 Holding Tier: Verified (2x Multiplier)";
                 updateUI();
                 alert(currentLang === 'fa' ? "کیف پول با موفقیت متصل شد! 🎉" : "Wallet successfully connected! 🎉");
+            } else {
+                walletConnected = false;
+                document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
+                document.getElementById('holdingStatus').innerText = currentLang === 'fa' ? "💎 سطح هولد: عادی (ضریب 1x)" : "💎 Holding Tier: Standard (1x Multiplier)";
             }
         });
 
