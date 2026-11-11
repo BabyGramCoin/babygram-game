@@ -175,7 +175,7 @@
 <body>
 
     <div class="header">
-        <span id="balanceText">موجودی: <strong>0</strong> $BABY</span>
+        <span id="balanceText">موجودی: <strong>0</strong> $BABYGRAM</span>
         <div class="top-btns">
             <button class="btn-small lang-btn" onclick="toggleLanguage()" id="langBtn">EN</button>
             <button class="btn-small" id="connectWalletBtn" onclick="connectWallet()">اتصال کیف پول</button>
@@ -187,7 +187,7 @@
         <h2 id="titleText" style="margin-top: 5px; font-size: 17px;">استخراج BabyGram 💎</h2>
         
         <div class="coin-container">
-            <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/1000015207.jpg" alt="BabyGram Coin" class="coin-img" onerror="this.src='1000015207.jpg'">
+            <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img" onerror="this.src='IMG_20261107_051306_534.jpg'">
         </div>
 
         <div class="timer" id="countdown">00:00:00</div>
@@ -310,7 +310,7 @@
 
         function updateUI() {
             const t = translations[currentLang];
-            document.getElementById('balanceText').innerHTML = `${t.balance}: <strong>${userBalance.toFixed(0)}</strong> $BABY`;
+            document.getElementById('balanceText').innerHTML = `${t.balance}: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
             document.getElementById('titleText').innerText = t.title;
             document.getElementById('withdrawBtn').innerText = t.withdrawText;
             document.getElementById('taskTitle').innerText = t.taskTitle;
@@ -397,7 +397,6 @@
             let refLink = "https://t.me/BabyGramHQ_bot?start=ref_" + Math.floor(100000 + Math.random() * 900000);
             prompt(currentLang === 'fa' ? "لینک دعوت اختصاصی شما (کپی کنید و به دوستانتان بدهید):" : "Your unique referral link (Copy and share):", refLink);
             
-            // شبیه‌سازی هوشمند برای تست واقعی ظاهر و کارکرد لیست دوستان (یک دوست تستی اضافه می‌کند)
             if(invitedFriends.length === 0) {
                 setTimeout(() => {
                     invitedFriends.push({ name: "کاربر تستی (" + (invitedFriends.length + 1) + ")", status: "کیف پول تایید شد ✅", reward: "+۵۰۰ توکن" });
