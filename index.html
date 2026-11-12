@@ -324,7 +324,6 @@
                         document.getElementById('speedBoostBtn').style.display = 'none';
                     }
                 } else {
-                    // بررسی اگر با لینک دعوت آمده باشد
                     if (referrerId && referrerId !== userTelegramId) {
                         try {
                             const { data: refData } = await supabaseClient.from('users').select('*').eq('telegram_id', referrerId).single();
@@ -411,13 +410,12 @@
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "2000000" }] // 0.02 Gram
+                    messages: [{ address: OWNER_WALLET, amount: "2000000" }]
                 });
                 walletVerified = true;
                 document.getElementById('verifyBtn').style.display = 'none';
                 document.getElementById('verifiedDoneBtn').style.display = 'block';
                 
-                // اگر معرف داشته باشد، تعداد دوستان تایید شده‌ی معرف را آپدیت کن
                 if (referrerId) {
                     try {
                         const { data: refData } = await supabaseClient.from('users').select('*').eq('telegram_id', referrerId).single();
@@ -441,7 +439,7 @@
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "200000000" }] // 0.2 Gram
+                    messages: [{ address: OWNER_WALLET, amount: "200000000" }]
                 });
                 speedBoostActive = true;
                 document.getElementById('speedBoostBtn').style.display = 'none';
@@ -457,7 +455,7 @@
                 channelJoined = true;
                 userBalance += 500;
                 document.getElementById('channelBtn').innerText = "Done ✅";
-                document.getElementById('channelBtn').classList.add('done');
+                document.getElementById('channelBtn'].classList.add('done');
                 syncUserToDatabase();
                 updateUIElements();
                 alert("500 tokens reward received for joining the channel!");
@@ -482,4 +480,8 @@
                 alert("Minimum balance for withdrawal is 100,000 tokens!");
                 return;
             }
-            ale
+            alert("Withdrawal request submitted successfully.");
+        }
+    </script>
+</body>
+</html>
