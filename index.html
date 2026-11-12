@@ -6,8 +6,8 @@
     <title>BabyGram Miner</title>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- کتابخانه Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- اصلاح کتابخانه Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
         body {
             background-color: #0b132b;
@@ -305,10 +305,10 @@
     </div>
 
     <script>
-        // اتصال به دیتابیس Supabase
+        // اتصال امن به Supabase
         const supabaseUrl = 'https://wuycoooqypvrgoxyetsm.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
         // گرفتن شناسه واقعی کاربر از تلگرام
         const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -336,9 +336,9 @@
             }
         });
 
-        // تابع همگام‌سازی و ذخیره ابری اطلاعات کاربر در Supabase
         async function syncUserToDatabase() {
-            const { data, error } = await supabase
+            if (!supabaseClient) return;
+            const { data, error } = await supabaseClient
                 .from('users')
                 .upsert([
                     { 
@@ -357,9 +357,9 @@
             }
         }
 
-        // بارگذاری اطلاعات کاربر از دیتابیس ابری به محض ورود
         async function loadUserDataFromCloud() {
-            const { data, error } = await supabase
+            if (!supabaseClient) return;
+            const { data, error } = await supabaseClient
                 .from('users')
                 .select('*')
                 .eq('telegram_id', userTelegramId)
@@ -378,12 +378,10 @@
                 }
                 updateUI();
             } else {
-                // اگر کاربر جدید بود، در دیتابیس ثبتش می‌کنیم
                 syncUserToDatabase();
             }
         }
 
-        // اجرای لود داده‌ها هنگام بارگذاری صفحه
         window.addEventListener('DOMContentLoaded', () => {
             loadUserDataFromCloud();
         });
@@ -440,7 +438,7 @@
                 document.getElementById('holdingBonus').innerText = "تایید هویت موفقیت‌آمیز بود! 🎉";
                 
                 updateUI();
-                syncUserToDatabase(); // آپدیت وضعیت در دیتابیس ابری
+                syncUserToDatabase();
                 
                 alert(currentLang === 'fa' ? "تایید هویت با موفقیت انجام شد!" : "Verification successful!");
             } catch (error) {
@@ -525,4 +523,6 @@
                 localStorage.removeItem('babygram_end_time');
                 isMining = false;
                 document.getElementById('countdown').innerText = "00:00:00";
-                btn.innerText = currentLang === 'fa' ? "شروع
+                btn.innerText = currentLang === 'fa' ? "شروع استخراج" : "Start Mining";
+                btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
+           
