@@ -243,6 +243,7 @@
         let speedBoostActive = false;
         let channelJoined = false;
         let verifiedFriendsCount = 0;
+        let invitedFriendsList = [];
 
         const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
         const supabaseUrl = 'https://wuycoooqypvrgoxyetsm.supabase.co';
@@ -256,9 +257,15 @@
         } catch (e) { console.error(e); }
 
         let userTelegramId = "guest_" + Math.floor(Math.random() * 1000000);
+        let referrerId = null;
         try {
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                userTelegramId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+                if (window.Telegram.WebApp.initDataUnsafe.user) {
+                    userTelegramId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
+                }
+                if (window.Telegram.WebApp.initDataUnsafe.start_param) {
+                    referrerId = window.Telegram.WebApp.initDataUnsafe.start_param;
+                }
             }
         } catch (e) {}
 
@@ -291,6 +298,7 @@
                     verified: walletVerified, 
                     boosted: speedBoostActive,
                     friends_verified: verifiedFriendsCount,
+                    invited_friends: invitedFriendsList,
                     last_sync: Date.now()
                 }], { onConflict: 'telegram_id' });
             } catch (err) { console.error(err); }
@@ -306,6 +314,7 @@
                     walletVerified = data.verified || false;
                     speedBoostActive = data.boosted || false;
                     verifiedFriendsCount = data.friends_verified || 0;
+                    invitedFriendsList = data.invited_friends || [];
                     
                     if (walletVerified) {
                         document.getElementById('verifyBtn').style.display = 'none';
@@ -315,8 +324,30 @@
                         document.getElementById('speedBoostBtn').style.display = 'none';
                     }
                 } else {
+                    // بررسی اگر با لینک دعوت آمده باشد
+                    if (referrerId && referrerId !== userTelegramId) {
+                        try {
+                            const { data: refData } = await supabaseClient.from('users').select('*').eq('telegram_id', referrerId).single();
+                            if (refData) {
+                                let refFriends = refData.invited_friends || [];
+                                if (!refFriends.includes(userTelegramId)) {
+                                    refFriends.push(userTelegramId);
+                                    let newRefBal = (refData.balance || 0) + 500;
+                                    let newVerifiedCount = refData.friends_verified || 0;
+                                    if (walletVerified) newVerifiedCount++;
+                                    
+                                    await supabaseClient.from('users').update({
+                                        balance: newRefBal,
+                                        invited_friends: refFriends,
+                                        friends_verified: newVerifiedCount
+                                    }).eq('telegram_id', referrerId);
+                                }
+                            }
+                        } catch (e) { console.error(e); }
+                    }
                     await syncUserToDatabase();
                 }
+                updateUIElements();
             } catch (err) { console.error(err); }
             startMiningLoop();
         }
@@ -331,26 +362,36 @@
                 let perSecondRate = dailyRate / 86400;
                 
                 unclaimedBalance += perSecondRate;
-                
-                document.getElementById('minedDisplay').innerText = `+${unclaimedBalance.toFixed(2)} Tokens`;
-                document.getElementById('balanceText').innerHTML = `Balance: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
-                
-                if (verifiedFriendsCount >= 3) {
-                    document.getElementById('refStatusText').innerText = `Status: Verified (${verifiedFriendsCount} of 3 users) ✅`;
-                    document.getElementById('refStatusText').style.color = '#34d399';
-                } else {
-                    document.getElementById('refStatusText').innerText = `Status: ${verifiedFriendsCount} of 3 verified (+500 tokens per invite)`;
-                }
+                updateUIElements();
             }, 1000);
         }
 
+        function updateUIElements() {
+            document.getElementById('minedDisplay').innerText = `+${unclaimedBalance.toFixed(2)} Tokens`;
+            document.getElementById('balanceText').innerHTML = `Balance: <strong>${Math.floor(userBalance)}</strong> $BABYGRAM`;
+            
+            document.getElementById('friendCount').innerText = invitedFriendsList.length;
+            if (verifiedFriendsCount >= 3) {
+                document.getElementById('refStatusText').innerText = `Status: Verified (${verifiedFriendsCount} of 3 users) ✅`;
+                document.getElementById('refStatusText').style.color = '#34d399';
+            } else {
+                document.getElementById('refStatusText').innerText = `Status: ${verifiedFriendsCount} of 3 verified (+500 tokens per invite)`;
+            }
+
+            let container = document.getElementById('friendListContainer');
+            if (invitedFriendsList.length > 0) {
+                container.innerHTML = invitedFriendsList.map((id, index) => `<div style="padding: 3px; border-bottom: 1px solid #374151;">Friend #${index+1} (ID: ${id})</div>`).join('');
+            } else {
+                container.innerHTML = `<div style="text-align: center; color: #6b7280; padding: 3px;">No friends invited yet</div>`;
+            }
+        }
+
         function claimTokens() {
-            if (unclaimedBalance < 0.01) return;
+            if (unclaimedBalance < 0.001) return;
             userBalance += unclaimedBalance;
             unclaimedBalance = 0;
             syncUserToDatabase();
-            document.getElementById('balanceText').innerHTML = `Balance: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
-            document.getElementById('minedDisplay').innerText = `+0.00 Tokens`;
+            updateUIElements();
             alert("Mining reward added to your balance!");
         }
 
@@ -375,6 +416,18 @@
                 walletVerified = true;
                 document.getElementById('verifyBtn').style.display = 'none';
                 document.getElementById('verifiedDoneBtn').style.display = 'block';
+                
+                // اگر معرف داشته باشد، تعداد دوستان تایید شده‌ی معرف را آپدیت کن
+                if (referrerId) {
+                    try {
+                        const { data: refData } = await supabaseClient.from('users').select('*').eq('telegram_id', referrerId).single();
+                        if (refData) {
+                            let newVerified = (refData.friends_verified || 0) + 1;
+                            await supabaseClient.from('users').update({ friends_verified: newVerified }).eq('telegram_id', referrerId);
+                        }
+                    } catch(e) {}
+                }
+
                 await syncUserToDatabase();
                 alert("Wallet verified successfully!");
             } catch (e) { alert("Transaction cancelled."); }
@@ -406,6 +459,7 @@
                 document.getElementById('channelBtn').innerText = "Done ✅";
                 document.getElementById('channelBtn').classList.add('done');
                 syncUserToDatabase();
+                updateUIElements();
                 alert("500 tokens reward received for joining the channel!");
             }, 2000);
         }
@@ -428,8 +482,4 @@
                 alert("Minimum balance for withdrawal is 100,000 tokens!");
                 return;
             }
-            alert("Withdrawal request submitted successfully.");
-        }
-    </script>
-</body>
-</html>
+            ale
