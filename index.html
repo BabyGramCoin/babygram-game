@@ -259,11 +259,12 @@
         let userTelegramId = "guest_" + Math.floor(Math.random() * 1000000);
         let referrerId = null;
         try {
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-                if (window.Telegram.WebApp.initDataUnsafe.user) {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                     userTelegramId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
                 }
-                if (window.Telegram.WebApp.initDataUnsafe.start_param) {
+                if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.start_param) {
                     referrerId = window.Telegram.WebApp.initDataUnsafe.start_param;
                 }
             }
@@ -455,7 +456,7 @@
                 channelJoined = true;
                 userBalance += 500;
                 document.getElementById('channelBtn').innerText = "Done ✅";
-                document.getElementById('channelBtn'].classList.add('done');
+                document.getElementById('channelBtn').classList.add('done');
                 syncUserToDatabase();
                 updateUIElements();
                 alert("500 tokens reward received for joining the channel!");
@@ -483,5 +484,4 @@
             alert("Withdrawal request submitted successfully.");
         }
     </script>
-</body>
-</html>
+    
