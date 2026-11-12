@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" id="htmlTag">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,25 +25,6 @@
             padding: 10px 12px;
             border-radius: 12px;
             margin-bottom: 15px;
-        }
-        .top-btns {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-small {
-            background: #3a86ff;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .lang-btn {
-            background: #48cae4;
-            color: #0b132b;
         }
         .wallet-btn {
             background: linear-gradient(135deg, #3a86ff, #4ea8de);
@@ -158,14 +139,14 @@
             font-weight: bold;
             letter-spacing: 2px;
         }
-        .holding-box, .task-box {
+        .task-box {
             background: #111827;
             border: 1px solid #374151;
             padding: 10px;
             border-radius: 10px;
             margin-top: 10px;
             font-size: 12px;
-            text-align: right;
+            text-align: left;
         }
         .task-item {
             display: flex;
@@ -175,6 +156,7 @@
             background: #1c2541;
             padding: 8px;
             border-radius: 8px;
+            text-align: left;
         }
         .task-btn {
             background: #10b981;
@@ -196,7 +178,7 @@
             margin-top: 8px;
             font-size: 11px;
             color: #d1d5db;
-            text-align: right;
+            text-align: left;
             padding: 5px;
             background: #1c2541;
             border-radius: 6px;
@@ -206,63 +188,54 @@
 <body>
 
     <div class="header">
-        <span id="balanceText">موجودی: <strong>0</strong> $BABYGRAM</span>
-        <div class="top-btns">
-            <button class="wallet-btn" onclick="connectWallet()" id="walletBtn">اتصال کیف پول</button>
-            <button class="btn-small lang-btn" onclick="toggleLanguage()" id="langBtn">EN</button>
-        </div>
+        <span id="balanceText">Balance: <strong>0</strong> $BABYGRAM</span>
+        <button class="wallet-btn" onclick="connectWallet()" id="walletBtn">Connect Wallet</button>
     </div>
 
     <div class="card">
-        <h2 id="titleText" style="margin-top: 5px; font-size: 16px;">استخراج خودکار BabyGram 💎</h2>
+        <h2 style="margin-top: 5px; font-size: 16px;">BabyGram Auto Miner 💎</h2>
         
         <div class="coin-container">
             <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img">
         </div>
 
-        <div class="timer" id="minedDisplay">+0.00 توکن</div>
-        <p id="status" style="font-size: 11px; color: #adb5bd; margin: 5px 0;">استخراج ۲۴ ساعته فعال است</p>
+        <div class="timer" id="minedDisplay">+0.00 Tokens</div>
+        <p style="font-size: 11px; color: #adb5bd; margin: 5px 0;">24-Hour Mining Active</p>
 
-        <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 تایید هویت کیف پول (0.02 TON)</button>
-        <button class="btn-verified-done" id="verifiedDoneBtn">تایید هویت شده ✅</button>
+        <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 Verify Wallet (0.02 Gram)</button>
+        <button class="btn-verified-done" id="verifiedDoneBtn">Wallet Verified ✅</button>
         
-        <!-- دکمه سرعت دوبرابر که پس از خرید محو می‌شود -->
-        <button class="btn-speed-boost" id="speedBoostBtn" onclick="buySpeedBoost()">⚡️ دوبرابر کردن سرعت (0.2 TON)</button>
+        <button class="btn-speed-boost" id="speedBoostBtn" onclick="buySpeedBoost()">⚡️ Double Speed Boost (0.2 Gram)</button>
 
-        <div class="holding-box">
-            <span id="speedStatus">🚀 سرعت استخراج: پایه (250 توکن در روز)</span>
-        </div>
-
-        <button class="btn-main" onclick="claimTokens()">دریافت سود انباشته (Claim)</button>
-        <button class="btn-withdraw" onclick="withdrawTokens()">برداشت به کیف پول (حداقل ۱۰۰,۰۰۰)</button>
+        <button class="btn-main" onclick="claimTokens()">Claim Mined Tokens</button>
+        <button class="btn-withdraw" onclick="withdrawTokens()">Withdraw to Wallet (Min 100,000)</button>
         
         <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fswap%2FGRAM%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn-buy">
-            🛒 خرید مستقیم و هولد روی Dedust
+            🛒 Buy & Hold on Dedust
         </a>
     </div>
 
     <div class="card">
-        <h3 style="font-size: 14px; margin-top: 0; color: #4cc9f0;">🎁 تسک‌ها و دعوت‌ها</h3>
+        <h3 style="font-size: 14px; margin-top: 0; color: #4cc9f0; text-align: left;">🎁 Tasks & Referrals</h3>
         
         <div class="task-item">
-            <span style="font-size: 11px;">عضویت در کانال @BabyGramHQ (+۵۰۰ توکن)</span>
-            <button class="task-btn" id="channelBtn" onclick="joinChannel()">بررسی</button>
+            <span style="font-size: 11px;">Join @BabyGramHQ Channel (+500 Tokens)</span>
+            <button class="task-btn" id="channelBtn" onclick="joinChannel()">Verify</button>
         </div>
 
         <div class="task-box">
-            <span style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت دوستان (نیاز به ۳ دعوت با ولت تاییدشده)</span><br>
-            <span id="refStatusText" style="color: #f87171; font-size: 10px;">وضعیت: ۰ از ۳ نفر تایید شده‌اند</span><br>
-            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="shareRefLink()">ارسال لینک دعوت (تلگرام)</button>
+            <span style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 Invite Friends (Need 3 verified for withdrawal)</span><br>
+            <span id="refStatusText" style="color: #f87171; font-size: 10px;">Status: 0 of 3 verified (+500 tokens per invite)</span><br>
+            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="shareRefLink()">Share Invite Link (Telegram)</button>
             
-            <div style="margin-top: 8px; font-weight: bold; font-size: 11px; color: #4cc9f0;">دوستان دعوت‌شده (<span id="friendCount">0</span>):</div>
+            <div style="margin-top: 8px; font-weight: bold; font-size: 11px; color: #4cc9f0;">Invited Friends (<span id="friendCount">0</span>):</div>
             <div class="friend-list" id="friendListContainer">
-                <div style="text-align: center; color: #6b7280; padding: 3px;">هنوز دوستی دعوت نشده</div>
+                <div style="text-align: center; color: #6b7280; padding: 3px;">No friends invited yet</div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentLang = 'fa';
         let userBalance = 0;
         let unclaimedBalance = 0;
         let walletConnected = false;
@@ -270,11 +243,10 @@
         let speedBoostActive = false;
         let channelJoined = false;
         let verifiedFriendsCount = 0;
-        let lastUpdateTime = Date.now();
 
         const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
         const supabaseUrl = 'https://wuycoooqypvrgoxyetsm.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
         
         let supabaseClient = null;
         try {
@@ -300,10 +272,10 @@
                 tonConnectUI.onStatusChange(walletInfo => {
                     if (walletInfo) {
                         walletConnected = true;
-                        document.getElementById('walletBtn').innerText = "متصل شد ✅";
+                        document.getElementById('walletBtn').innerText = "Connected ✅";
                     } else {
                         walletConnected = false;
-                        document.getElementById('walletBtn').innerText = "اتصال کیف پول";
+                        document.getElementById('walletBtn').innerText = "Connect Wallet";
                     }
                 });
             }
@@ -341,7 +313,6 @@
                     }
                     if (speedBoostActive) {
                         document.getElementById('speedBoostBtn').style.display = 'none';
-                        document.getElementById('speedStatus').innerText = "🚀 سرعت استخراج: ۲ برابر (۵۰۰ توکن در روز)";
                     }
                 } else {
                     await syncUserToDatabase();
@@ -356,36 +327,36 @@
 
         function startMiningLoop() {
             setInterval(() => {
-                // نرخ روزانه: پایه 250 یا با بوست 500 توکن در 24 ساعت (تبدیل به ثانیه)
                 let dailyRate = speedBoostActive ? 500 : 250;
                 let perSecondRate = dailyRate / 86400;
                 
                 unclaimedBalance += perSecondRate;
                 
-                document.getElementById('minedDisplay').innerText = `+${unclaimedBalance.toFixed(2)} توکن`;
-                document.getElementById('balanceText').innerHTML = `موجودی: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
+                document.getElementById('minedDisplay').innerText = `+${unclaimedBalance.toFixed(2)} Tokens`;
+                document.getElementById('balanceText').innerHTML = `Balance: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
                 
-                // آپدیت وضعیت رفرال‌ها
                 if (verifiedFriendsCount >= 3) {
-                    document.getElementById('refStatusText').innerText = `وضعیت: تایید شده (${verifiedFriendsCount} از ۳ نفر) ✅`;
+                    document.getElementById('refStatusText').innerText = `Status: Verified (${verifiedFriendsCount} of 3 users) ✅`;
                     document.getElementById('refStatusText').style.color = '#34d399';
                 } else {
-                    document.getElementById('refStatusText').innerText = `وضعیت: ${verifiedFriendsCount} از ۳ نفر تایید شده‌اند`;
+                    document.getElementById('refStatusText').innerText = `Status: ${verifiedFriendsCount} of 3 verified (+500 tokens per invite)`;
                 }
             }, 1000);
         }
 
         function claimTokens() {
-            if (unclaimedBalance < 1) return;
-            userBalance += Math.floor(unclaimedBalance);
+            if (unclaimedBalance < 0.01) return;
+            userBalance += unclaimedBalance;
             unclaimedBalance = 0;
             syncUserToDatabase();
-            alert("پاداش استخراج به موجودی شما اضافه شد!");
+            document.getElementById('balanceText').innerHTML = `Balance: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
+            document.getElementById('minedDisplay').innerText = `+0.00 Tokens`;
+            alert("Mining reward added to your balance!");
         }
 
         async function connectWallet() {
             try {
-                if (!tonConnectUI) return alert("در حال راه‌اندازی کیف پول...");
+                if (!tonConnectUI) return alert("Initializing wallet...");
                 if (tonConnectUI.connected) await tonConnectUI.disconnect();
                 else await tonConnectUI.openModal();
             } catch (err) { console.error(err); }
@@ -393,38 +364,37 @@
 
         async function verifyWalletWithFee() {
             if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("لطفاً ابتدا کیف پول خود را متصل کنید!");
+                alert("Please connect your wallet first!");
                 return connectWallet();
             }
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "2000000" }] // 0.02 TON
+                    messages: [{ address: OWNER_WALLET, amount: "2000000" }] // 0.02 Gram
                 });
                 walletVerified = true;
                 document.getElementById('verifyBtn').style.display = 'none';
                 document.getElementById('verifiedDoneBtn').style.display = 'block';
                 await syncUserToDatabase();
-                alert("تایید هویت کیف پول با موفقیت انجام شد!");
-            } catch (e) { alert("تراکنش لغو شد."); }
+                alert("Wallet verified successfully!");
+            } catch (e) { alert("Transaction cancelled."); }
         }
 
         async function buySpeedBoost() {
             if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("لطفاً ابتدا کیف پول خود را متصل کنید!");
+                alert("Please connect your wallet first!");
                 return connectWallet();
             }
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "200000000" }] // 0.2 TON
+                    messages: [{ address: OWNER_WALLET, amount: "200000000" }] // 0.2 Gram
                 });
                 speedBoostActive = true;
                 document.getElementById('speedBoostBtn').style.display = 'none';
-                document.getElementById('speedStatus').innerText = "🚀 سرعت استخراج: ۲ برابر (۵۰۰ توکن در روز)";
                 await syncUserToDatabase();
-                alert("سرعت استخراج شما دو برابر شد!");
-            } catch (e) { alert("تراکنش لغو شد."); }
+                alert("Mining speed doubled!");
+            } catch (e) { alert("Transaction cancelled."); }
         }
 
         function joinChannel() {
@@ -433,17 +403,17 @@
             setTimeout(() => {
                 channelJoined = true;
                 userBalance += 500;
-                document.getElementById('channelBtn').innerText = "انجام شد ✅";
+                document.getElementById('channelBtn').innerText = "Done ✅";
                 document.getElementById('channelBtn').classList.add('done');
                 syncUserToDatabase();
-                alert("۵۰۰ توکن پاداش عضویت در کانال دریافت شد!");
+                alert("500 tokens reward received for joining the channel!");
             }, 2000);
         }
 
         function shareRefLink() {
             const refLink = `https://t.me/BabyGramClicker_bot?start=${userTelegramId}`;
             if (window.Telegram && window.Telegram.WebApp) {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیا توی ربات BabyGram و توکن استخراج کن! 💎")}`, '_blank');
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Come to BabyGram bot and mine tokens! 💎")}`, '_blank');
             } else {
                 window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}`, '_blank');
             }
@@ -451,20 +421,14 @@
 
         function withdrawTokens() {
             if (verifiedFriendsCount < 3) {
-                alert("برای برداشت باید حداقل ۳ نفر دعوت کرده باشید که کیف پولشان را تایید کرده‌اند!");
+                alert("To withdraw, you must invite at least 3 friends who have verified their wallets!");
                 return;
             }
             if (userBalance < 100000) {
-                alert("حداقل موجودی برای برداشت ۱۰۰,۰۰۰ توکن است!");
+                alert("Minimum balance for withdrawal is 100,000 tokens!");
                 return;
             }
-            alert("درخواست برداشت شما با موفقیت ثبت شد.");
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'fa' ? 'en' : 'fa';
-            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'EN' : 'FA';
-            document.getElementById('htmlTag').setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+            alert("Withdrawal request submitted successfully.");
         }
     </script>
 </body>
