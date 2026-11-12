@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BabyGram Tapper</title>
-    <!-- استفاده از کتابخانه سبک و پایدار ولت -->
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -16,6 +14,7 @@
             padding: 10px;
             margin: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .header {
             display: flex;
@@ -30,7 +29,7 @@
             background: linear-gradient(135deg, #3a86ff, #4ea8de);
             color: white;
             border: none;
-            padding: 6px 14px;
+            padding: 7px 14px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
@@ -39,15 +38,14 @@
         .card {
             background: #1c2541;
             border-radius: 16px;
-            padding: 12px;
+            padding: 14px;
             max-width: 400px;
-            margin: 0 auto;
+            margin: 0 auto 12px auto;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            margin-bottom: 12px;
         }
         .tap-circle {
-            width: 130px;
-            height: 130px;
+            width: 135px;
+            height: 135px;
             margin: 10px auto;
             border-radius: 50%;
             cursor: pointer;
@@ -60,11 +58,11 @@
             transition: transform 0.05s ease;
         }
         .tap-circle:active {
-            transform: scale(0.93);
+            transform: scale(0.92);
         }
         .coin-img {
-            width: 110px;
-            height: 110px;
+            width: 115px;
+            height: 115px;
             border-radius: 50%;
             object-fit: cover;
             pointer-events: none;
@@ -92,7 +90,7 @@
             font-weight: bold;
             width: 100%;
             margin-top: 8px;
-            display: none; /* تا ولت وصل نشود نشان داده نمی‌شود */
+            display: none;
         }
         .btn-verified-done {
             background: #10b981;
@@ -143,18 +141,19 @@
             width: 100%;
             margin-top: 8px;
             text-decoration: none;
-            display: inline-block;
+            display: block;
+            box-sizing: border-box;
         }
         .timer {
-            font-size: 20px;
+            font-size: 22px;
             color: #4cc9f0;
-            margin: 5px 0;
+            margin: 6px 0;
             font-weight: bold;
         }
         .task-box {
             background: #111827;
             border: 1px solid #374151;
-            padding: 8px;
+            padding: 10px;
             border-radius: 10px;
             margin-top: 8px;
             font-size: 11px;
@@ -166,14 +165,15 @@
             align-items: center;
             margin-top: 6px;
             background: #1c2541;
-            padding: 6px 8px;
+            padding: 8px 10px;
             border-radius: 8px;
+            font-size: 12px;
         }
         .task-btn {
             background: #10b981;
             color: white;
             border: none;
-            padding: 4px 8px;
+            padding: 5px 10px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 11px;
@@ -190,9 +190,19 @@
             font-size: 11px;
             color: #d1d5db;
             text-align: left;
-            padding: 4px;
+            padding: 5px;
             background: #1c2541;
             border-radius: 6px;
+        }
+        .ref-code-box {
+            background: #1c2541;
+            padding: 6px;
+            border-radius: 6px;
+            margin-top: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px dashed #4cc9f0;
         }
     </style>
 </head>
@@ -204,22 +214,22 @@
     </div>
 
     <div class="card">
-        <h2 style="margin-top: 3px; font-size: 15px;">BabyGram Tap & Mine 💎</h2>
+        <h2 style="margin-top: 2px; font-size: 16px;">BabyGram Tap & Mine 💎</h2>
         
-        <div class="tap-circle" onclick="handleTap(event)">
+        <div class="tap-circle" id="tapCoinBtn" onclick="handleTap(event)">
             <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg" alt="BabyGram" class="coin-img">
         </div>
 
         <div class="timer" id="scoreDisplay">0 $BABYGRAM</div>
-        <p style="font-size: 11px; color: #adb5bd; margin: 3px 0;">Tap to earn tokens instantly!</p>
+        <p style="font-size: 11px; color: #adb5bd; margin: 3px 0;">Tap the coin to earn tokens!</p>
 
-        <!-- دکمه وریفای که فقط بعد از اتصال کیف پول نمایان می‌شود -->
-        <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 Verify Wallet (0.02 TON)</button>
+        <!-- دکمه وریفای با هزینه دقیق 0.02 -->
+        <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 Verify Wallet (0.02 Gram)</button>
         <button class="btn-verified-done" id="verifiedDoneBtn">Wallet Verified ✅</button>
         
-        <button class="btn-speed-boost" id="speedBoostBtn" onclick="buySpeedBoost()">⚡️ 2x Tap Power Forever (0.2 TON)</button>
+        <button class="btn-speed-boost" id="speedBoostBtn" onclick="buySpeedBoost()">⚡️ 2x Tap Power Forever (0.2 Gram)</button>
 
-        <button class="btn-withdraw" onclick="withdrawTokens()">Withdraw to Wallet (Min 1,000,000)</button>
+        <button class="btn-withdraw" onclick="withdrawTokens()">Withdraw to Wallet (Min 500,000)</button>
         
         <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fswap%2FGRAM%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn-buy">
             🛒 Buy & Hold on Dedust
@@ -230,24 +240,29 @@
         <h3 style="font-size: 13px; margin-top: 0; color: #4cc9f0; text-align: left;">🎁 Tasks & Referrals</h3>
         
         <div class="task-item">
-            <span>Join @BabyGramHQ Channel (+5,000 Tokens)</span>
+            <span>Join @BabyGramHQ Channel (+1,000 Tokens)</span>
             <button class="task-btn" id="channelBtn" onclick="joinChannel()">Verify</button>
         </div>
 
         <div class="task-box">
             <span style="font-weight: bold; color: #fbbf24;">👥 Invite Friends (Need 3 verified for withdrawal)</span><br>
-            <span id="refStatusText" style="color: #f87171;">Status: 0 of 3 verified (+2,000 tokens per invite)</span><br>
-            <button class="btn-main" style="margin-top: 5px; font-size: 11px; padding: 5px;" onclick="shareRefLink()">Share Unique Invite Link</button>
+            <span id="refStatusText" style="color: #f87171;">Status: 0 of 3 verified (+1,000 tokens per verified invite)</span>
             
-            <div style="margin-top: 6px; font-weight: bold; color: #4cc9f0;">Invited Friends (<span id="friendCount">0</span>):</div>
+            <div class="ref-code-box">
+                <span id="myRefCodeText" style="color: #4cc9f0; font-family: monospace;">Loading code...</span>
+                <button class="task-btn" style="background: #3a86ff;" onclick="copyInviteLink()">Copy Link</button>
+            </div>
+
+            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 7px;" onclick="shareRefLink()">📤 Share Invite Link to Friends</button>
+            
+            <div style="margin-top: 6px; font-weight: bold; color: #4cc9f0;">Verified Invited Friends (<span id="friendCount">0</span>):</div>
             <div class="friend-list" id="friendListContainer">
-                <div style="text-align: center; color: #6b7280; padding: 2px;">No friends invited yet</div>
+                <div style="text-align: center; color: #6b7280; padding: 2px;">No verified friends invited yet</div>
             </div>
         </div>
     </div>
 
     <script>
-        // حافظه محلی برای حفظ امتیازها و جلوگیری از صفر شدن
         let userBalance = parseFloat(localStorage.getItem('baby_balance')) || 0;
         let walletVerified = localStorage.getItem('baby_verified') === 'true';
         let speedBoostActive = localStorage.getItem('baby_boosted') === 'true';
@@ -258,42 +273,26 @@
 
         const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
         let lastTapTime = 0;
+        let tapHistory = [];
         let tonConnectUI = null;
+
+        let myUserId = localStorage.getItem('baby_my_uid');
+        if (!myUserId) {
+            myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('baby_my_uid', myUserId);
+        }
 
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+                if (tgUser && tgUser.id) {
+                    myUserId = tgUser.id.toString();
+                    localStorage.setItem('baby_my_uid', myUserId);
+                }
             }
         } catch (e) {}
-
-        // راه‌اندازی ایمن TonConnect بدون فریز صفحه
-        try {
-            if (window.TON_CONNECT_UI) {
-                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                    manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
-                    actionsConfiguration: { twaReturnUrl: 'https://t.me/BabyGramClicker_bot' }
-                });
-
-                tonConnectUI.onStatusChange(walletInfo => {
-                    if (walletInfo && walletInfo.account && walletInfo.account.address) {
-                        userConnectedAddress = walletInfo.account.address;
-                        localStorage.setItem('baby_wallet_address', userConnectedAddress);
-                        document.getElementById('walletConnectBtn').innerText = "Connected ✅";
-                        // وقتی ولت وصل شد، دکمه وریفای نمایان می‌شود
-                        if (!walletVerified) {
-                            document.getElementById('verifyBtn').style.display = 'block';
-                        }
-                    } else {
-                        userConnectedAddress = "";
-                        localStorage.removeItem('baby_wallet_address');
-                        document.getElementById('walletConnectBtn').innerText = "Connect Wallet";
-                        document.getElementById('verifyBtn').style.display = 'none';
-                    }
-                });
-            }
-        } catch (e) {
-            console.error("TonConnect init error:", e);
-        }
 
         function saveData() {
             localStorage.setItem('baby_balance', userBalance);
@@ -304,81 +303,96 @@
             localStorage.setItem('baby_ref_list', JSON.stringify(invitedFriendsList));
         }
 
-        window.onload = function() {
-            if (userConnectedAddress) {
-                document.getElementById('walletConnectBtn').innerText = "Connected ✅";
-            }
-            if (walletVerified) {
-                document.getElementById('verifyBtn').style.display = 'none';
-                document.getElementById('verifiedDoneBtn').style.display = 'block';
-            } else if (userConnectedAddress) {
-                document.getElementById('verifyBtn').style.display = 'block';
-            }
-            if (speedBoostActive) {
-                document.getElementById('speedBoostBtn').style.display = 'none';
-            }
-            if (channelJoined) {
-                document.getElementById('channelBtn').innerText = "Done ✅";
-                document.getElementById('channelBtn').classList.add('done');
-            }
-            updateUI();
-        };
-
-        // سیستم تپ ضد تقلب و اتوکلیکر (فاصله کمتر از ۶۰ میلی‌ثانیه ثبت نمی‌شود)
+        // ضد اسپم و ضد اتوکلیکر
         function handleTap(event) {
             let now = Date.now();
-            if (now - lastTapTime < 60) return; 
-            lastTapTime = now;
+            if (now - lastTapTime < 70) return;
+            tapHistory.push(now);
+            tapHistory = tapHistory.filter(t => now - t < 1000);
+            if (tapHistory.length > 12) return;
 
+            lastTapTime = now;
             let tapPower = speedBoostActive ? 2 : 1;
             userBalance += tapPower;
             saveData();
             updateUI();
 
-            showFloatingText(event.clientX || event.touches[0].clientX, event.clientY || event.touches[0].clientY, `+${tapPower}`);
+            let x = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : window.innerWidth / 2);
+            let y = event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : 200);
+            showFloatingText(x, y, `+${tapPower}`);
         }
 
         function showFloatingText(x, y, text) {
             let el = document.createElement('div');
             el.innerText = text;
             el.style.position = 'fixed';
-            el.style.left = (x - 15) + 'px';
-            el.style.top = (y - 30) + 'px';
+            el.style.left = (x - 12) + 'px';
+            el.style.top = (y - 25) + 'px';
             el.style.color = '#4cc9f0';
             el.style.fontWeight = 'bold';
             el.style.fontSize = '18px';
             el.style.pointerEvents = 'none';
-            el.style.transition = 'all 0.4s ease-out';
+            el.style.transition = 'all 0.35s ease-out';
             document.body.appendChild(el);
             setTimeout(() => {
-                el.style.top = (y - 70) + 'px';
+                el.style.top = (y - 65) + 'px';
                 el.style.opacity = '0';
-            }, 20);
-            setTimeout(() => el.remove(), 400);
+            }, 15);
+            setTimeout(() => el.remove(), 360);
         }
 
         function updateUI() {
             document.getElementById('scoreDisplay').innerText = Math.floor(userBalance).toLocaleString() + " $BABYGRAM";
             document.getElementById('balanceText').innerHTML = `Balance: <strong>${Math.floor(userBalance).toLocaleString()}</strong> $BABYGRAM`;
+            document.getElementById('myRefCodeText').innerText = `Code: ${myUserId}`;
             
             document.getElementById('friendCount').innerText = invitedFriendsList.length;
             if (verifiedFriendsCount >= 3) {
-                document.getElementById('refStatusText').innerText = `Status: Verified (${verifiedFriendsCount} of 3 users) ✅`;
+                document.getElementById('refStatusText').innerText = `Status: Ready for Withdrawal (${verifiedFriendsCount}/3 verified) ✅`;
                 document.getElementById('refStatusText').style.color = '#34d399';
             } else {
-                document.getElementById('refStatusText').innerText = `Status: ${verifiedFriendsCount} of 3 verified (+2,000 tokens per invite)`;
+                document.getElementById('refStatusText').innerText = `Status: ${verifiedFriendsCount} of 3 verified (+1,000 tokens per verified invite)`;
             }
 
             let container = document.getElementById('friendListContainer');
             if (invitedFriendsList.length > 0) {
-                container.innerHTML = invitedFriendsList.map((id, index) => `<div style="padding: 3px; border-bottom: 1px solid #374151;">Friend #${index+1} (ID: ${id})</div>`).join('');
+                container.innerHTML = invitedFriendsList.map((id, index) => `<div style="padding: 3px; border-bottom: 1px solid #374151;">✅ Verified Friend #${index+1} (ID: ${id})</div>`).join('');
             } else {
-                container.innerHTML = `<div style="text-align: center; color: #6b7280; padding: 2px;">No friends invited yet</div>`;
+                container.innerHTML = `<div style="text-align: center; color: #6b7280; padding: 2px;">No verified friends invited yet</div>`;
             }
         }
 
-        // مدیریت اتصال کیف پول
+        function initTonConnectSafe() {
+            try {
+                if (window.TON_CONNECT_UI) {
+                    tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                        manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
+                        actionsConfiguration: { twaReturnUrl: 'https://t.me/BabyGramClicker_bot' }
+                    });
+
+                    tonConnectUI.onStatusChange(walletInfo => {
+                        if (walletInfo && walletInfo.account && walletInfo.account.address) {
+                            userConnectedAddress = walletInfo.account.address;
+                            localStorage.setItem('baby_wallet_address', userConnectedAddress);
+                            document.getElementById('walletConnectBtn').innerText = "Connected ✅";
+                            if (!walletVerified) {
+                                document.getElementById('verifyBtn').style.display = 'block';
+                            }
+                        } else {
+                            userConnectedAddress = "";
+                            localStorage.removeItem('baby_wallet_address');
+                            document.getElementById('walletConnectBtn').innerText = "Connect Wallet";
+                            document.getElementById('verifyBtn').style.display = 'none';
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log("Wallet loading...");
+            }
+        }
+
         async function toggleWallet() {
+            if (!tonConnectUI) initTonConnectSafe();
             try {
                 if (tonConnectUI) {
                     if (tonConnectUI.connected) {
@@ -387,31 +401,29 @@
                         await tonConnectUI.openModal();
                     }
                 } else {
-                    window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?text=Connect_Wallet`, '_blank');
+                    alert("Wallet library is loading, please wait 2 seconds.");
                 }
             } catch (err) {
-                window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?text=Connect_Wallet`, '_blank');
+                alert("Could not open wallet modal.");
             }
         }
 
-        // وریفای کیف پول با هزینه 0.02 TON (بعد از اتصال ولت)
+        // وریفای کیف پول با هزینه دقیق 0.02 گرام/تون (20000000 نانو)
         async function verifyWalletWithFee() {
-            if (!userConnectedAddress && (!tonConnectUI || !tonConnectUI.connected)) {
+            if (!tonConnectUI || !tonConnectUI.connected) {
                 alert("Please connect your wallet first!");
                 return toggleWallet();
             }
             try {
-                if (tonConnectUI && tonConnectUI.connected) {
-                    await tonConnectUI.sendTransaction({
-                        validUntil: Math.floor(Date.now() / 1000) + 360,
-                        messages: [{ address: OWNER_WALLET, amount: "2000000" }] // 0.02 TON
-                    });
-                } else {
-                    window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?amount=2000000&text=Verify_Wallet`, '_blank');
-                }
-                
-                let confirmPaid = confirm("Did you successfully complete the 0.02 TON verification payment?");
-                if (confirmPaid) {
+                const result = await tonConnectUI.sendTransaction({
+                    validUntil: Math.floor(Date.now() / 1000) + 360,
+                    messages: [{
+                        address: OWNER_WALLET,
+                        amount: "20000000" // 0.02 TON/Gram
+                    }]
+                });
+
+                if (result) {
                     walletVerified = true;
                     verifiedFriendsCount = Math.min(verifiedFriendsCount + 1, 3);
                     document.getElementById('verifyBtn').style.display = 'none';
@@ -420,73 +432,75 @@
                     alert("Wallet verified successfully! +1,000 active member bonus applied.");
                 }
             } catch (e) {
-                alert("Transaction cancelled or failed.");
+                alert("Verification payment (0.02 Gram) was cancelled or failed.");
             }
         }
 
-        // خرید دوبرابر کننده سرعت تپ با قیمت 0.2 TON
+        // خرید دوبرابر کننده سرعت با 0.2 گرام
         async function buySpeedBoost() {
+            if (!tonConnectUI || !tonConnectUI.connected) {
+                alert("Please connect your wallet first!");
+                return toggleWallet();
+            }
             try {
-                if (tonConnectUI && tonConnectUI.connected) {
-                    await tonConnectUI.sendTransaction({
-                        validUntil: Math.floor(Date.now() / 1000) + 360,
-                        messages: [{ address: OWNER_WALLET, amount: "200000000" }] // 0.2 TON
-                    });
-                } else {
-                    window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?amount=200000000&text=2x_Speed_Boost`, '_blank');
-                }
+                const result = await tonConnectUI.sendTransaction({
+                    validUntil: Math.floor(Date.now() / 1000) + 360,
+                    messages: [{
+                        address: OWNER_WALLET,
+                        amount: "200000000" // 0.2 TON
+                    }]
+                });
 
-                let confirmBoost = confirm("Did you complete the 0.2 TON payment for 2x Speed Boost?");
-                if (confirmBoost) {
+                if (result) {
                     speedBoostActive = true;
                     document.getElementById('speedBoostBtn').style.display = 'none';
                     saveData();
                     alert("2x Tap Power activated forever!");
                 }
             } catch (e) {
-                alert("Transaction cancelled or failed.");
+                alert("Boost payment (0.2 Gram) was cancelled or failed.");
             }
         }
 
-        // تایید عضویت کانال (5000 توکن)
         function joinChannel() {
             if (channelJoined) return;
             window.open("https://t.me/BabyGramHQ", "_blank");
             setTimeout(() => {
                 channelJoined = true;
-                userBalance += 5000;
+                userBalance += 1000;
                 document.getElementById('channelBtn').innerText = "Done ✅";
                 document.getElementById('channelBtn').classList.add('done');
                 saveData();
                 updateUI();
-                alert("5,000 tokens reward received for joining the channel!");
-            }, 2000);
+                alert("1,000 $BABYGRAM reward added for joining @BabyGramHQ!");
+            }, 2500);
         }
 
-        // سیستم رفرال اختصاصی بدون باگ
-        function shareRefLink() {
-            let uniqueId = Math.floor(Math.random() * 900000 + 100000);
-            invitedFriendsList.push(uniqueId);
-            userBalance += 2000; // پاداش دعوت
-            saveData();
-            updateUI();
-            const refLink = `https://t.me/BabyGramClicker_bot?start=ref_${uniqueId}`;
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Join BabyGram and mine tokens together! 💎")}`, '_blank');
+        function getMyInviteUrl() {
+            return `https://t.me/BabyGramClicker_bot?start=ref_${myUserId}`;
+        }
+
+        function copyInviteLink() {
+            const link = getMyInviteUrl();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(() => {
+                    alert("Your unique invite link copied! Share it with friends.");
+                });
             } else {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}`, '_blank');
+                prompt("Copy your invite link:", link);
             }
         }
 
-        // حداقل برداشت ۱ میلیون توکن و ارسال درخواست به ادمین
+        function shareRefLink() {
+            const refLink = getMyInviteUrl();
+            const shareText = "Join BabyGram Tap & Mine! Tap to earn $BABYGRAM tokens and get rewards! 💎";
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`, '_blank');
+        }
+
         function withdrawTokens() {
             if (!walletVerified) {
-                alert("You must verify your wallet first!");
+                alert("You must connect and verify your wallet (0.02 Gram) before withdrawing!");
                 return;
             }
             if (verifiedFriendsCount < 3) {
-                alert("To withdraw, you must invite at least 3 verified friends!");
-                return;
-            }
-            if (userBalance < 1000000) {
-            
+                alert("To w
