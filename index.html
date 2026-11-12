@@ -88,11 +88,6 @@
             width: 100%;
             margin-top: 10px;
         }
-        .btn-main:disabled {
-            background: #4b5563 !important;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
         .btn-verify {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
@@ -118,7 +113,7 @@
             margin-top: 8px;
             display: none;
         }
-        .btn-auto-upgrade {
+        .btn-speed-boost {
             background: linear-gradient(135deg, #8338ec, #3a86ff);
             color: white;
             border: none;
@@ -162,26 +157,6 @@
             margin: 8px 0;
             font-weight: bold;
             letter-spacing: 2px;
-        }
-        .options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .option-btn {
-            background: #2b2d42;
-            color: white;
-            border: 1px solid #48cae4;
-            padding: 8px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 11px;
-            text-align: center;
-        }
-        .option-btn.active {
-            border-color: #ffb703;
-            background: #1d3557;
         }
         .holding-box, .task-box {
             background: #111827;
@@ -239,50 +214,45 @@
     </div>
 
     <div class="card">
-        <h2 id="titleText" style="margin-top: 5px; font-size: 16px;">استخراج BabyGram 💎</h2>
+        <h2 id="titleText" style="margin-top: 5px; font-size: 16px;">استخراج خودکار BabyGram 💎</h2>
         
         <div class="coin-container">
             <img src="https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/IMG_20261107_051306_534.jpg" alt="BabyGram Coin" class="coin-img">
         </div>
 
-        <div class="timer" id="countdown">00:00:00</div>
-        <p id="status" style="font-size: 11px; color: #adb5bd; margin: 5px 0;">ظرفیت: انتخاب پاداش</p>
+        <div class="timer" id="minedDisplay">+0.00 توکن</div>
+        <p id="status" style="font-size: 11px; color: #adb5bd; margin: 5px 0;">استخراج ۲۴ ساعته فعال است</p>
 
         <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 تایید هویت کیف پول (0.02 TON)</button>
-        <button class="btn-verified-done" id="verifiedDoneBtn">تایید هویت شده ✅ (ضریب 2x)</button>
-        <button class="btn-auto-upgrade" onclick="buyAutoMiner()">⚡️ خرید جمع‌کننده خودکار (0.5 TON)</button>
+        <button class="btn-verified-done" id="verifiedDoneBtn">تایید هویت شده ✅</button>
+        
+        <!-- دکمه سرعت دوبرابر که پس از خرید محو می‌شود -->
+        <button class="btn-speed-boost" id="speedBoostBtn" onclick="buySpeedBoost()">⚡️ دوبرابر کردن سرعت (0.2 TON)</button>
 
         <div class="holding-box">
-            <span id="holdingStatus">💎 سطح هولد: عادی (ضریب 1x)</span><br>
-            <span id="holdingBonus" style="color: #34d399; font-size: 10px;">ابتدا تایید هویت را انجام دهید.</span>
+            <span id="speedStatus">🚀 سرعت استخراج: پایه (250 توکن در روز)</span>
         </div>
 
-        <div class="options">
-            <button class="option-btn active" id="opt4" onclick="setParams(4, 50, this)">۴ ساعته<br><small>⚡️ ۵۰ توکن</small></button>
-            <button class="option-btn" id="opt8" onclick="setParams(8, 120, this)">۸ ساعته<br><small>⚡️ ۱۲۰ توکن</small></button>
-            <button class="option-btn" id="opt12" onclick="setParams(12, 200, this)">۱۲ ساعته<br><small>⚡️ ۲۰۰ توکن</small></button>
-            <button class="option-btn" id="opt24" onclick="setParams(24, 450, this)">۲۴ ساعته<br><small>⚡️ ۴۵۰ توکن</small></button>
-        </div>
-
-        <button class="btn-main" id="actionBtn" onclick="toggleMining()">شروع استخراج</button>
-        <button class="btn-withdraw" id="withdrawBtn" onclick="withdrawTokens()">برداشت به کیف پول (حداقل ۱۰۰,۰۰۰)</button>
+        <button class="btn-main" onclick="claimTokens()">دریافت سود انباشته (Claim)</button>
+        <button class="btn-withdraw" onclick="withdrawTokens()">برداشت به کیف پول (حداقل ۱۰۰,۰۰۰)</button>
         
-        <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fswap%2FGRAM%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn-buy" id="buyBtn">
+        <a href="https://app.tonkeeper.com/dapp/https%3A%2F%2Fdedust.io%2Fswap%2FGRAM%2FEQCdD5RJr7H63xefQB57nKi7nRI2TMZ27q_3KGYV5Phuw3Ql" target="_blank" class="btn-buy">
             🛒 خرید مستقیم و هولد روی Dedust
         </a>
     </div>
 
     <div class="card">
-        <h3 id="taskTitle" style="font-size: 14px; margin-top: 0; color: #4cc9f0;">🎁 تسک‌ها و پاداش‌ها</h3>
+        <h3 style="font-size: 14px; margin-top: 0; color: #4cc9f0;">🎁 تسک‌ها و دعوت‌ها</h3>
         
         <div class="task-item">
-            <span id="channelTaskText" style="font-size: 11px;">عضویت در کانال تلگرام (+۵۰۰ توکن)</span>
+            <span style="font-size: 11px;">عضویت در کانال @BabyGramHQ (+۵۰۰ توکن)</span>
             <button class="task-btn" id="channelBtn" onclick="joinChannel()">بررسی</button>
         </div>
 
         <div class="task-box">
-            <span id="refTitle" style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت از دوستان (+۵۰۰ توکن)</span><br>
-            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="shareRefLink()">ارسال لینک دعوت (اشتراک‌گذاری)</button>
+            <span style="font-weight: bold; color: #fbbf24; font-size: 11px;">👥 دعوت دوستان (نیاز به ۳ دعوت با ولت تاییدشده)</span><br>
+            <span id="refStatusText" style="color: #f87171; font-size: 10px;">وضعیت: ۰ از ۳ نفر تایید شده‌اند</span><br>
+            <button class="btn-main" style="margin-top: 6px; font-size: 12px; padding: 6px;" onclick="shareRefLink()">ارسال لینک دعوت (تلگرام)</button>
             
             <div style="margin-top: 8px; font-weight: bold; font-size: 11px; color: #4cc9f0;">دوستان دعوت‌شده (<span id="friendCount">0</span>):</div>
             <div class="friend-list" id="friendListContainer">
@@ -293,37 +263,32 @@
 
     <script>
         let currentLang = 'fa';
-        let isMining = false;
-        let selectedHours = 4;
-        let baseReward = 50;
-        let finalReward = 50;
         let userBalance = 0;
+        let unclaimedBalance = 0;
         let walletConnected = false;
         let walletVerified = false;
-        let userHoldingTier = 1;
+        let speedBoostActive = false;
         let channelJoined = false;
+        let verifiedFriendsCount = 0;
+        let lastUpdateTime = Date.now();
 
         const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
         const supabaseUrl = 'https://wuycoooqypvrgoxyetsm.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
         
         let supabaseClient = null;
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
                 supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
             }
-        } catch (e) {
-            console.error("Supabase init error:", e);
-        }
+        } catch (e) { console.error(e); }
 
         let userTelegramId = "guest_" + Math.floor(Math.random() * 1000000);
         try {
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                 userTelegramId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
             }
-        } catch (e) {
-            console.log("Not in Telegram WebApp");
-        }
+        } catch (e) {}
 
         let tonConnectUI = null;
         try {
@@ -335,16 +300,14 @@
                 tonConnectUI.onStatusChange(walletInfo => {
                     if (walletInfo) {
                         walletConnected = true;
-                        document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
+                        document.getElementById('walletBtn').innerText = "متصل شد ✅";
                     } else {
                         walletConnected = false;
-                        document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
+                        document.getElementById('walletBtn').innerText = "اتصال کیف پول";
                     }
                 });
             }
-        } catch (e) {
-            console.error("TonConnect init error:", e);
-        }
+        } catch (e) {}
 
         async function syncUserToDatabase() {
             if (!supabaseClient) return;
@@ -352,105 +315,72 @@
                 await supabaseClient.from('users').upsert([{ 
                     telegram_id: userTelegramId, 
                     balance: userBalance, 
+                    unclaimed: unclaimedBalance,
                     verified: walletVerified, 
-                    holding_tier: userHoldingTier 
+                    boosted: speedBoostActive,
+                    friends_verified: verifiedFriendsCount,
+                    last_sync: Date.now()
                 }], { onConflict: 'telegram_id' });
-            } catch (err) { console.error("Sync error:", err); }
+            } catch (err) { console.error(err); }
         }
 
-        async function loadUserDataFromCloud() {
-            if (!supabaseClient) { updateUI(); return; }
+        async function loadUserData() {
+            if (!supabaseClient) { startMiningLoop(); return; }
             try {
                 const { data } = await supabaseClient.from('users').select('*').eq('telegram_id', userTelegramId).single();
                 if (data) {
                     userBalance = data.balance || 0;
+                    unclaimedBalance = data.unclaimed || 0;
                     walletVerified = data.verified || false;
-                    userHoldingTier = data.holding_tier || 1;
+                    speedBoostActive = data.boosted || false;
+                    verifiedFriendsCount = data.friends_verified || 0;
+                    
                     if (walletVerified) {
                         document.getElementById('verifyBtn').style.display = 'none';
                         document.getElementById('verifiedDoneBtn').style.display = 'block';
-                        document.getElementById('holdingStatus').innerText = "💎 سطح هولد: تایید شده (ضریب 2x)";
+                    }
+                    if (speedBoostActive) {
+                        document.getElementById('speedBoostBtn').style.display = 'none';
+                        document.getElementById('speedStatus').innerText = "🚀 سرعت استخراج: ۲ برابر (۵۰۰ توکن در روز)";
                     }
                 } else {
                     await syncUserToDatabase();
                 }
-            } catch (err) { console.error("Load error:", err); }
-            updateUI();
+            } catch (err) { console.error(err); }
+            startMiningLoop();
         }
 
         window.onload = function() {
-            loadUserDataFromCloud();
-            let endTime = localStorage.getItem('babygram_end_time_' + userTelegramId);
-            if (endTime) {
-                let timeLeftSec = Math.floor((parseInt(endTime) - Date.now()) / 1000);
-                if (timeLeftSec > 0) {
-                    isMining = true;
-                    startTimerEngine(timeLeftSec);
-                } else {
-                    localStorage.removeItem('babygram_end_time_' + userTelegramId);
-                }
-            }
+            loadUserData();
         };
 
-        function updateUI() {
-            finalReward = baseReward * userHoldingTier;
-            document.getElementById('balanceText').innerHTML = `موجودی: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
-            if (!isMining) {
-                document.getElementById('status').innerText = `ظرفیت: ${selectedHours} ساعت (پاداش: ${finalReward} توکن)`;
-            }
-        }
-
-        function setParams(hours, reward, btnEl) {
-            if (isMining) return;
-            selectedHours = hours;
-            baseReward = reward;
-            document.querySelectorAll('.options button').forEach(b => b.classList.remove('active'));
-            if (btnEl) btnEl.classList.add('active');
-            updateUI();
-        }
-
-        function toggleMining() {
-            if (!isMining) {
-                isMining = true;
-                finalReward = baseReward * userHoldingTier;
-                let totalSec = selectedHours * 3600;
-                let targetTime = Date.now() + (totalSec * 1000);
-                localStorage.setItem('babygram_end_time_' + userTelegramId, targetTime);
-                startTimerEngine(totalSec);
-            }
-        }
-
-        function startTimerEngine(durationSec) {
-            let timeLeft = durationSec;
-            const btn = document.getElementById('actionBtn');
-            btn.disabled = true;
-            btn.innerText = currentLang === 'fa' ? "در حال استخراج..." : "Mining...";
-            btn.style.background = "#e63946";
-
-            let timerInterval = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    let h = Math.floor(timeLeft / 3600);
-                    let m = Math.floor((timeLeft % 3600) / 60);
-                    let s = timeLeft % 60;
-                    document.getElementById('countdown').innerText = 
-                        `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        function startMiningLoop() {
+            setInterval(() => {
+                // نرخ روزانه: پایه 250 یا با بوست 500 توکن در 24 ساعت (تبدیل به ثانیه)
+                let dailyRate = speedBoostActive ? 500 : 250;
+                let perSecondRate = dailyRate / 86400;
+                
+                unclaimedBalance += perSecondRate;
+                
+                document.getElementById('minedDisplay').innerText = `+${unclaimedBalance.toFixed(2)} توکن`;
+                document.getElementById('balanceText').innerHTML = `موجودی: <strong>${userBalance.toFixed(0)}</strong> $BABYGRAM`;
+                
+                // آپدیت وضعیت رفرال‌ها
+                if (verifiedFriendsCount >= 3) {
+                    document.getElementById('refStatusText').innerText = `وضعیت: تایید شده (${verifiedFriendsCount} از ۳ نفر) ✅`;
+                    document.getElementById('refStatusText').style.color = '#34d399';
                 } else {
-                    clearInterval(timerInterval);
-                    isMining = false;
-                    localStorage.removeItem('babygram_end_time_' + userTelegramId);
-                    
-                    userBalance += finalReward;
-                    updateUI();
-                    syncUserToDatabase();
-
-                    btn.innerText = currentLang === 'fa' ? "شروع استخراج" : "Start Mining";
-                    btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
-                    btn.disabled = false;
-                    
-                    alert(currentLang === 'fa' ? `تبریک! ${finalReward} توکن به موجودی شما اضافه شد.` : `Received ${finalReward} tokens.`);
+                    document.getElementById('refStatusText').innerText = `وضعیت: ${verifiedFriendsCount} از ۳ نفر تایید شده‌اند`;
                 }
             }, 1000);
+        }
+
+        function claimTokens() {
+            if (unclaimedBalance < 1) return;
+            userBalance += Math.floor(unclaimedBalance);
+            unclaimedBalance = 0;
+            syncUserToDatabase();
+            alert("پاداش استخراج به موجودی شما اضافه شد!");
         }
 
         async function connectWallet() {
@@ -458,9 +388,7 @@
                 if (!tonConnectUI) return alert("در حال راه‌اندازی کیف پول...");
                 if (tonConnectUI.connected) await tonConnectUI.disconnect();
                 else await tonConnectUI.openModal();
-            } catch (err) {
-                console.error("Wallet error:", err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         async function verifyWalletWithFee() {
@@ -471,19 +399,17 @@
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "2000000" }]
+                    messages: [{ address: OWNER_WALLET, amount: "2000000" }] // 0.02 TON
                 });
                 walletVerified = true;
-                userHoldingTier = 2;
                 document.getElementById('verifyBtn').style.display = 'none';
                 document.getElementById('verifiedDoneBtn').style.display = 'block';
-                updateUI();
                 await syncUserToDatabase();
-                alert("تایید هویت موفقیت‌آمیز بود!");
+                alert("تایید هویت کیف پول با موفقیت انجام شد!");
             } catch (e) { alert("تراکنش لغو شد."); }
         }
 
-        async function buyAutoMiner() {
+        async function buySpeedBoost() {
             if (!tonConnectUI || !tonConnectUI.connected) {
                 alert("لطفاً ابتدا کیف پول خود را متصل کنید!");
                 return connectWallet();
@@ -491,25 +417,55 @@
             try {
                 await tonConnectUI.sendTransaction({
                     validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{ address: OWNER_WALLET, amount: "500000000" }]
+                    messages: [{ address: OWNER_WALLET, amount: "200000000" }] // 0.2 TON
                 });
-                alert("جمع‌کننده خودکار فعال شد!");
+                speedBoostActive = true;
+                document.getElementById('speedBoostBtn').style.display = 'none';
+                document.getElementById('speedStatus').innerText = "🚀 سرعت استخراج: ۲ برابر (۵۰۰ توکن در روز)";
+                await syncUserToDatabase();
+                alert("سرعت استخراج شما دو برابر شد!");
             } catch (e) { alert("تراکنش لغو شد."); }
         }
 
         function joinChannel() {
             if (channelJoined) return;
-            window.open("https://t.me/babyGramhub", "_blank");
+            window.open("https://t.me/BabyGramHQ", "_blank");
             setTimeout(() => {
                 channelJoined = true;
                 userBalance += 500;
                 document.getElementById('channelBtn').innerText = "انجام شد ✅";
                 document.getElementById('channelBtn').classList.add('done');
-                updateUI();
                 syncUserToDatabase();
+                alert("۵۰۰ توکن پاداش عضویت در کانال دریافت شد!");
             }, 2000);
         }
 
         function shareRefLink() {
             const refLink = `https://t.me/BabyGramClicker_bot?start=${userTelegramId}`;
-            if (window.
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("بیا توی ربات BabyGram و توکن استخراج کن! 💎")}`, '_blank');
+            } else {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}`, '_blank');
+            }
+        }
+
+        function withdrawTokens() {
+            if (verifiedFriendsCount < 3) {
+                alert("برای برداشت باید حداقل ۳ نفر دعوت کرده باشید که کیف پولشان را تایید کرده‌اند!");
+                return;
+            }
+            if (userBalance < 100000) {
+                alert("حداقل موجودی برای برداشت ۱۰۰,۰۰۰ توکن است!");
+                return;
+            }
+            alert("درخواست برداشت شما با موفقیت ثبت شد.");
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fa' ? 'en' : 'fa';
+            document.getElementById('langBtn').innerText = currentLang === 'fa' ? 'EN' : 'FA';
+            document.getElementById('htmlTag').setAttribute('dir', currentLang === 'fa' ? 'rtl' : 'ltr');
+        }
+    </script>
+</body>
+</html>
