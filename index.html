@@ -6,7 +6,6 @@
     <title>BabyGram Miner</title>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- اصلاح کتابخانه Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
         body {
@@ -228,12 +227,6 @@
             background: #1c2541;
             border-radius: 6px;
         }
-        .friend-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 0;
-            border-bottom: 1px solid #374151;
-        }
     </style>
 </head>
 <body>
@@ -308,11 +301,25 @@
         // اتصال امن به Supabase
         const supabaseUrl = 'https://wuycoooqypvrgoxyetsm.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eWNvb29xeXB2cmdveHlldHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ0Mzk2MDksImV4cCI6MjExMDAxNTYwOX0.ronYWbeEytYBB7hVOWDyhoPi6F1_LuQDUbR4gZl-TQ0';
-        const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+        
+        let supabaseClient = null;
+        try {
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+            }
+        } catch (e) {
+            console.error("Supabase init error:", e);
+        }
 
-        // گرفتن شناسه واقعی کاربر از تلگرام
-        const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        const userTelegramId = tgUser ? tgUser.id.toString() : "guest_" + Math.floor(Math.random() * 1000000);
+        // گرفتن شناسه واقعی کاربر از تلگرام به همراه هندل کردن خطا
+        let userTelegramId = "guest_" + Math.floor(Math.random() * 1000000);
+        try {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                userTelegramId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
+            }
+        } catch (e) {
+            console.log("Running outside Telegram or webapp error");
+        }
 
         let currentLang = 'fa';
         let isMining = false;
@@ -324,70 +331,91 @@
         let walletVerified = false;
         let userHoldingTier = 1;
         let channelJoined = false;
-        let invitedFriends = [];
 
         const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
-        const ADMIN_TELEGRAM = "BabyGramOfficial";
 
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
-            actionsConfiguration: {
-                twaReturnUrl: 'https://t.me/BabyGramClicker_bot'
+        let tonConnectUI = null;
+        try {
+            if (window.TON_CONNECT_UI) {
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
+                    actionsConfiguration: {
+                        twaReturnUrl: 'https://t.me/BabyGramClicker_bot'
+                    }
+                });
+                
+                tonConnectUI.onStatusChange(walletInfo => {
+                    if (walletInfo) {
+                        walletConnected = true;
+                        document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
+                    } else {
+                        walletConnected = false;
+                        document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
+                    }
+                });
             }
-        });
+        } catch (e) {
+            console.error("TonConnect error:", e);
+        }
 
         async function syncUserToDatabase() {
             if (!supabaseClient) return;
-            const { data, error } = await supabaseClient
-                .from('users')
-                .upsert([
-                    { 
-                        telegram_id: userTelegramId, 
-                        balance: userBalance, 
-                        verified: walletVerified, 
-                        holding_tier: userHoldingTier 
-                    }
-                ], { onConflict: 'telegram_id' })
-                .select();
-
-            if (error) {
-                console.error('خطا در ذخیره ابری اطلاعات:', error.message);
-            } else {
-                console.log('اطلاعات با موفقیت در Supabase ذخیره شد:', data);
+            try {
+                await supabaseClient
+                    .from('users')
+                    .upsert([
+                        { 
+                            telegram_id: userTelegramId, 
+                            balance: userBalance, 
+                            verified: walletVerified, 
+                            holding_tier: userHoldingTier 
+                        }
+                    ], { onConflict: 'telegram_id' });
+            } catch (err) {
+                console.error('Database sync error:', err);
             }
         }
 
         async function loadUserDataFromCloud() {
             if (!supabaseClient) return;
-            const { data, error } = await supabaseClient
-                .from('users')
-                .select('*')
-                .eq('telegram_id', userTelegramId)
-                .single();
+            try {
+                const { data } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('telegram_id', userTelegramId)
+                    .single();
 
-            if (data) {
-                userBalance = data.balance || 0;
-                walletVerified = data.verified || false;
-                userHoldingTier = data.holding_tier || 1;
+                if (data) {
+                    userBalance = data.balance || 0;
+                    walletVerified = data.verified || false;
+                    userHoldingTier = data.holding_tier || 1;
 
-                if (walletVerified) {
-                    document.getElementById('verifyBtn').style.display = 'none';
-                    document.getElementById('verifiedDoneBtn').style.display = 'block';
-                    document.getElementById('holdingStatus').innerText = "💎 سطح هولد: تایید شده (ضریب 2x)";
-                    document.getElementById('holdingBonus').innerText = "تایید هویت قبلاً انجام شده است ✅";
+                    if (walletVerified) {
+                        document.getElementById('verifyBtn').style.display = 'none';
+                        document.getElementById('verifiedDoneBtn').style.display = 'block';
+                        document.getElementById('holdingStatus').innerText = "💎 سطح هولد: تایید شده (ضریب 2x)";
+                        document.getElementById('holdingBonus').innerText = "تایید هویت قبلاً انجام شده است ✅";
+                    }
+                    updateUI();
+                } else {
+                    syncUserToDatabase();
                 }
-                updateUI();
-            } else {
-                syncUserToDatabase();
+            } catch (err) {
+                console.error('Load user error:', err);
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             loadUserDataFromCloud();
+            updateUI();
         });
 
         async function connectWallet() {
             try {
+                if (!tonConnectUI) {
+                    alert("TonConnect is loading...");
+                    return;
+                }
                 if (tonConnectUI.connected) {
                     await tonConnectUI.disconnect();
                     return;
@@ -398,18 +426,8 @@
             }
         }
 
-        tonConnectUI.onStatusChange(walletInfo => {
-            if (walletInfo) {
-                walletConnected = true;
-                document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "متصل شد ✅" : "Connected ✅";
-            } else {
-                walletConnected = false;
-                document.getElementById('walletBtn').innerText = currentLang === 'fa' ? "اتصال کیف پول" : "Connect Wallet";
-            }
-        });
-
         async function verifyWalletWithFee() {
-            if (!tonConnectUI.connected) {
+            if (!tonConnectUI || !tonConnectUI.connected) {
                 alert(currentLang === 'fa' ? "لطفاً ابتدا کیف پول خود را از بالای صفحه متصل کنید!" : "Please connect your wallet first!");
                 connectWallet();
                 return;
@@ -448,7 +466,7 @@
         }
 
         async function buyAutoMiner() {
-            if (!tonConnectUI.connected) {
+            if (!tonConnectUI || !tonConnectUI.connected) {
                 alert(currentLang === 'fa' ? "لطفاً ابتدا کیف پول خود را متصل کنید!" : "Please connect your wallet first!");
                 connectWallet();
                 return;
@@ -467,7 +485,6 @@
             try {
                 alert(currentLang === 'fa' ? "تراکنش 0.5 TON برای فعال‌سازی جمع‌کننده خودکار را تایید کنید." : "Confirm 0.5 TON transaction.");
                 await tonConnectUI.sendTransaction(transaction);
-                
                 alert(currentLang === 'fa' ? "جمع‌کننده خودکار با موفقیت فعال شد! 🎉" : "Auto-miner activated successfully!");
             } catch (error) {
                 console.error("Auto miner transaction rejected:", error);
@@ -497,13 +514,14 @@
             selectedHours = hours;
             baseReward = reward;
             document.querySelectorAll('.options button').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
             updateUI();
         }
 
         function toggleMining() {
             const btn = document.getElementById('actionBtn');
-            const status = document.getElementById('status');
 
             if (!isMining) {
                 isMining = true;
@@ -511,18 +529,4 @@
                 let totalSec = selectedHours * 3600;
                 let targetTime = Date.now() + (totalSec * 1000);
                 
-                localStorage.setItem('babygram_end_time', targetTime);
-                localStorage.setItem('babygram_hours', selectedHours);
-                localStorage.setItem('babygram_reward', finalReward);
-
-                btn.innerText = currentLang === 'fa' ? "در حال استخراج..." : "Mining...";
-                btn.style.background = "#e63946";
-                startTimerEngine(totalSec);
-            } else {
-                userBalance += finalReward;
-                localStorage.removeItem('babygram_end_time');
-                isMining = false;
-                document.getElementById('countdown').innerText = "00:00:00";
-                btn.innerText = currentLang === 'fa' ? "شروع استخراج" : "Start Mining";
-                btn.style.background = "linear-gradient(135deg, #4ea8de, #3a86ff)";
-           
+                localStorage
