@@ -309,9 +309,22 @@
             if (!supabaseClient) { startMiningLoop(); return; }
             try {
                 const { data } = await supabaseClient.from('users').select('*').eq('telegram_id', userTelegramId).single();
+                let now = Date.now();
                 if (data) {
                     userBalance = data.balance || 0;
-                    unclaimedBalance = data.unclaimed || 0;
+                    let lastSync = data.last_sync || now;
+                    let savedUnclaimed = data.unclaimed || 0;
+                    
+                    // محاسبه آفلاین بر اساس زمان سپری شده
+                    let secondsPassed = (now - lastSync) / 1000;
+                    if (secondsPassed > 0) {
+                        let dailyRate = data.boosted ? 500 : 250;
+                        let offlineMined = secondsPassed * (dailyRate / 86400);
+                        unclaimedBalance = savedUnclaimed + offlineMined;
+                    } else {
+                        unclaimedBalance = savedUnclaimed;
+                    }
+
                     walletVerified = data.verified || false;
                     speedBoostActive = data.boosted || false;
                     verifiedFriendsCount = data.friends_verified || 0;
@@ -363,6 +376,7 @@
                 
                 unclaimedBalance += perSecondRate;
                 updateUIElements();
+                syncUserToDatabase(); // ذخیره خودکار مداوم در پس زمینه
             }, 1000);
         }
 
@@ -466,22 +480,4 @@
         function shareRefLink() {
             const refLink = `https://t.me/BabyGramClicker_bot?start=${userTelegramId}`;
             if (window.Telegram && window.Telegram.WebApp) {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Come to BabyGram bot and mine tokens! 💎")}`, '_blank');
-            } else {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}`, '_blank');
-            }
-        }
-
-        function withdrawTokens() {
-            if (verifiedFriendsCount < 3) {
-                alert("To withdraw, you must invite at least 3 friends who have verified their wallets!");
-                return;
-            }
-            if (userBalance < 100000) {
-                alert("Minimum balance for withdrawal is 100,000 tokens!");
-                return;
-            }
-            alert("Withdrawal request submitted successfully.");
-        }
-    </script>
-    
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${
