@@ -178,16 +178,6 @@
             border-radius: 6px;
             border: 1px dashed #4cc9f0;
         }
-        .friend-list {
-            max-height: 80px;
-            overflow-y: auto;
-            margin-top: 8px;
-            font-size: 11px;
-            color: #d1d5db;
-            background: #1c2541;
-            padding: 6px;
-            border-radius: 6px;
-        }
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -236,12 +226,13 @@
 </head>
 <body>
 
+    <!-- Header Balance -->
     <div class="header">
         <span id="balanceText">Balance: <strong>0</strong> $BABYGRAM</span>
         <button type="button" class="btn-main" style="width: auto; padding: 6px 12px; margin: 0; font-size: 11px;" onclick="openWalletModal()">Wallet Setup</button>
     </div>
 
-    <!-- Tap & Mine Section -->
+    <!-- SECTION 1: Tap & Mine (Anti-Bot) -->
     <div class="card">
         <h2 style="margin-top: 0; font-size: 17px;">BabyGram Tap & Mine 💎</h2>
         
@@ -253,10 +244,10 @@
         <p style="font-size: 12px; color: #adb5bd; margin: 4px 0;">Tap to mine tokens (Anti-Bot Protected)</p>
     </div>
 
-    <!-- Wallet, Verification & Withdrawal Section -->
+    <!-- SECTION 2: Wallet & Real Verification (0.05 Gram) & Donate & Withdrawal -->
     <div class="card">
         <h3 class="section-title">🛡 Wallet & Withdrawals</h3>
-        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Verify with 0.05 Gram to unlock withdrawals. Min withdrawal: <strong>10,000,000 $BABYGRAM</strong>.</p>
+        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Verify with 0.05 Gram to unlock. Min withdrawal: <strong>10,000,000 $BABYGRAM</strong>.</p>
         
         <div id="walletStatusText" style="font-size: 12px; color: #fbbf24; margin-bottom: 8px; text-align: left; font-weight: bold;">Wallet Status: Not Connected</div>
 
@@ -266,7 +257,7 @@
         <button type="button" class="btn-donate" onclick="openDonateModal()">❤️ Donate / Support Project</button>
     </div>
 
-    <!-- About BabyGram Section -->
+    <!-- SECTION 3: Project Description & About BabyGram -->
     <div class="card">
         <h3 class="section-title">📖 About BabyGram Project</h3>
         <div class="about-text">
@@ -274,7 +265,7 @@
         </div>
     </div>
 
-    <!-- Community Tasks & Referrals Section -->
+    <!-- SECTION 4: Tasks & Real Referrals (500 Ref / 1000 Channel) -->
     <div class="card">
         <h3 class="section-title">🎁 Community Tasks & Referrals</h3>
         
@@ -285,7 +276,7 @@
 
         <div class="ref-box">
             <span style="font-weight: bold; color: #fbbf24;">👥 Invite Friends (Earn +500 Tokens per invite)</span><br>
-            <span style="font-size: 11px; color: #9ca3af;">Total invited friends: <span id="friendCount">0</span></span>
+            <span style="font-size: 11px; color: #9ca3af;">Total invited verified friends: <span id="friendCount">0</span></span>
             
             <div class="ref-code-flex">
                 <span id="myRefCodeText" style="color: #4cc9f0; font-family: monospace; font-size: 11px;">Code: Loading...</span>
@@ -293,11 +284,6 @@
             </div>
 
             <button type="button" class="btn-main" style="margin-top: 8px; font-size: 12px; padding: 8px;" onclick="shareRefLink()">📤 Share Invite Link to Friends</button>
-            
-            <div style="margin-top: 8px; font-weight: bold; color: #4cc9f0; font-size: 11px;">Invited Friends List:</div>
-            <div class="friend-list" id="friendListContainer">
-                <div style="text-align: center; color: #6b7280; padding: 4px;">No friends invited yet</div>
-            </div>
         </div>
     </div>
 
@@ -316,7 +302,7 @@
     <div class="modal-overlay" id="donateModal">
         <div class="modal-box">
             <h3 style="margin-top: 0; font-size: 16px; color: #8338ec;">Support / Donate to BabyGram</h3>
-            <p style="font-size: 12px; color: #d1d5db;">Choose or enter amount of Gram to donate:</p>
+            <p style="font-size: 12px; color: #d1d5db;">Choose or enter amount of Gram to donate to project development:</p>
             <input type="number" id="donateAmountInput" class="modal-input" value="0.1" step="0.01" min="0.01">
             <button type="button" class="btn-main" style="background: #8338ec;" onclick="sendDonation()">Donate via Tonkeeper 🚀</button>
             <button type="button" class="btn-main" style="background: #374151; margin-top: 6px;" onclick="closeModal('donateModal')">Cancel</button>
@@ -326,175 +312,133 @@
     <div class="toast-msg" id="toastBox"></div>
 
     <script>
-        var OWNER_STORAGE_KEY_BAL = 'baby_balance_v2';
         var OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
-        var memFallback = {};
-
-        function safeGet(k) {
-            try { return window.localStorage.getItem(k); } catch (e) { return memFallback[k] || null; }
+        
+        function safeGet(key) {
+            try { return window.localStorage.getItem(key); } catch (e) { return null; }
         }
-        function safeSet(k, v) {
-            try { window.localStorage.setItem(k, v); } catch (e) { memFallback[k] = String(v); }
+        function safeSet(key, val) {
+            try { window.localStorage.setItem(key, val); } catch (e) {}
         }
 
-        var userBalance = parseFloat(safeGet(OWNER_STORAGE_KEY_BAL)) || 0;
+        var userBalance = parseFloat(safeGet('baby_balance')) || 0;
         var walletVerified = safeGet('baby_verified') === 'true';
         var channelJoined = safeGet('baby_channel') === 'true';
+        var invitedCount = parseInt(safeGet('baby_ref_count')) || 0;
         var userConnectedAddress = safeGet('baby_wallet_address') || "";
         
-        var invitedFriendsList = [];
-        try {
-            var rawList = safeGet('baby_ref_list');
-            if (rawList) invitedFriendsList = JSON.parse(rawList);
-        } catch (e) { invitedFriendsList = []; }
-
         var myUserId = safeGet('baby_my_uid');
         if (!myUserId) {
             myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
             safeSet('baby_my_uid', myUserId);
         }
 
-        // پردازش لینک رفرال امن و بدون فریز
-        try {
-            var urlParams = new URLSearchParams(window.location.search);
-            var refParam = urlParams.get('start') || urlParams.get('ref');
-            if (refParam && refParam.indexOf('ref_') !== -1) {
-                var referrerId = refParam.replace('ref_', '');
-                var hasBeenReferred = safeGet('baby_referred_flag');
-                if (!hasBeenReferred && referrerId !== myUserId) {
-                    safeSet('baby_referred_flag', 'true');
-                    userBalance += 500;
-                    safeSet(OWNER_STORAGE_KEY_BAL, userBalance);
-                }
-            }
-        } catch (e) {}
-
         var lastTapTime = 0;
         var rapidTapCounter = 0;
         var lastTapWindow = 0;
 
         function showToast(text, isError) {
-            try {
-                var box = document.getElementById('toastBox');
-                box.innerText = text;
-                box.style.background = isError ? "#ef4444" : "#10b981";
-                box.style.display = "block";
-                setTimeout(function() { box.style.display = "none"; }, 2500);
-            } catch (e) {}
+            var box = document.getElementById('toastBox');
+            box.innerText = text;
+            box.style.background = isError ? "#ef4444" : "#10b981";
+            box.style.display = "block";
+            setTimeout(function() { box.style.display = "none"; }, 2500);
         }
 
         function updateUI() {
-            try {
-                document.getElementById('scoreDisplay').innerText = Math.floor(userBalance).toLocaleString() + " $BABYGRAM";
-                document.getElementById('balanceText').innerHTML = "Balance: <strong>" + Math.floor(userBalance).toLocaleString() + "</strong> $BABYGRAM";
-                document.getElementById('myRefCodeText').innerText = "Code: " + myUserId;
-                document.getElementById('friendCount').innerText = invitedFriendsList.length;
+            document.getElementById('scoreDisplay').innerText = Math.floor(userBalance).toLocaleString() + " $BABYGRAM";
+            document.getElementById('balanceText').innerHTML = "Balance: <strong>" + Math.floor(userBalance).toLocaleString() + "</strong> $BABYGRAM";
+            document.getElementById('myRefCodeText').innerText = "Code: " + myUserId;
+            document.getElementById('friendCount').innerText = invitedCount;
 
-                var statusText = document.getElementById('walletStatusText');
-                if (walletVerified) {
-                    statusText.innerText = "Wallet Status: Verified ✅ (" + userConnectedAddress.substring(0, 6) + "...)";
-                    statusText.style.color = "#34d399";
-                } else if (userConnectedAddress) {
-                    statusText.innerText = "Wallet Connected, Needs 0.05 Gram Verification ⚠️";
-                    statusText.style.color = "#fbbf24";
-                } else {
-                    statusText.innerText = "Wallet Status: Not Connected ❌";
-                    statusText.style.color = "#f87171";
-                }
+            var statusText = document.getElementById('walletStatusText');
+            if (walletVerified) {
+                statusText.innerText = "Wallet Status: Verified ✅ (" + userConnectedAddress.substring(0, 6) + "...)";
+                statusText.style.color = "#34d399";
+            } else if (userConnectedAddress) {
+                statusText.innerText = "Wallet Connected, Needs 0.05 Gram Verification ⚠️";
+                statusText.style.color = "#fbbf24";
+            } else {
+                statusText.innerText = "Wallet Status: Not Connected ❌";
+                statusText.style.color = "#f87171";
+            }
 
-                if (channelJoined) {
-                    var chBtn = document.getElementById('channelBtn');
-                    chBtn.innerText = "Done ✅";
-                    chBtn.classList.add('done');
-                }
-
-                var container = document.getElementById('friendListContainer');
-                if (invitedFriendsList.length > 0) {
-                    container.innerHTML = invitedFriendsList.map(function(id, index) {
-                        return '<div style="padding: 3px 0; border-bottom: 1px solid #374151;">👤 Friend #' + (index + 1) + ' (ID: ' + id + ') - +500 ✅</div>';
-                    }).join('');
-                } else {
-                    container.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 4px;">No friends invited yet</div>';
-                }
-            } catch (e) {}
+            if (channelJoined) {
+                var chBtn = document.getElementById('channelBtn');
+                chBtn.innerText = "Done ✅";
+                chBtn.classList.add('done');
+            }
         }
 
         function tapCoin(event) {
             var now = Date.now();
             if (now - lastTapWindow < 1000) {
                 rapidTapCounter++;
-                if (rapidTapCounter > 15) return;
+                if (rapidTapCounter > 12) {
+                    showToast("Auto-clicker detected! Slow down.", true);
+                    return;
+                }
             } else {
                 lastTapWindow = now;
                 rapidTapCounter = 1;
             }
 
-            if (now - lastTapTime < 60) return;
+            if (now - lastTapTime < 70) return;
             lastTapTime = now;
 
             userBalance += 1;
-            safeSet(OWNER_STORAGE_KEY_BAL, userBalance);
+            safeSet('baby_balance', userBalance);
             updateUI();
 
-            try {
-                var x = (event && event.clientX) ? event.clientX : (window.innerWidth / 2);
-                var y = (event && event.clientY) ? event.clientY : 220;
+            var x = (event && event.clientX) ? event.clientX : (window.innerWidth / 2);
+            var y = (event && event.clientY) ? event.clientY : 220;
 
-                var el = document.createElement('div');
-                el.innerText = "+1";
-                el.style.position = 'fixed';
-                el.style.left = (x - 10) + 'px';
-                el.style.top = (y - 20) + 'px';
-                el.style.color = '#4cc9f0';
-                el.style.fontWeight = 'bold';
-                el.style.fontSize = '22px';
-                el.style.pointerEvents = 'none';
-                el.style.zIndex = '9999';
-                el.style.transition = 'all 0.35s ease-out';
-                document.body.appendChild(el);
+            var el = document.createElement('div');
+            el.innerText = "+1";
+            el.style.position = 'fixed';
+            el.style.left = (x - 10) + 'px';
+            el.style.top = (y - 20) + 'px';
+            el.style.color = '#4cc9f0';
+            el.style.fontWeight = 'bold';
+            el.style.fontSize = '22px';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex = '9999';
+            el.style.transition = 'all 0.35s ease-out';
+            document.body.appendChild(el);
 
-                setTimeout(function() {
-                    el.style.top = (y - 70) + 'px';
-                    el.style.opacity = '0';
-                }, 15);
-                setTimeout(function() {
-                    if (el.parentNode) el.parentNode.removeChild(el);
-                }, 370);
-            } catch (e) {}
+            setTimeout(function() {
+                el.style.top = (y - 70) + 'px';
+                el.style.opacity = '0';
+            }, 15);
+            setTimeout(function() {
+                if (el.parentNode) el.parentNode.removeChild(el);
+            }, 370);
         }
 
         function openWalletModal() {
-            try {
-                document.getElementById('walletAddressInput').value = userConnectedAddress;
-                document.getElementById('walletModal').style.display = "flex";
-            } catch (e) {}
+            document.getElementById('walletAddressInput').value = userConnectedAddress;
+            document.getElementById('walletModal').style.display = "flex";
         }
 
         function openDonateModal() {
-            try {
-                document.getElementById('donateModal').style.display = "flex";
-            } catch (e) {}
+            document.getElementById('donateModal').style.display = "flex";
         }
 
         function closeModal(id) {
-            try {
-                document.getElementById(id).style.display = "none";
-            } catch (e) {}
+            document.getElementById(id).style.display = "none";
         }
 
         function saveWalletAddress() {
-            try {
-                var addr = document.getElementById('walletAddressInput').value.trim();
-                if (addr.length < 10) {
-                    showToast("Please enter a valid TON address!", true);
-                    return;
-                }
-                userConnectedAddress = addr;
-                safeSet('baby_wallet_address', addr);
-                closeModal('walletModal');
-                updateUI();
-                showToast("Wallet saved successfully!", false);
-            } catch (e) {}
+            var addr = document.getElementById('walletAddressInput').value.trim();
+            if (addr.length < 10) {
+                showToast("Please enter a valid TON address!", true);
+                return;
+            }
+            userConnectedAddress = addr;
+            safeSet('baby_wallet_address', addr);
+            closeModal('walletModal');
+            updateUI();
+            showToast("Wallet saved successfully!", false);
         }
 
         function verifyWalletReal() {
@@ -509,4 +453,60 @@
                 var confirmed = confirm("Did you complete the 0.05 Gram verification transfer in Tonkeeper?");
                 if (confirmed) {
                     walletVerified = true;
-                    safeS
+                    safeSet('baby_verified', 'true');
+                    updateUI();
+                    showToast("Wallet verified successfully! ✅", false);
+                }
+            }, 2000);
+        }
+
+        // بخش جدید حداقل برداشت (۱۰ میلیون توکن)
+        function requestWithdrawal() {
+            if (!walletVerified) {
+                showToast("You must verify your wallet (0.05 Gram) first!", true);
+                return;
+            }
+            if (userBalance < 10000000) {
+                showToast("Minimum withdrawal is 10,000,000 $BABYGRAM!", true);
+                return;
+            }
+            var msg = encodeURIComponent("Withdrawal Request:\nUser ID: " + myUserId + "\nWallet: " + userConnectedAddress + "\nAmount: " + Math.floor(userBalance) + " $BABYGRAM");
+            window.open("https://t.me/BabyGramHQ?text=" + msg, "_blank");
+        }
+
+        function sendDonation() {
+            var amountGram = parseFloat(document.getElementById('donateAmountInput').value) || 0.1;
+            var nanoAmount = Math.floor(amountGram * 1000000000);
+            var donateUrl = "https://app.tonkeeper.com/transfer/" + OWNER_WALLET + "?amount=" + nanoAmount + "&text=Donate_" + myUserId;
+            window.open(donateUrl, "_blank");
+            closeModal('donateModal');
+            showToast("Thank you for supporting BabyGram project! ❤️", false);
+        }
+
+        function joinChannelTask() {
+            if (channelJoined) return;
+            window.open("https://t.me/BabyGramHQ", "_blank");
+            setTimeout(function() {
+                channelJoined = true;
+                userBalance += 1000;
+                safeSet('baby_channel', 'true');
+                safeSet('baby_balance', userBalance);
+                updateUI();
+                showToast("+1,000 Tokens added for joining channel!", false);
+            }, 2000);
+        }
+
+        function getMyInviteUrl() {
+            return "https://t.me/BabyGramClicker_bot?start=ref_" + myUserId;
+        }
+
+        function copyRefLink() {
+            var link = getMyInviteUrl();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(function() {
+                    showToast("Invite link copied (+500 reward per invite)!", false);
+                }).catch(function() {
+                    prompt("Copy your invite link:", link);
+                });
+            } else {
+                prompt("Copy your invite link
