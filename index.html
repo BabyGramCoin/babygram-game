@@ -85,18 +85,6 @@
             width: 100%;
             margin-top: 10px;
         }
-        .btn-withdraw {
-            background: linear-gradient(135deg, #f77f00, #fcbf49);
-            color: #0b132b;
-            border: none;
-            padding: 11px 16px;
-            border-radius: 10px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
-        }
         .btn-donate {
             background: linear-gradient(135deg, #8338ec, #3a86ff);
             color: white;
@@ -232,7 +220,7 @@
         <button type="button" class="btn-main" style="width: auto; padding: 6px 12px; margin: 0; font-size: 11px;" onclick="openWalletModal()">Wallet Setup</button>
     </div>
 
-    <!-- SECTION 1: Tap & Mine (Anti-Bot) -->
+    <!-- SECTION 1: Tap & Mine -->
     <div class="card">
         <h2 style="margin-top: 0; font-size: 17px;">BabyGram Tap & Mine 💎</h2>
         
@@ -244,20 +232,29 @@
         <p style="font-size: 12px; color: #adb5bd; margin: 4px 0;">Tap to mine tokens (Anti-Bot Protected)</p>
     </div>
 
-    <!-- SECTION 2: Wallet & Real Verification (0.05 Gram) & Donate & Withdrawal -->
+    <!-- SECTION 2: Season 1 & Withdrawals Notice -->
     <div class="card">
-        <h3 class="section-title">🛡 Wallet & Withdrawals</h3>
-        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Verify with 0.05 Gram to unlock. Min withdrawal: <strong>10,000,000 $BABYGRAM</strong>.</p>
+        <h3 class="section-title">🚀 Season 1 & Roadmap</h3>
+        <div class="about-text" style="border-left: 3px solid #f77f00;">
+            <strong>Welcome to Season 1!</strong><br>
+            Tap actively, invite friends, and maximize your tokens now. Withdrawals and token distribution will officially open right after the completion of Season 1. Work hard, build your balance, and get ready for the grand launch!
+        </div>
+        <button type="button" class="btn-main" style="background: #4b5563; cursor: not-allowed; margin-top: 10px;" disabled>🔒 Withdrawals Open After Season 1</button>
+    </div>
+
+    <!-- SECTION 3: Wallet & Real Verification & Donate -->
+    <div class="card">
+        <h3 class="section-title">🛡 Wallet & Verification</h3>
+        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Connect your wallet and verify with 0.05 Gram to prove you are human and secure your account for Season 1 rewards.</p>
         
         <div id="walletStatusText" style="font-size: 12px; color: #fbbf24; margin-bottom: 8px; text-align: left; font-weight: bold;">Wallet Status: Not Connected</div>
 
         <button type="button" class="btn-main" onclick="openWalletModal()">Connect / Change Wallet</button>
         <button type="button" class="btn-verify" onclick="verifyWalletReal()">Verify Wallet (Pay 0.05 Gram)</button>
-        <button type="button" class="btn-withdraw" onclick="requestWithdrawal()">🚀 Request Withdrawal (Min 10M)</button>
         <button type="button" class="btn-donate" onclick="openDonateModal()">❤️ Donate / Support Project</button>
     </div>
 
-    <!-- SECTION 3: Project Description & About BabyGram -->
+    <!-- SECTION 4: Project Description & About BabyGram -->
     <div class="card">
         <h3 class="section-title">📖 About BabyGram Project</h3>
         <div class="about-text">
@@ -265,7 +262,7 @@
         </div>
     </div>
 
-    <!-- SECTION 4: Tasks & Real Referrals (500 Ref / 1000 Channel) -->
+    <!-- SECTION 5: Tasks & Referrals -->
     <div class="card">
         <h3 class="section-title">🎁 Community Tasks & Referrals</h3>
         
@@ -460,20 +457,6 @@
             }, 2000);
         }
 
-        // بخش جدید حداقل برداشت (۱۰ میلیون توکن)
-        function requestWithdrawal() {
-            if (!walletVerified) {
-                showToast("You must verify your wallet (0.05 Gram) first!", true);
-                return;
-            }
-            if (userBalance < 10000000) {
-                showToast("Minimum withdrawal is 10,000,000 $BABYGRAM!", true);
-                return;
-            }
-            var msg = encodeURIComponent("Withdrawal Request:\nUser ID: " + myUserId + "\nWallet: " + userConnectedAddress + "\nAmount: " + Math.floor(userBalance) + " $BABYGRAM");
-            window.open("https://t.me/BabyGramHQ?text=" + msg, "_blank");
-        }
-
         function sendDonation() {
             var amountGram = parseFloat(document.getElementById('donateAmountInput').value) || 0.1;
             var nanoAmount = Math.floor(amountGram * 1000000000);
@@ -509,4 +492,17 @@
                     prompt("Copy your invite link:", link);
                 });
             } else {
-                prompt("Copy your invite link
+                prompt("Copy your invite link:", link);
+            }
+        }
+
+        function shareRefLink() {
+            var refLink = getMyInviteUrl();
+            var shareText = "Join BabyGram Tap & Mine! Earn tokens and support the ecosystem! 💎";
+            window.open("https://t.me/share/url?url=" + encodeURIComponent(refLink) + "&text=" + encodeURIComponent(shareText), "_blank");
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
