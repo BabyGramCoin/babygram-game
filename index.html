@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BabyGram - Community Token & Mine</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -220,7 +222,7 @@
         <button type="button" class="btn-main" style="width: auto; padding: 6px 12px; margin: 0; font-size: 11px;" onclick="openWalletModal()">Wallet Setup</button>
     </div>
 
-    <!-- SECTION 1: Tap & Mine -->
+    <!-- SECTION 1: Tap & Mine (Anti-Bot) -->
     <div class="card">
         <h2 style="margin-top: 0; font-size: 17px;">BabyGram Tap & Mine 💎</h2>
         
@@ -232,20 +234,10 @@
         <p style="font-size: 12px; color: #adb5bd; margin: 4px 0;">Tap to mine tokens (Anti-Bot Protected)</p>
     </div>
 
-    <!-- SECTION 2: Season 1 & Withdrawals Notice -->
+    <!-- SECTION 2: Wallet & Real Verification (0.05 Gram) & Donate -->
     <div class="card">
-        <h3 class="section-title">🚀 Season 1 & Roadmap</h3>
-        <div class="about-text" style="border-left: 3px solid #f77f00;">
-            <strong>Welcome to Season 1!</strong><br>
-            Tap actively, invite friends, and maximize your tokens now. Withdrawals and token distribution will officially open right after the completion of Season 1. Work hard, build your balance, and get ready for the grand launch!
-        </div>
-        <button type="button" class="btn-main" style="background: #4b5563; cursor: not-allowed; margin-top: 10px;" disabled>🔒 Withdrawals Open After Season 1</button>
-    </div>
-
-    <!-- SECTION 3: Wallet & Real Verification & Donate -->
-    <div class="card">
-        <h3 class="section-title">🛡 Wallet & Verification</h3>
-        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Connect your wallet and verify with 0.05 Gram to prove you are human and secure your account for Season 1 rewards.</p>
+        <h3 class="section-title">🛡 Wallet & Real Verification</h3>
+        <p style="font-size: 11px; color: #d1d5db; text-align: left; margin-top: 0;">Connect your wallet and verify with 0.05 Gram to prove you are human and unlock full features.</p>
         
         <div id="walletStatusText" style="font-size: 12px; color: #fbbf24; margin-bottom: 8px; text-align: left; font-weight: bold;">Wallet Status: Not Connected</div>
 
@@ -254,7 +246,7 @@
         <button type="button" class="btn-donate" onclick="openDonateModal()">❤️ Donate / Support Project</button>
     </div>
 
-    <!-- SECTION 4: Project Description & About BabyGram -->
+    <!-- SECTION 3: Project Description & About BabyGram -->
     <div class="card">
         <h3 class="section-title">📖 About BabyGram Project</h3>
         <div class="about-text">
@@ -262,7 +254,7 @@
         </div>
     </div>
 
-    <!-- SECTION 5: Tasks & Referrals -->
+    <!-- SECTION 4: Tasks & Real Referrals -->
     <div class="card">
         <h3 class="section-title">🎁 Community Tasks & Referrals</h3>
         
@@ -310,6 +302,7 @@
 
     <script>
         var OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
+        var BOT_USERNAME = "BabyGramClicker_bot"; // نام کاربری ربات شما در تلگرام
         
         function safeGet(key) {
             try { return window.localStorage.getItem(key); } catch (e) { return null; }
@@ -318,18 +311,48 @@
             try { window.localStorage.setItem(key, val); } catch (e) {}
         }
 
+        // اتصال به تلگرام و دریافت شناسه واقعی کاربر
+        var tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        var myUserId = "";
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+            myUserId = "user_" + tg.initDataUnsafe.user.id;
+        } else {
+            myUserId = safeGet('baby_my_uid');
+            if (!myUserId) {
+                myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
+                safeSet('baby_my_uid', myUserId);
+            }
+        }
+
         var userBalance = parseFloat(safeGet('baby_balance')) || 0;
         var walletVerified = safeGet('baby_verified') === 'true';
         var channelJoined = safeGet('baby_channel') === 'true';
         var invitedCount = parseInt(safeGet('baby_ref_count')) || 0;
         var userConnectedAddress = safeGet('baby_wallet_address') || "";
-        
-        var myUserId = safeGet('baby_my_uid');
-        if (!myUserId) {
-            myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
-            safeSet('baby_my_uid', myUserId);
+
+        // بررسی پارامتر رفرال هنگام ورود کاربر جدید
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
+            var startParam = tg.initDataUnsafe.start_param;
+            if (startParam.startsWith('ref_')) {
+                var referrerId = startParam.replace('ref_', '');
+                // بررسی اینکه آیا قبلاً پاداش خوش‌آمدگویی رفرال را گرفته است یا خیر
+                if (!safeGet('baby_referred_claimed')) {
+                    safeSet('baby_referred_claimed', 'true');
+                    userBalance += 500; // پاداش خوش‌آمدگویی به کاربر جدید
+                    safeSet('baby_balance', userBalance);
+                    setTimeout(function() {
+                        showToast("🎉 Welcome! You joined via friend link (+500 Bonus)", false);
+                    }, 1000);
+                }
+            }
         }
 
+        // Anti-Bot / Anti-Autoclicker variables
         var lastTapTime = 0;
         var rapidTapCounter = 0;
         var lastTapWindow = 0;
@@ -369,6 +392,7 @@
 
         function tapCoin(event) {
             var now = Date.now();
+            
             if (now - lastTapWindow < 1000) {
                 rapidTapCounter++;
                 if (rapidTapCounter > 12) {
@@ -480,7 +504,7 @@
         }
 
         function getMyInviteUrl() {
-            return "https://t.me/BabyGramClicker_bot?start=ref_" + myUserId;
+            return "https://t.me/" + BOT_USERNAME + "?start=ref_" + myUserId;
         }
 
         function copyRefLink() {
