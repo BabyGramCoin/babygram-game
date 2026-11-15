@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BabyGram - Community Token & Mine</title>
-    <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -254,7 +252,7 @@
         </div>
     </div>
 
-    <!-- SECTION 4: Tasks & Real Referrals -->
+    <!-- SECTION 4: Tasks & Real Referrals (500 Ref / 1000 Channel) -->
     <div class="card">
         <h3 class="section-title">🎁 Community Tasks & Referrals</h3>
         
@@ -302,7 +300,6 @@
 
     <script>
         var OWNER_WALLET = "UQB8E5UreO3ujV4ArV9AI28kGhznU-9ExPDjn6bQ2v9NJEj1";
-        var BOT_USERNAME = "BabyGramClicker_bot"; // نام کاربری ربات شما در تلگرام
         
         function safeGet(key) {
             try { return window.localStorage.getItem(key); } catch (e) { return null; }
@@ -311,45 +308,16 @@
             try { window.localStorage.setItem(key, val); } catch (e) {}
         }
 
-        // اتصال به تلگرام و دریافت شناسه واقعی کاربر
-        var tg = window.Telegram && window.Telegram.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
-
-        var myUserId = "";
-        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
-            myUserId = "user_" + tg.initDataUnsafe.user.id;
-        } else {
-            myUserId = safeGet('baby_my_uid');
-            if (!myUserId) {
-                myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
-                safeSet('baby_my_uid', myUserId);
-            }
-        }
-
         var userBalance = parseFloat(safeGet('baby_balance')) || 0;
         var walletVerified = safeGet('baby_verified') === 'true';
         var channelJoined = safeGet('baby_channel') === 'true';
         var invitedCount = parseInt(safeGet('baby_ref_count')) || 0;
         var userConnectedAddress = safeGet('baby_wallet_address') || "";
-
-        // بررسی پارامتر رفرال هنگام ورود کاربر جدید
-        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
-            var startParam = tg.initDataUnsafe.start_param;
-            if (startParam.startsWith('ref_')) {
-                var referrerId = startParam.replace('ref_', '');
-                // بررسی اینکه آیا قبلاً پاداش خوش‌آمدگویی رفرال را گرفته است یا خیر
-                if (!safeGet('baby_referred_claimed')) {
-                    safeSet('baby_referred_claimed', 'true');
-                    userBalance += 500; // پاداش خوش‌آمدگویی به کاربر جدید
-                    safeSet('baby_balance', userBalance);
-                    setTimeout(function() {
-                        showToast("🎉 Welcome! You joined via friend link (+500 Bonus)", false);
-                    }, 1000);
-                }
-            }
+        
+        var myUserId = safeGet('baby_my_uid');
+        if (!myUserId) {
+            myUserId = "BG" + Math.floor(100000 + Math.random() * 900000);
+            safeSet('baby_my_uid', myUserId);
         }
 
         // Anti-Bot / Anti-Autoclicker variables
@@ -504,7 +472,7 @@
         }
 
         function getMyInviteUrl() {
-            return "https://t.me/" + BOT_USERNAME + "?start=ref_" + myUserId;
+            return "https://t.me/BabyGramClicker_bot?start=ref_" + myUserId;
         }
 
         function copyRefLink() {
